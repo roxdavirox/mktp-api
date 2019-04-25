@@ -6,6 +6,11 @@ const ItemSchema = new Schema({
   name: {
     type: String,
     required: true,
+  },
+  price: {
+    type: Schema.Types.ObjectId,
+    ref: 'Price',
+    required: false,
   }
 });
 
