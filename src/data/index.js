@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const { user, pass } = require('../config/mongodb');
+const { user, pass } = require('../config/mongodb.json');
 
 const url = `mongodb+srv://${user}:${pass}@mktp-cluster-icaeh.mongodb.net/test?retryWrites=true`;
 
