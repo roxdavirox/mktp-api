@@ -28,10 +28,12 @@ router.get('/', async (req, res) => {
 router.put('/', async (req, res) => {
   try {
     const { optionId, itemId } = req.body;
-
-    const option = await Option.findById(optionId);
+    
+    const option = await Option.findById(optionId).populate('items');
     
     const item = await Item.findById(itemId);
+
+    option.items.pull(itemId);
 
     option.items.push(item);
 
