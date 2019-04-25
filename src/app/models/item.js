@@ -11,7 +11,11 @@ const ItemSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Price',
     required: false,
-  }
+  },
+  option: {
+    type: Schema.Types.ObjectId,
+    ref: 'Option'
+  },
 });
 
 const Item = mongoose.model('Item', ItemSchema);
