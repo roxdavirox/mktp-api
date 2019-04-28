@@ -6,7 +6,10 @@ const url = `mongodb+srv://${user}:${pass}@mktp-cluster-icaeh.mongodb.net/test?r
 
 mongoose.connect(
   url,
-  { useNewUrlParser: true }
+  { useNewUrlParser: true }, err => {
+    if (err)
+      console.log('Error: ', err);
+  }
 );
 
 mongoose.Promise = global.Promise;
