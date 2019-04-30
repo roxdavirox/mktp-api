@@ -48,4 +48,17 @@ router.put('/', async (req, res) => {
   }
 });
 
+router.delete('/', async (req, res) => {
+  try {
+    const { optionsIds } = req.body;
+    console.log(optionsIds);
+
+    await Option.deleteMany({ _id:{ $in: optionsIds }});
+    
+    return res.send({ deletedOptionsCount: optionsIds.length });
+  } catch(e) {
+    return res.status(400).send({ error: `Error on deleting option(s): ${e}`});
+  }
+});
+
 module.exports = app => app.use('/options', router);
