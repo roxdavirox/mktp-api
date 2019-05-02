@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 
-const { user, pass } = require('../config/mongodb.json');
+const env = process.env.NODE_ENV || 'development';
 
-const url = `mongodb+srv://${user}:${pass}@mktp-cluster-icaeh.mongodb.net/test?retryWrites=true`;
+const uri = process.env.DB_URI  || require('../config/mongodb.json')[env];
+
+console.log('env:',env, 'uri', uri);
 
 mongoose.connect(
-  url,
+  uri,
   { useNewUrlParser: true }, err => {
     if (err)
       console.log('Error: ', err);
