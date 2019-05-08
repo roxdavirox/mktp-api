@@ -18,12 +18,6 @@ const ItemSchema = new Schema({
   },
 });
 
-ItemSchema.virtual('id').get(function() {
-  return this._id.toHexString();
-});
-
-ItemSchema.set('toJSON', { virtuals: true });
-
 const Item = mongoose.model('Item', ItemSchema);
 
 module.exports = Item;

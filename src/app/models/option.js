@@ -13,12 +13,6 @@ const OptionSchema = new Schema({
   }],
 });
 
-OptionSchema.virtual('id').get(function() {
-  return this._id.toHexString();
-});
-
-OptionSchema.set('toJSON', { virtuals: true });
-
 const Option = mongoose.model('Option', OptionSchema);
 
 module.exports = Option;
