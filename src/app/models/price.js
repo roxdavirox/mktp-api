@@ -25,6 +25,12 @@ const PriceSchema = new Schema({
   },
 });
 
+PriceSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+
+PriceSchema.set('toJSON', { virtuals: true });
+
 const Price = mongoose.model('Price', PriceSchema);
 
 module.exports = Price;
