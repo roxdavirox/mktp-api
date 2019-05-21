@@ -50,11 +50,11 @@ router.put('/', async (req, res) => {
 
 router.delete('/', async (req, res) => {
   try {
-    const { optionsIds } = req.body;
+    const { optionsId } = req.body;
 
-    await Option.deleteMany({ _id:{ $in: optionsIds }});
+    await Option.deleteMany({ _id:{ $in: optionsId }});
 
-    return res.send({ deletedOptionsCount: optionsIds.length });
+    return res.send({ deletedOptionsCount: optionsId.length });
   } catch(e) {
     return res.status(400).send({ error: `Error on deleting option(s): ${e}`});
   }

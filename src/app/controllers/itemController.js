@@ -35,4 +35,16 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.delete('/', async (req, res) => {
+  try {
+    const { itemsId } = req.body;
+
+    await Item.deleteMany({ _id:{ $in: itemsId }});
+
+    return res.send({ deletedItemsCount: itemsId.length });
+  } catch(e) {
+    return res.status(400).send({ error: `Error on deleting item(s): ${e}`});
+  }
+});
+
 module.exports = app => app.use('/items', router);
