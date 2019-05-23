@@ -2,6 +2,7 @@ const express = require('express');
 
 const Item = require('../models/item');
 const Price = require('../models/price');
+const Option = require('../models/option');
 
 const router = express.Router();
 
@@ -22,6 +23,26 @@ router.post('/', async (req, res) => {
   } catch (e) {
     console.log(e);
     return res.status(400).send({ error: 'Error on creating a item'});
+  }
+});
+
+router.post('/:optionId', async (req, res) => {
+  try {
+    const { optionId } = req.params;
+
+    const { name } = req.body;
+    
+    const option = await Option.findById(optionId).populate('items');
+    
+    const item = await Item.create({ name });
+
+    option.items.push(item);
+
+    await option.save();
+
+    return res.send({ item });
+  } catch (err) {
+    return res.status(400).send({ error: "Error on add option's item"});
   }
 });
 

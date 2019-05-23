@@ -7,18 +7,6 @@ const PriceSchema = new Schema({
     type: Number,
     required: true,
   },
-  maxValue: {
-    type: Number,
-    required: true
-  },
-  minQuantity: {
-    type: Number,
-    required: true,
-  },
-  interval: {
-    type: Number,
-    required: true,
-  },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -12,10 +12,10 @@ const ItemSchema = new Schema({
     ref: 'Price',
     required: false,
   },
-  option: {
+  option: [{
     type: Schema.Types.ObjectId,
     ref: 'Option'
-  },
+  }],
 });
 
 const Item = mongoose.model('Item', ItemSchema);
