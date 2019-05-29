@@ -17,10 +17,11 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const options = await Option.find().populate({
-      path: 'items',
-      populate: { path: 'price'}
-    });
+    const options = await Option.find().populate('items');
+    // .populate({
+    //   path: 'items',
+    //   populate: { path: 'price'}
+    // });
 
     return res.send({ options });
   } catch (e) {
