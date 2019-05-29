@@ -49,6 +49,26 @@ router.put('/', async (req, res) => {
   }
 });
 
+router.put('/:optionId', async (req, res) => {
+  try {
+    const { optionId } = req.params;
+
+    const { itemsId } = req.body;
+    
+    const option = await Option.findOneAndUpdate(optionId, { 
+        $addToSet: { items: { $each: itemsId } }
+      }
+    );
+
+    await option.save();
+
+    return res.send({ option });
+  } catch (err) {
+    return res.status(400)
+      .send({ error: 'Error on add existing items into option'});
+  }
+});
+
 router.delete('/', async (req, res) => {
   try {
     const { optionsId } = req.body;
