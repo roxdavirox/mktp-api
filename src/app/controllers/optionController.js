@@ -62,7 +62,7 @@ router.put('/:optionId', async (req, res) => {
 
     await option.save();
 
-    return res.send({ option });
+    return res.send({ itemsCount: itemsId.length });
   } catch (err) {
     return res.status(400)
       .send({ error: 'Error on add existing items into option'});
