@@ -6,7 +6,7 @@ const uri = process.env.DB_URI  || require('../config/mongodb.json')[env];
 
 mongoose.connect(
   uri,
-  { useNewUrlParser: true }, err => {
+  { useNewUrlParser: true, useFindAndModify: false }, err => {
     const msg = err || "MongoDB connected";
     console.log(msg);
   }
