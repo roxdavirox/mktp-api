@@ -3,9 +3,21 @@ const mongoose = require('../../data');
 const Schema = mongoose.Schema;
 
 const PriceSchema = new Schema({
-  minValue: {
+  minQuantity: {
     type: Number,
     required: true,
+  },
+  maxQuantity: {
+    type: Number,
+    required: true
+  },
+  value: {
+    type: Number,
+    required: true
+  },
+  priceTable: {
+    type: Schema.Types.ObjectId,
+    ref: 'PriceTable'
   },
   createdAt: {
     type: Date,

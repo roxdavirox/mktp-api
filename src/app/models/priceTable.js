@@ -2,14 +2,14 @@ const mongoose = require('../../data');
 
 const Schema = mongoose.Schema;
 
-const OptionSchema = new Schema({
+const PriceTableSchema = new Schema({
   name: {
     type: String,
     required: true,
   },
-  items: [{
+  prices: [{
     type: Schema.Types.ObjectId,
-    ref: 'Item',
+    ref: 'Price',
   }],
   createdAt: {
     type: Date,
@@ -17,6 +17,6 @@ const OptionSchema = new Schema({
   },
 });
 
-const Option = mongoose.model('Option', OptionSchema);
+const PriceTable = mongoose.model('PriceTable', PriceTableSchema);
 
-module.exports = Option;
+module.exports = PriceTable;

@@ -7,15 +7,19 @@ const ItemSchema = new Schema({
     type: String,
     required: true,
   },
-  // price: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'Price',
-  //   required: false,
-  // },
+  pricTablee: {
+    type: Schema.Types.ObjectId,
+    ref: 'PriceTable',
+    required: false,
+  },
   options: [{
     type: Schema.Types.ObjectId,
     ref: 'Option'
   }],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Item = mongoose.model('Item', ItemSchema);
