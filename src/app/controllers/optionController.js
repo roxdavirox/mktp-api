@@ -52,10 +52,11 @@ router.put('/', async (req, res) => {
 router.put('/:optionId', async (req, res) => {
   try {
     const { optionId } = req.params;
-
+    console.log('put optionId:', optionId);
     const { itemsId } = req.body;
+    console.log('ids dos itens:', itemsId);
     
-    const option = await Option.findOneAndUpdate(optionId, { 
+    const option = await Option.findOneAndUpdate({ _id: optionId }, { 
         $addToSet: { items: { $each: itemsId } }
       }
     );
