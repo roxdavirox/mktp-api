@@ -8,8 +8,8 @@ const PriceTableSchema = new Schema({
     required: true,
   },
   prices: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Price',
+    type: Array,
+    required: false,
   }],
   createdAt: {
     type: Date,
