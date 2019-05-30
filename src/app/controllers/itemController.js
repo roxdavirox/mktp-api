@@ -1,7 +1,6 @@
 const express = require('express');
 
 const Item = require('../models/item');
-const Price = require('../models/price');
 const Option = require('../models/option');
 
 const router = express.Router();
