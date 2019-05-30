@@ -11,13 +11,6 @@ router.post('/', async (req, res) => {
   try {
     const item = await Item.create({ name });
     
-    if (price) {
-      const priceItem = await Price.create(price);
-      item.price = priceItem;
-    }
-
-    await item.save();
-
     return res.send({ item });
   } catch (e) {
     console.log(e);

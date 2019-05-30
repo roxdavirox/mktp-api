@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const priceTables = await PriceTable.find().populate('prices');
+    const priceTables = await PriceTable.find();
 
     return res.send({ priceTables });
   } catch(e) {
