@@ -27,6 +27,19 @@ router.get('/', async (req, res) => {
     return res.status(400)
       .send({ error: `Error on get price tables: ${e}`});
   }
-})
+});
+
+router.delete('/', async (req, res) => {
+  try {
+    const { priceTableIds } = req.body;
+
+    await PriceTable.deleteMany({ _id: { $in: priceTableIds } });
+
+    return res.send({ deletedCount: priceTableIds.length });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on delete price tables: ${e}`});
+  }
+});
 
 module.exports = app => app.use('/price-tables', router);
