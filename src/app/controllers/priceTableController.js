@@ -6,9 +6,9 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
   try {
-    const { name, prices } = req.body;
+    const { name } = req.body;
 
-    const priceTable = await PriceTable.create({ name, prices });
+    const priceTable = await PriceTable.create({ name });
 
     return res.send({ priceTable });
   } catch(e) {
@@ -20,9 +20,25 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const priceTables = await PriceTable.find();
+    const priceTables = await PriceTable.find().select('-prices');
 
     return res.send({ priceTables });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get price tables: ${e}`});
+  }
+});
+
+router.get('/:priceTableId', async (req, res) => {
+  try {
+    const { priceTableId } = req.params;
+
+    const priceTable = await PriceTable
+      .findById(priceTableId)
+      .populate('prices')
+      .select('+prices');
+
+    return res.send({ priceTable });
   } catch(e) {
     return res.status(400)
       .send({ error: `Error on get price tables: ${e}`});
@@ -41,5 +57,19 @@ router.delete('/', async (req, res) => {
       .send({ error: `Error on delete price tables: ${e}`});
   }
 });
+
+// router.put('/:priceTableId', async (req, res) => {
+//   try {
+//     const { priceTableId } = req.params;
+//     const { prices } = req.body;
+
+//     const priceTable = await PriceTable.findById(priceTableId);
+
+//     return res.send({ prices: priceTable.prices });
+//   } catch(e) {
+//     return res.status(400)
+//       .send({ error: `Error on update price table: ${e}`});
+//   }
+// });
 
 module.exports = app => app.use('/price-tables', router);
