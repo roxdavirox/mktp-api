@@ -59,18 +59,18 @@ router.get('/:priceTableId', async (req, res) => {
   }
 });
 
-// router.delete('/', async (req, res) => {
-//   try {
-//     const { priceTableIds } = req.body;
+router.delete('/', async (req, res) => {
+  try {
+    const { priceIds } = req.body;
 
-//     await PriceTable.deleteMany({ _id: { $in: priceTableIds } });
+    await Price.deleteMany({ _id: { $in: priceIds } });
 
-//     return res.send({ deletedCount: priceTableIds.length });
-//   } catch(e) {
-//     return res.status(400)
-//       .send({ error: `Error on delete price tables: ${e}`});
-//   }
-// });
+    return res.send({ deletedCount: priceIds.length });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on delete prices: ${e}`});
+  }
+});
 
 router.put('/:priceTableId', async (req, res) => {
   try {
