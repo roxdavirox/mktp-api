@@ -72,25 +72,4 @@ router.delete('/', async (req, res) => {
   }
 });
 
-router.put('/:priceTableId', async (req, res) => {
-  try {
-    const { priceTableId } = req.params;
-    const { price } = req.body;
-
-    const priceTable = await PriceTable
-      .findById(priceTableId).populate('prices');
-
-    const p = await Price.create({ ...price, priceTable: priceTableId });
-    
-    priceTable.prices.push(p);
-
-    await priceTable.save();
-
-    return res.send({ price: p });
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on update price table: ${e}`});
-  }
-});
-
 module.exports = app => app.use('/prices', router);
