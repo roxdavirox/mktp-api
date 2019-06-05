@@ -41,6 +41,22 @@ router.post('/:priceTableId', async (req, res) => {
 //   }
 // });
 
+router.put('/:priceId', async (req, res) => {
+  try {
+    const { priceId } = req.params;
+
+    const price = await Price.findByIdAndUpdate(priceId, 
+      {...req.body },
+      { new: true }
+    );
+
+    return res.send({ price });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on update price: ${e}`});
+  }
+});
+
 router.get('/:priceTableId', async (req, res) => {
   try {
     const { priceTableId } = req.params;
