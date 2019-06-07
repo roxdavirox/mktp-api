@@ -44,7 +44,7 @@ router.post('/:optionId', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const items = await Item.find();//.populate('options');
+    const items = await Item.find();
 
     return res.send({ items });
   } catch (e) {
