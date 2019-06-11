@@ -21,12 +21,10 @@ router.post('/', async (req, res) => {
 router.post('/:optionId', async (req, res) => {
   try {
     const { optionId } = req.params;
-
-    const { name } = req.body;
     
     const option = await Option.findById(optionId).populate('items');
     
-    const item = await Item.create({ name });
+    const item = await Item.create({ ...req.body });
 
     item.options.push(optionId);
 
