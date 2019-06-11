@@ -42,6 +42,22 @@ router.post('/:optionId', async (req, res) => {
   }
 });
 
+router.put('/:itemId', async(req, res) => {
+  try {
+    const { itemId } = req.params;
+
+    const item = await Item.findByIdAndUpdate(itemId, 
+      { ...req.body },
+      { new: true}
+    );
+
+    return res.send({ item });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: 'Error on update item'});
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     const items = await Item.find();
@@ -65,7 +81,7 @@ router.delete('/', async (req, res) => {
 });
 
 // deleta os itens de uma opção, mas sem excluir do banco de dados
-router.put('/:optionId', async (req, res) => {
+router.delete('/:optionId', async (req, res) => {
   try {
     const { optionId } = req.params;
 
