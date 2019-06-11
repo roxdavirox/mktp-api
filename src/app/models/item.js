@@ -7,7 +7,7 @@ const ItemSchema = new Schema({
     type: String,
     required: true,
   },
-  priceTable: {
+  priceTableId: {
     type: Schema.Types.ObjectId,
     ref: 'PriceTable',
     required: false,

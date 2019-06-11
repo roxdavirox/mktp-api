@@ -6,10 +6,10 @@ const Option = require('../models/option');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { name, price } = req.body;
+  const { ...reqItem } = req.body;
 
   try {
-    const item = await Item.create({ name });
+    const item = await Item.create({ ...reqItem });
     
     return res.send({ item });
   } catch (e) {
