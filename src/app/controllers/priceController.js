@@ -13,7 +13,10 @@ router.post('/:priceTableId', async (req, res) => {
     const priceTable = await PriceTable.findById(priceTableId);
 
     await Promise.all(prices.map(async p => {
-      const price = new Price({ ...p, priceTable: priceTableId });
+      const price = new Price({ 
+        ...p, 
+        priceTable: priceTableId 
+      });
 
       await price.save();
 
@@ -25,9 +28,39 @@ router.post('/:priceTableId', async (req, res) => {
     return res.send({ priceTable });
   } catch(e) {
     return res.status(400)
-      .send({ erro: `Error on post new price table: ${e}` })
+      .send({ error: `Error on post new price table: ${e}` })
   }
 
+});
+
+router.post('/:priceTableId/range', async (req, res) => {
+  try {
+    const { priceTableId } = req.params;
+    const { prices } = req.body;
+
+    const priceTable = await PriceTable.findById(priceTableId);
+    priceTable.prices = [];
+
+    await Promise.all(prices.map(async p => {
+      const price = new Price({ 
+        ...p,
+        priceTable: priceTableId
+      });
+
+      await price.save();
+
+      priceTable.prices.push(price);
+    }));
+
+    await priceTable.save();
+
+    const { prices: newPrices } = priceTable;
+
+    return res.send({ prices: newPrices });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: 'Error on post price range into priceTable' });
+  }
 });
 
 // router.get('/', async (req, res) => {
