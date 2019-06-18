@@ -47,7 +47,7 @@ router.post('/:priceTableId/range', async (req, res) => {
         priceTable: priceTableId
       });
 
-      await price.save();
+      price.save();
 
       priceTable.prices.push(price);
     }));
