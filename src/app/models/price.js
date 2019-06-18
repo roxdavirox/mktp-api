@@ -12,9 +12,7 @@ const PriceSchema = new Schema({
     required: true
   },
   value: {
-    type: String,
-    set: v => parseFloat(v).toFixed(4).toString(),
-    get: v => parseFloat(v).toFixed(4).toString(),
+    type: Number,
     required: true
   },
   priceTable: {
