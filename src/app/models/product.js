@@ -2,20 +2,14 @@ const mongoose = require('../../data');
 
 const Schema = mongoose.Schema;
 
-const ItemSchema = new Schema({
+const ProductSchema = new Schema({
   name: {
     type: String,
     required: true,
   },
-  priceTableId: {
-    type: Schema.Types.ObjectId,
-    ref: 'PriceTable',
-    required: false,
-  },
   options: [{
     type: Schema.Types.ObjectId,
     ref: 'Option',
-    select: false,
   }],
   createdAt: {
     type: Date,
@@ -23,6 +17,6 @@ const ItemSchema = new Schema({
   },
 });
 
-const Item = mongoose.model('Item', ItemSchema);
+const Product = mongoose.model('Product', ProductSchema);
 
-module.exports = Item;
+module.exports = Product;
