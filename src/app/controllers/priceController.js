@@ -97,7 +97,7 @@ router.get('/:priceTableId', async (req, res) => {
     const priceTable = await PriceTable
       .findById(priceTableId)
       .populate('prices')
-      .select('+prices');
+      // .select('+prices');
 
     const { prices } = priceTable;
 
