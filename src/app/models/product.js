@@ -7,10 +7,9 @@ const ProductSchema = new Schema({
     type: String,
     required: true,
   },
-  options: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Option',
-  }],
+  options: {
+    type: Array
+  },
   createdAt: {
     type: Date,
     default: Date.now,

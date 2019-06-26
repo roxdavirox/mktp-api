@@ -10,29 +10,8 @@ router.post('/', async (req, res) => {
   try {
     const { name, options } = req.body;
     console.log('product', req.body);
-    const product = await Product.create({ name });
-
-    await Promise.all(options.map(async op => {
-      const option = await Option.create({
-        refOption: op.id,
-        name: op.name
-      });
-
-      await Promise.all(op.items.map(async i => {
-        const item = await Item.create({
-          refItem: i.id,
-          name: i.name
-        });
-
-        option.items.push(item);
-      }));
-
-      await option.save();
-
-      product.options.push(option);
-    }));
-
-    await product.save();
+    
+    const product = await Product.create({ name, options });
 
     return res.send({ product });
   } catch(e) {
