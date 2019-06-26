@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
       return p;
     }));
 
-    return res.send({ products });
+    return res.send(products);
   } catch(e) {
     return res.status(400)
       .send({ error: `Error on get products: ${e}` })
