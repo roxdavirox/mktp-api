@@ -25,8 +25,7 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const categories = await Category.find()
-      .populate('subCategories');
+    const categories = await Category.find({ parentId: null });
 
     return res.send({ categories });
   } catch (e) {
