@@ -23,14 +23,15 @@ router.post('/', async (req, res) => {
   }
 });
 
-// router.get('/', async (req, res) => {
-//   try {
-//     const options = await Option.find().populate('items');
+router.get('/', async (req, res) => {
+  try {
+    const categories = await Category.find()
+      .populate('subCategories');
 
-//     return res.send({ options });
-//   } catch (e) {
-//     return res.status(400).send({ error: 'Error on load options'});    
-//   }
-// });
+    return res.send({ categories });
+  } catch (e) {
+    return res.status(400).send({ error: 'Error on load categories'});    
+  }
+});
 
 module.exports = app => app.use('/categories', router);
