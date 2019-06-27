@@ -2,18 +2,20 @@ const mongoose = require('../../data');
 
 const Schema = mongoose.Schema;
 
-const ProductSchema = new Schema({
+const CategorySchema = new Schema({
   name: {
     type: String,
     required: true,
   },
-  categories: [{
+  subCategories: [{
     type: Schema.Types.ObjectId,
     ref: 'Category',
     required: false,
   }],
-  options: {
-    type: Array
+  parentId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Category',
+    required: false,
   },
   createdAt: {
     type: Date,
@@ -21,6 +23,6 @@ const ProductSchema = new Schema({
   },
 });
 
-const Product = mongoose.model('Product', ProductSchema);
+const Category = mongoose.model('Category', CategorySchema);
 
-module.exports = Product;
+module.exports = Category;
