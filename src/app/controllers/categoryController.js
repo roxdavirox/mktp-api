@@ -36,4 +36,17 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.delete('/', async (req, res) => {
+  try {
+    const { categoryIds } = req.body;
+
+    await Category.deleteMany({ _id:{ $in: categoryIds }});
+
+    return res.send({ deletedCount: categoryIds.length });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on deleting categories: ${e}`});
+  }
+});
+
 module.exports = app => app.use('/categories', router);
