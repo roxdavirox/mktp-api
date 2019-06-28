@@ -26,6 +26,22 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.post('/:categoryId', async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const { name } = req.body;
+
+    const category = await Category.findById(categoryId);;
+    const subCategory = await Category.create({ name, parentId: categoryId });
+    category.subCategories.push(subCategory);
+
+    await category.save();
+    return res.send({ subCategory });
+  } catch (e) {
+    return res.status(400).send({ error: 'Error when creating category'});
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     const categories = await Category
