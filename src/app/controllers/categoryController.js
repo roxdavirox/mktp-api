@@ -10,13 +10,16 @@ router.post('/', async (req, res) => {
 
     const category = await Category.create({ name, parentId: null });;
 
-    await Promise.all(subCategories.map(async name => {
-      const subCategory = new Category({ name, parentId: category._id});
-      subCategory.save();
-      category.subCategories.push(subCategory);
-    }));
+    if (subCategories) {
+      await Promise.all(subCategories.map(async name => {
+        const subCategory = new Category({ name, parentId: category._id});
+        subCategory.save();
+        category.subCategories.push(subCategory);
+      }));
 
-    await category.save();
+      await category.save();
+    }
+
     return res.send({ category });
   } catch (e) {
     return res.status(400).send({ error: 'Error when creating category'});
