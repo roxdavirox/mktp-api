@@ -51,4 +51,14 @@ router.get('/', async (req, res) => {
 
 });
 
+router.get('/templates', async (req, res) => {
+  try {
+    const products = await Product.find();
+    return res.send(products);
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get products: ${e}` })
+  }
+});
+
 module.exports = app => app.use('/products', router);
