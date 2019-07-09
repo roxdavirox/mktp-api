@@ -7,11 +7,11 @@ const ProductSchema = new Schema({
     type: String,
     required: true,
   },
-  categories: [{
+  category: {
     type: Schema.Types.ObjectId,
     ref: 'Category',
     required: false,
-  }],
+  },
   options: {
     type: Array
   },
