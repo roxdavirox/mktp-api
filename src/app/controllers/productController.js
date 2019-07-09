@@ -31,12 +31,14 @@ router.get('/', async (req, res) => {
       p.options = [];
       await Promise.all(prevOptions.map(async op => {
         const option = await Option.findById(op.id);
-        const { _id: id, name } = option;
-        p.options.push({
-          id,
-          name,
-          items: await Item.find({ _id: { $in: op.items } }).select('-options')
-        });
+        if (option) {
+          const { _id: id, name } = option;
+          p.options.push({
+            id,
+            name,
+            items: await Item.find({ _id: { $in: op.items } }).select('-options')
+          });
+        }
       }));
       return p;
     }));
