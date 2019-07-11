@@ -12,11 +12,11 @@ const ProductSchema = new Schema({
     ref: 'Category',
     required: false,
   },
-  templateCategory: {
+  templatesCategory: [{
     type: Schema.Types.ObjectId,
     ref: 'TemplateCategory',
     required: false
-  },
+  }],
   options: {
     type: Array
   },
