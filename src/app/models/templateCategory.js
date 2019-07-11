@@ -7,11 +7,11 @@ const TemplateCategorySchema = new Schema({
     type: String,
     required: true,
   },
-  templateSubCategory: {
+  productTemplates: [{
     type: Schema.Types.ObjectId,
-    ref: 'TemplateSubCategory',
+    ref: 'ProductTemplate',
     required: false
-  },
+  }],
   createdAt: {
     type: Date,
     default: Date.now,

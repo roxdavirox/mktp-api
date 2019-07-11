@@ -2,7 +2,7 @@ const mongoose = require('../../data');
 
 const Schema = mongoose.Schema;
 
-const TemplateSubCategorySchema = new Schema({
+const ProductTemplateSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -11,15 +11,19 @@ const TemplateSubCategorySchema = new Schema({
     type: String,
     requierd: false
   },
+  imageUrl: {
+    type: String,
+    required: false
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-const TemplateSubCategory = mongoose.model(
-    'TemplateSubCategory',
-    TemplateSubCategorySchema
+const ProductTemplate = mongoose.model(
+    'ProductTemplate',
+    ProductTemplateSchema
   );
 
-module.exports = TemplateSubCategory;
+module.exports = ProductTemplate;
