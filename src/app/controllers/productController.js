@@ -55,7 +55,7 @@ router.get('/', async (req, res) => {
 
 router.get('/templates', async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().populate('templatesCategory');
     return res.send(products);
   } catch(e) {
     return res.status(400)
