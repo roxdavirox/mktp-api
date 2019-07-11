@@ -10,7 +10,9 @@ router.post('/:templateCategoryId', async (req, res) => {
     const { templateCategoryId } = req.params;
     const { stateId, imageUrl } = req.body;
 
-    const templateCategory = await TemplateCategory.findById(templateCategoryId);
+    const templateCategory =
+      await TemplateCategory.findById(templateCategoryId);
+
     const productTemplate = await ProductTemplate.create({
       name,
       stateId,
@@ -27,4 +29,19 @@ router.post('/:templateCategoryId', async (req, res) => {
   }
 });
 
-module.exports = app => app.use('/templates', router);
+router.get('/:templateCategoryId', async (req, res) => {
+  try {
+    const { templateCategoryId } = req.params;
+
+    const templateCategory = await TemplateCategory
+      .findById(templateCategoryId)
+      .populate('productTemplates');
+
+    return res.send({ productTemplates: templateCategory.productTemplates })
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get product template: ${e}`});
+  }
+});
+
+module.exports = app => app.use('/product-templates', router);
