@@ -15,6 +15,11 @@ const ProductTemplateSchema = new Schema({
     type: String,
     required: false
   },
+  templateCategory: {
+    type: Schema.Types.ObjectId,
+    ref: 'TemplateCategory',
+    required: false
+  },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -16,7 +16,8 @@ router.post('/:templateCategoryId', async (req, res) => {
     const productTemplate = await ProductTemplate.create({
       name,
       stateId,
-      imageUrl
+      imageUrl,
+      templateCategory: templateCategoryId
     });
 
     templateCategory.productTemplates.push(productTemplate);
