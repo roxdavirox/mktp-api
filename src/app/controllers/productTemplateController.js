@@ -44,4 +44,15 @@ router.get('/:templateCategoryId', async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    const allProductTemplates = await ProductTemplate.find();
+
+    return res.send({ productTemplates: allProductTemplates })
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get product template: ${e}`});
+  }
+});
+
 module.exports = app => app.use('/product-templates', router);
