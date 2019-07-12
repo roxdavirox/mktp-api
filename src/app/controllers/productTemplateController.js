@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/:templateCategoryId', async (req, res) => {
   try {
     const { templateCategoryId } = req.params;
-    const { stateId, imageUrl } = req.body;
+    const { name, stateId, imageUrl } = req.body;
 
     const templateCategory =
       await TemplateCategory.findById(templateCategoryId);
