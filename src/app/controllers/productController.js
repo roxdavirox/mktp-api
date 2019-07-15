@@ -14,12 +14,20 @@ const { uploadImage } = require('../../services/azureStorage');
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/', upload.single('image'), async (req, res) => {
   try {
     const { name, categoryId, options } = req.body;
-    console.log('product', req.body);
+    const { file } = req;
 
-    const product = await Product.create({ name, categoryId, options });
+    const response = await uploadImage(file);
+    const { imageUrl } = response;
+
+    const product = await Product.create({ 
+      name,
+      categoryId,
+      options,
+      imageUrl
+    });
     const category = await Category.findById(categoryId);
     
     product.category = category;
@@ -29,17 +37,6 @@ router.post('/', async (req, res) => {
   } catch(e) {
     return res.status(400)
       .send({ error: `Error on post new product: ${e}` })
-  }
-});
-
-router.post('/upload', upload.single('image'), async (req, res) => {
-  try {
-    const { file } = req;
-    const response = await uploadImage(file);
-    return res.send({ response });
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on post image: ${e}` })
   }
 });
 
