@@ -24,15 +24,16 @@ const ONE_MEGABYTE = 1024 * 1024;
 const FOUR_MEGABYTES = 4 * ONE_MEGABYTE;
 const ONE_MINUTE = 60 * 1000;
 
-function getRandomFileName(filename) {
-  const [_, extensionFile] = filename.split('.');
-  const newFileName = `${uuid()}.${extensionFile}`;
+function getRandomFileName(originalfilename) {
+  const [_, ext] = originalfilename.split('.');
+  console.log('extension:', ext);
+  const newFileName = `${uuid()}.${ext}`;
   return newFileName;
 }
 
 async function uploadImage(imageFile) {
-  const { originalfilename, buffer } = imageFile;
-  
+  const { originalname, buffer } = imageFile;
+
   const containerName = "fotos-produtos";
   const credentials = new SharedKeyCredential(STORAGE_ACCOUNT_NAME, ACCOUNT_ACCESS_KEY);
   const pipeline = StorageURL.newPipeline(credentials);
@@ -42,7 +43,7 @@ async function uploadImage(imageFile) {
   
   const containerURL = ContainerURL.fromServiceURL(serviceURL, containerName);
   
-  const fileName = getRandomFileName(originalfilename);
+  const fileName = getRandomFileName(originalname);
   const blockBlobURL = BlockBlobURL.fromContainerURL(containerURL, fileName);
 
   const stream = streamifier.createReadStream(buffer);
