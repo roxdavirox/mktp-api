@@ -16,9 +16,10 @@ const router = express.Router();
 
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    const { name, categoryId, options } = req.body;
+    const { name, categoryId, options: prevOptions } = req.body;
     const { file } = req;
 
+    const options = JSON.parse(prevOptions);
     const response = await uploadImage(file);
     const { imageUrl } = response;
 
