@@ -20,6 +20,10 @@ const ProductSchema = new Schema({
   options: {
     type: Array
   },
+  imageUrl: {
+    type: String,
+    required: false
+  },
   createdAt: {
     type: Date,
     default: Date.now,
