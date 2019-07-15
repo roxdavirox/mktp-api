@@ -5,6 +5,13 @@ const Option = require('../models/option');
 const Item = require('../models/item');
 const Category = require('../models/category');
 
+const multer = require('multer');
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+const { uploadImage } = require('../../services/azureStorage');
+
 const router = express.Router();
 
 router.post('/', async (req, res) => {
@@ -22,6 +29,17 @@ router.post('/', async (req, res) => {
   } catch(e) {
     return res.status(400)
       .send({ error: `Error on post new product: ${e}` })
+  }
+});
+
+router.post('/upload', upload.single('image'), async (req, res) => {
+  try {
+    const { file } = req;
+    const response = await uploadImage(file);
+    return res.send({ response });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on post image: ${e}` })
   }
 });
 
