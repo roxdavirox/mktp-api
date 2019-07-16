@@ -1,6 +1,7 @@
 const express = require('express');
 
 const Product = require('../models/product');
+const ProductOption = require('../models/productOption');
 const Option = require('../models/option');
 const Item = require('../models/item');
 const Category = require('../models/category');
@@ -18,20 +19,30 @@ router.post('/', upload.single('image'), async (req, res) => {
   try {
     const { name, categoryId, options: prevOptions } = req.body;
     const { file } = req;
+    console.log('req.body', req.body);
+    const newOptions = JSON.parse(prevOptions);
+    console.log('newOptions', newOptions);
 
-    const options = JSON.parse(prevOptions);
     const response = await uploadImage(file);
     const { imageUrl } = response;
 
     const product = await Product.create({ 
       name,
-      categoryId,
-      options,
+      category: categoryId,
       imageUrl
     });
-    const category = await Category.findById(categoryId);
-    
-    product.category = category;
+
+    await Promise.all(newOptions.map(async op => {
+      const option = await ProductOption.create({ 
+          option: op.id,
+          items: op.items 
+        });
+
+      product.options.push(option);
+
+      return option;
+    }));
+
     await product.save();
 
     return res.send({ product });
@@ -94,7 +105,15 @@ router.get('/details/:productId', async (req, res) => {
   try {
     const { productId } = req.params;
     const fields = ['name', 'imageUrl', 'longDescription', 'price'];
-    const product = await Product.findById(productId, fields);
+    const product = await Product
+      .findById(productId).populate([{
+        path: 'templatesCategory', populate: {
+          path: 'productTemplates'
+        }
+      }, { path: 'options', populate: {
+        path: 'items'
+      }}]);
+
     return res.send({ product });
   } catch(e) {
     return res.status(400)

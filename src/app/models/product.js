@@ -7,6 +7,11 @@ const ProductSchema = new Schema({
     type: String,
     required: true,
   },
+  options: [{
+    type: Schema.Types.ObjectId,
+    ref: 'ProductOption',
+    required: false
+  }],
   category: {
     type: Schema.Types.ObjectId,
     ref: 'Category',
@@ -17,9 +22,6 @@ const ProductSchema = new Schema({
     ref: 'TemplateCategory',
     required: false
   }],
-  options: {
-    type: Array
-  },
   imageUrl: {
     type: String,
     required: false
