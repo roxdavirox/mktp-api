@@ -54,24 +54,20 @@ router.post('/', upload.single('image'), async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find();
-    
-    await Promise.all(products.map(async p => {
-      const { options: prevOptions } = p;
-      p.options = [];
-      await Promise.all(prevOptions.map(async op => {
-        const option = await Option.findById(op.id);
-        if (option) {
-          const { _id: id, name } = option;
-          p.options.push({
-            id,
-            name,
-            items: await Item.find({ _id: { $in: op.items } }).select('-options')
-          });
+    const products = await Product
+      .find()
+      .populate([
+        {
+          path: 'templatesCategory', 
+          populate: {
+            path: 'productTemplates'
+          }
+        }, 
+        { 
+          path: 'options', 
+          populate: ['items', 'option']
         }
-      }));
-      return p;
-    }));
+      ]);
 
     return res.send(products);
   } catch(e) {
@@ -106,13 +102,19 @@ router.get('/details/:productId', async (req, res) => {
     const { productId } = req.params;
     const fields = ['name', 'imageUrl', 'longDescription', 'price'];
     const product = await Product
-      .findById(productId).populate([{
-        path: 'templatesCategory', populate: {
-          path: 'productTemplates'
+      .findById(productId)
+      .populate([
+        {
+          path: 'templatesCategory', 
+          populate: {
+            path: 'productTemplates'
+          }
+        }, 
+        { 
+          path: 'options', 
+          populate: ['items', 'option']
         }
-      }, { path: 'options', populate: {
-        path: 'items'
-      }}]);
+      ]);
 
     return res.send({ product });
   } catch(e) {
