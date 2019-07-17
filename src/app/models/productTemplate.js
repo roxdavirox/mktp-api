@@ -20,6 +20,11 @@ const ProductTemplateSchema = new Schema({
     ref: 'TemplateCategory',
     required: false
   },
+  product: {
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
+    required: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

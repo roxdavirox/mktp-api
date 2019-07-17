@@ -1,5 +1,6 @@
 const express = require('express');
 
+const mongoose = require('../../data');
 const TemplateCategory = require('../models/templateCategory');
 const ProductTemplate = require('../models/productTemplate');
 
@@ -8,7 +9,7 @@ const router = express.Router();
 router.post('/:templateCategoryId', async (req, res) => {
   try {
     const { templateCategoryId } = req.params;
-    const { name, stateId, imageUrl } = req.body;
+    const { name, stateId, imageUrl, productId } = req.body;
 
     const templateCategory =
       await TemplateCategory.findById(templateCategoryId);
@@ -17,6 +18,7 @@ router.post('/:templateCategoryId', async (req, res) => {
       name,
       stateId,
       imageUrl,
+      product: productId,
       templateCategory: templateCategoryId
     });
 
@@ -39,6 +41,21 @@ router.get('/:templateCategoryId', async (req, res) => {
       .populate('productTemplates');
 
     return res.send({ productTemplates: templateCategory.productTemplates })
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get product template: ${e}`});
+  }
+});
+
+router.get('/all/:productId', async (req, res) => {
+  try {
+    const ObjectId = mongoose.Types.ObjectId;
+    const { productId } = req.params;
+    const productTemplates = await ProductTemplate
+      .find({ product: { $in: new ObjectId(productId) } })
+      .populate('product');
+
+    return res.send({ productTemplates })
   } catch(e) {
     return res.status(400)
       .send({ error: `Error on get product template: ${e}`});
