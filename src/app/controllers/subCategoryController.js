@@ -4,7 +4,7 @@ const Category = require('../models/category');
 
 const router = express.Router();
 
-router.delete('/', async (req, res) => {
+const deleteSubCategoriesByIds = async (req, res) => {
   try {
     const { subCategoryIds } = req.body;
 
@@ -15,6 +15,8 @@ router.delete('/', async (req, res) => {
     return res.status(400)
       .send({ error: `Error on deleting subCategories: ${e}`});
   }
-});
+};
+
+router.delete('/', deleteSubCategoriesByIds);
 
 module.exports = app => app.use('/sub-categories', router);
