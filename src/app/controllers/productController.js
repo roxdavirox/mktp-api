@@ -2,9 +2,6 @@ const express = require('express');
 
 const Product = require('../models/product');
 const ProductOption = require('../models/productOption');
-const Option = require('../models/option');
-const Item = require('../models/item');
-const Category = require('../models/category');
 
 const multer = require('multer');
 
@@ -15,7 +12,7 @@ const { uploadImage } = require('../../services/azureStorage');
 
 const router = express.Router();
 
-router.post('/', upload.single('image'), async (req, res) => {
+const CreateProductWithImageUpload = async (req, res) => {
   try {
     const { name, categoryId, options: prevOptions } = req.body;
     const { file } = req;
@@ -50,9 +47,9 @@ router.post('/', upload.single('image'), async (req, res) => {
     return res.status(400)
       .send({ error: `Error on post new product: ${e}` })
   }
-});
+};
 
-router.get('/', async (req, res) => {
+const getProducts = async (req, res) => {
   try {
     const products = await Product
       .find()
@@ -74,9 +71,9 @@ router.get('/', async (req, res) => {
     return res.status(400)
       .send({ error: `Error on get products: ${e}` })
   }
-});
+};
 
-router.get('/templates', async (req, res) => {
+const getProductsWithTemplatesCategory = async (req, res) => {
   try {
     const products = await Product.find().populate('templatesCategory');
     return res.send(products);
@@ -84,9 +81,9 @@ router.get('/templates', async (req, res) => {
     return res.status(400)
       .send({ error: `Error on get products: ${e}` })
   }
-});
+};
 
-router.get('/home', async (req, res) => {
+const getHomeProducts = async (req, res) => {
   try {
     const fields = ['name', 'imageUrl', 'description', 'price'];
     const products = await Product.find({}, fields);
@@ -95,12 +92,11 @@ router.get('/home', async (req, res) => {
     return res.status(400)
       .send({ error: `Error on get products for home page: ${e}` })
   }
-});
+};
 
-router.get('/details/:productId', async (req, res) => {
+const getProductDetailsByProductId = async (req, res) => {
   try {
     const { productId } = req.params;
-    const fields = ['name', 'imageUrl', 'longDescription', 'price'];
     const product = await Product
       .findById(productId)
       .populate([
@@ -121,6 +117,12 @@ router.get('/details/:productId', async (req, res) => {
     return res.status(400)
       .send({ error: `Error on get product details by id: ${e}` })
   }
-});
+};
+
+router.post('/', upload.single('image'), CreateProductWithImageUpload);
+router.get('/', getProducts);
+router.get('/templates', getProductsWithTemplatesCategory);
+router.get('/home', getHomeProducts);
+router.get('/details/:productId', getProductDetailsByProductId);
 
 module.exports = app => app.use('/products', router);
