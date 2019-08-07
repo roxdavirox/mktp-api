@@ -27,7 +27,7 @@ router.post('/register', async (req, res) => {
 
     user.password = undefined;
 
-    return res.send({ user, token: createToken({ id: user.id }) });
+    return res.send({ user, auth: true, token: createToken({ id: user.id }) });
   } catch (err ) {
     return res.status(400).send({
       error: 'Registration fail'
@@ -48,7 +48,7 @@ router.post('/authenticate', async (req, res) => {
   
   user.password = undefined;
 
-  return res.send({ user, token: createToken({ userId: user.id }) });
+  return res.send({ user, auth: true, token: createToken({ userId: user.id }) });
 });
 
 module.exports = app => app.use('/auth', router);
