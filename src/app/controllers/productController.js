@@ -12,43 +12,6 @@ const { uploadImage } = require('../../services/azureStorage');
 
 const router = express.Router();
 
-const CreateProductWithImageUpload = async (req, res) => {
-  try {
-    const { name, categoryId, options: prevOptions } = req.body;
-    const { file } = req;
-    console.log('req.body', req.body);
-    const newOptions = JSON.parse(prevOptions);
-    console.log('newOptions', newOptions);
-
-    const response = await uploadImage(file);
-    const { imageUrl } = response;
-
-    const product = await Product.create({ 
-      name,
-      category: categoryId,
-      imageUrl
-    });
-
-    await Promise.all(newOptions.map(async op => {
-      const option = await ProductOption.create({ 
-          option: op.id,
-          items: op.items 
-        });
-
-      product.options.push(option);
-
-      return option;
-    }));
-
-    await product.save();
-
-    return res.send({ product });
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on post new product: ${e}` })
-  }
-};
-
 const getProducts = async (req, res) => {
   try {
     const products = await Product
@@ -119,7 +82,44 @@ const getProductDetailsByProductId = async (req, res) => {
   }
 };
 
-router.post('/', upload.single('image'), CreateProductWithImageUpload);
+router.post('/', upload.single('image'), async (req, res) => {
+  try {
+    const { name, categoryId, options: prevOptions } = req.body;
+    const { file } = req;
+    console.log('req.body', req.body);
+    const newOptions = JSON.parse(prevOptions);
+    console.log('newOptions', newOptions);
+    console.log('iniciando upload de imagem');
+    const response = await uploadImage(file);
+    console.log('azure blob response: ', response);
+    const { imageUrl } = response;
+    console.log('url imagem', imageUrl);
+
+    const product = await Product.create({ 
+      name,
+      category: categoryId,
+      imageUrl
+    });
+
+    await Promise.all(newOptions.map(async op => {
+      const option = await ProductOption.create({ 
+          option: op.id,
+          items: op.items 
+        });
+
+      product.options.push(option);
+
+      return option;
+    }));
+
+    await product.save();
+
+    return res.send({ product });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on post new product: ${e}` })
+  }
+});
 router.get('/', getProducts);
 router.get('/templates', getProductsWithTemplatesCategory);
 router.get('/home', getHomeProducts);
