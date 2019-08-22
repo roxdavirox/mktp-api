@@ -24,8 +24,8 @@ const getProducts = async (req, res) => {
           }
         }, 
         { 
-          path: 'options', 
-          populate: ['items', 'option']
+          path: 'options',
+          populate: ['option', 'items']
         }
       ]);
 
