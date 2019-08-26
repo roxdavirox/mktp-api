@@ -6,21 +6,6 @@ const ProductTemplate = require('../models/productTemplate');
 
 const router = express.Router();
 
-const getProductTemplatesByCategoryId = async (req, res) => {
-  try {
-    const { templateCategoryId } = req.params;
-
-    const templateCategory = await TemplateCategory
-      .findById(templateCategoryId)
-      .populate('productTemplates');
-
-    return res.send({ productTemplates: templateCategory.productTemplates })
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on get product template: ${e}`});
-  }
-};
-
 router.post('/:templateCategoryId', async (req, res) => {
   try {
     const { templateCategoryId } = req.params;
@@ -47,7 +32,20 @@ router.post('/:templateCategoryId', async (req, res) => {
   }
 });
 
-router.get('/:templateCategoryId', getProductTemplatesByCategoryId);
+router.get('/:templateCategoryId', async (req, res) => {
+  try {
+    const { templateCategoryId } = req.params;
+
+    const templateCategory = await TemplateCategory
+      .findById(templateCategoryId)
+      .populate('productTemplates');
+
+    return res.send({ productTemplates: templateCategory.productTemplates })
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get product template: ${e}`});
+  }
+});
 
 router.get('/all/:productId', async (req, res) => {
   try {
