@@ -62,7 +62,7 @@ const getAllProductTemplatesByProductId = async (req, res) => {
   }
 };
 
-const getAllProductTemplates =  async (req, res) => {
+router.post('/:templateCategoryId', async (req, res) => {
   try {
     const allProductTemplates = await ProductTemplate.find();
 
@@ -71,9 +71,7 @@ const getAllProductTemplates =  async (req, res) => {
     return res.status(400)
       .send({ error: `Error on get product template: ${e}`});
   }
-};
-
-router.post('/:templateCategoryId', createProductTemplate);
+});
 router.get('/:templateCategoryId', getProductTemplatesByCategoryId);
 router.get('/all/:productId', getAllProductTemplatesByProductId);
 router.get('/', getAllProductTemplates);
