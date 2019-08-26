@@ -5,19 +5,6 @@ const Price = require('../models/price');
 
 const router = express.Router();
 
-const deletePricesByIds = async (req, res) => {
-  try {
-    const { priceTableIds } = req.body;
-
-    await PriceTable.deleteMany({ _id: { $in: priceTableIds } });
-
-    return res.send({ deletedCount: priceTableIds.length });
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on delete price tables: ${e}`});
-  }
-};
-
 const createPrice = async (req, res) => {
   try {
     const { priceTableId } = req.params;
@@ -80,7 +67,19 @@ router.get('/:priceTableId', async (req, res) => {
   }
 });
 
-router.delete('/', deletePricesByIds);
+router.delete('/', async (req, res) => {
+  try {
+    const { priceTableIds } = req.body;
+
+    await PriceTable.deleteMany({ _id: { $in: priceTableIds } });
+
+    return res.send({ deletedCount: priceTableIds.length });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on delete price tables: ${e}`});
+  }
+});
+
 // usando put para criar child element
 router.put('/:priceTableId', createPrice);
 
