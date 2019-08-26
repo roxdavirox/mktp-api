@@ -21,21 +21,6 @@ const getProductTemplatesByCategoryId = async (req, res) => {
   }
 };
 
-const getAllProductTemplatesByProductId = async (req, res) => {
-  try {
-    const ObjectId = mongoose.Types.ObjectId;
-    const { productId } = req.params;
-    const productTemplates = await ProductTemplate
-      .find({ product: { $in: new ObjectId(productId) } })
-      .populate('product');
-
-    return res.send({ productTemplates })
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on get product template: ${e}`});
-  }
-};
-
 router.post('/:templateCategoryId', async (req, res) => {
   try {
     const { templateCategoryId } = req.params;
@@ -63,7 +48,21 @@ router.post('/:templateCategoryId', async (req, res) => {
 });
 
 router.get('/:templateCategoryId', getProductTemplatesByCategoryId);
-router.get('/all/:productId', getAllProductTemplatesByProductId);
+
+router.get('/all/:productId', async (req, res) => {
+  try {
+    const ObjectId = mongoose.Types.ObjectId;
+    const { productId } = req.params;
+    const productTemplates = await ProductTemplate
+      .find({ product: { $in: new ObjectId(productId) } })
+      .populate('product');
+
+    return res.send({ productTemplates })
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get product template: ${e}`});
+  }
+});
 
 router.get('/', async (req, res) => {
   try {
