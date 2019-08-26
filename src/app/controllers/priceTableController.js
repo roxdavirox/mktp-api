@@ -5,17 +5,6 @@ const Price = require('../models/price');
 
 const router = express.Router();
 
-const getPriceTables = async (req, res) => {
-  try {
-    const priceTables = await PriceTable.find().select('-prices');
-
-    return res.send({ priceTables });
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on get price tables: ${e}`});
-  }
-};
-
 const getPriceTableById = async (req, res) => {
   try {
     const { priceTableId } = req.params;
@@ -80,7 +69,17 @@ router.post('/', async (req, res) => {
 
 });
 
-router.get('/', getPriceTables);
+router.get('/', async (req, res) => {
+  try {
+    const priceTables = await PriceTable.find().select('-prices');
+
+    return res.send({ priceTables });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get price tables: ${e}`});
+  }
+});
+
 router.get('/:priceTableId', getPriceTableById);
 router.delete('/', deletePricesByIds);
 // usando put para criar child element
