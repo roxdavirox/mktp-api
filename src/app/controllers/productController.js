@@ -12,17 +12,6 @@ const { uploadImage } = require('../../services/azureStorage');
 
 const router = express.Router();
 
-const getHomeProducts = async (req, res) => {
-  try {
-    const fields = ['name', 'imageUrl', 'description', 'price'];
-    const products = await Product.find({}, fields);
-    return res.send({ products });
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on get products for home page: ${e}` })
-  }
-};
-
 router.post('/', upload.single('image'), async (req, res) => {
   try {
     const { name, categoryId, options: prevOptions } = req.body;
@@ -95,7 +84,18 @@ router.get('/templates', async (req, res) => {
       .send({ error: `Error on get products: ${e}` })
   }
 });
-router.get('/home', getHomeProducts);
+
+router.get('/home', async (req, res) => {
+  try {
+    const fields = ['name', 'imageUrl', 'description', 'price'];
+    const products = await Product.find({}, fields);
+    return res.send({ products });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get products for home page: ${e}` })
+  }
+});
+
 router.get('/details/:productId', async (req, res) => {
   try {
     const { productId } = req.params;
