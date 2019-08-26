@@ -30,7 +30,10 @@ const getTemplatesByProductId = async (req, res) => {
   }
 };
 
-const createTemplateCategory = async (req, res) => {
+router.get('/', getAllTemplatesCategory);
+router.get('/:productId', getTemplatesByProductId);
+
+router.post('/:productId', async (req, res) => {
   try {
     console.log('post template category: ', req.body);
     const { productId } = req.params;
@@ -48,10 +51,6 @@ const createTemplateCategory = async (req, res) => {
     return res.status(400)
     .send({ error: `Error on creating template category ${e}`});
   }
-}
-
-router.get('/', getAllTemplatesCategory);
-router.get('/:productId', getTemplatesByProductId);
-router.post('/:productId', createTemplateCategory);
+});
 
 module.exports = app => app.use('/templates-category', router);
