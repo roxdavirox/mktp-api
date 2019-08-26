@@ -23,31 +23,6 @@ const getHomeProducts = async (req, res) => {
   }
 };
 
-const getProductDetailsByProductId = async (req, res) => {
-  try {
-    const { productId } = req.params;
-    const product = await Product
-      .findById(productId)
-      .populate([
-        {
-          path: 'templatesCategory', 
-          populate: {
-            path: 'productTemplates'
-          }
-        }, 
-        { 
-          path: 'options', 
-          populate: ['items', 'option']
-        }
-      ]);
-
-    return res.send({ product });
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on get product details by id: ${e}` })
-  }
-};
-
 router.post('/', upload.single('image'), async (req, res) => {
   try {
     const { name, categoryId, options: prevOptions } = req.body;
@@ -121,6 +96,29 @@ router.get('/templates', async (req, res) => {
   }
 });
 router.get('/home', getHomeProducts);
-router.get('/details/:productId', getProductDetailsByProductId);
+router.get('/details/:productId', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const product = await Product
+      .findById(productId)
+      .populate([
+        {
+          path: 'templatesCategory', 
+          populate: {
+            path: 'productTemplates'
+          }
+        }, 
+        { 
+          path: 'options', 
+          populate: ['items', 'option']
+        }
+      ]);
+
+    return res.send({ product });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get product details by id: ${e}` })
+  }
+});
 
 module.exports = app => app.use('/products', router);
