@@ -5,20 +5,6 @@ const Price = require('../models/price');
 
 const router = express.Router();
 
-const createPriceTable = async (req, res) => {
-  try {
-    const { name } = req.body;
-
-    const priceTable = await PriceTable.create({ name });
-
-    return res.send({ priceTable });
-  } catch(e) {
-    return res.status(400)
-      .send({ erro: `Error on post new price table: ${e}` })
-  }
-
-};
-
 const getPriceTables = async (req, res) => {
   try {
     const priceTables = await PriceTable.find().select('-prices');
@@ -80,7 +66,20 @@ const createPrice = async (req, res) => {
   }
 };
 
-router.post('/', createPriceTable);
+router.post('/', async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    const priceTable = await PriceTable.create({ name });
+
+    return res.send({ priceTable });
+  } catch(e) {
+    return res.status(400)
+      .send({ erro: `Error on post new price table: ${e}` })
+  }
+
+});
+
 router.get('/', getPriceTables);
 router.get('/:priceTableId', getPriceTableById);
 router.delete('/', deletePricesByIds);
