@@ -5,7 +5,7 @@ const router = express.Router();
 const TemplateCategory = require('../models/templateCategory');
 const Product = require('../models/product');
 
-const getAllTemplatesCategory = async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const templatesCategory = await TemplateCategory.find();
     return res.send({ templatesCategory });
@@ -13,9 +13,7 @@ const getAllTemplatesCategory = async (req, res) => {
     return res.status(400)
     .send({ error: `Error when get all templates category ${e}`});
   }
-};
-
-router.get('/', getAllTemplatesCategory);
+});
 
 router.get('/:productId', async (req, res) => {
   try {
