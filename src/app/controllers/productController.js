@@ -12,30 +12,6 @@ const { uploadImage } = require('../../services/azureStorage');
 
 const router = express.Router();
 
-const getProducts = async (req, res) => {
-  try {
-    const products = await Product
-      .find()
-      .populate([
-        {
-          path: 'templatesCategory', 
-          populate: {
-            path: 'productTemplates'
-          }
-        }, 
-        { 
-          path: 'options',
-          populate: ['option', 'items']
-        }
-      ]);
-
-    return res.send(products);
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on get products: ${e}` })
-  }
-};
-
 const getProductsWithTemplatesCategory = async (req, res) => {
   try {
     const products = await Product.find().populate('templatesCategory');
@@ -120,7 +96,31 @@ router.post('/', upload.single('image'), async (req, res) => {
       .send({ error: `Error on post new product: ${e}` })
   }
 });
-router.get('/', getProducts);
+
+router.get('/',  async (req, res) => {
+  try {
+    const products = await Product
+      .find()
+      .populate([
+        {
+          path: 'templatesCategory', 
+          populate: {
+            path: 'productTemplates'
+          }
+        }, 
+        { 
+          path: 'options',
+          populate: ['option', 'items']
+        }
+      ]);
+
+    return res.send(products);
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get products: ${e}` })
+  }
+});
+
 router.get('/templates', getProductsWithTemplatesCategory);
 router.get('/home', getHomeProducts);
 router.get('/details/:productId', getProductDetailsByProductId);
