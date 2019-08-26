@@ -5,27 +5,6 @@ const Price = require('../models/price');
 
 const router = express.Router();
 
-const createPrice = async (req, res) => {
-  try {
-    const { priceTableId } = req.params;
-    const { price } = req.body;
-
-    const priceTable = await PriceTable
-      .findById(priceTableId).populate('prices');
-
-    const p = await Price.create({ ...price, priceTable: priceTableId });
-    
-    priceTable.prices.push(p);
-
-    await priceTable.save();
-
-    return res.send({ price: p });
-  } catch(e) {
-    return res.status(400)
-      .send({ error: `Error on update price table: ${e}`});
-  }
-};
-
 router.post('/', async (req, res) => {
   try {
     const { name } = req.body;
@@ -81,6 +60,25 @@ router.delete('/', async (req, res) => {
 });
 
 // usando put para criar child element
-router.put('/:priceTableId', createPrice);
+router.put('/:priceTableId', (req, res) => {
+  try {
+    const { priceTableId } = req.params;
+    const { price } = req.body;
+
+    const priceTable = await PriceTable
+      .findById(priceTableId).populate('prices');
+
+    const p = await Price.create({ ...price, priceTable: priceTableId });
+    
+    priceTable.prices.push(p);
+
+    await priceTable.save();
+
+    return res.send({ price: p });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on update price table: ${e}`});
+  }
+});
 
 module.exports = app => app.use('/price-tables', router);
