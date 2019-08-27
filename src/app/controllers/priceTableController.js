@@ -60,7 +60,7 @@ router.delete('/', async (req, res) => {
 });
 
 // usando put para criar child element
-router.put('/:priceTableId', async (req, res) => {
+router.put('/:priceTableId', async(req, res) => {
   try {
     const { priceTableId } = req.params;
     const { price } = req.body;
@@ -78,7 +78,7 @@ router.put('/:priceTableId', async (req, res) => {
   } catch(e) {
     return res.status(400)
       .send({ error: `Error on update price table: ${e}`});
-  }W
+  }
 });
 
 module.exports = app => app.use('/price-tables', router);
