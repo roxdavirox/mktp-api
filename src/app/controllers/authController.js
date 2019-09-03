@@ -48,7 +48,7 @@ router.post('/authenticate', async (req, res) => {
   
   user.password = undefined;
 
-  return res.send({ user, auth: true, token: createToken({ userId: user.id }) });
+  return res.send({ user, auth: true, token: createToken({ user }) });
 });
 
 module.exports = app => app.use('/auth', router);

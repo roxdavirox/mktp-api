@@ -31,7 +31,7 @@ router.post('/:categoryId', async (req, res) => {
     const { categoryId } = req.params;
     const { name } = req.body;
 
-    const category = await Category.findById(categoryId);;
+    const category = await Category.findById(categoryId);
     const subCategory = await Category.create({ name, parentId: categoryId });
     category.subCategories.push(subCategory);
 
