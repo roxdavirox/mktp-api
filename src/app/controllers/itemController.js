@@ -6,10 +6,16 @@ const Option = require('../models/option');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { ...reqItem } = req.body;
+  const { name, priceTableId } = req.body;
 
+  console.log('body item request:', req.body);
   try {
-    const item = await Item.create({ ...reqItem });
+    const newItem = { 
+      name, 
+      priceTableId: 
+      priceTableId == '0' ? undefined : priceTableId 
+    };
+    const item = await Item.create({ ...newItem });
     
     return res.send({ item });
   } catch (e) {
