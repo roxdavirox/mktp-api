@@ -56,9 +56,17 @@ router.post('/:optionId', async (req, res) => {
 router.put('/:itemId', async(req, res) => {
   try {
     const { itemId } = req.params;
+    console.log('update body item:', req.body);
+
+    const { name, priceTableId } = req.body;
+    const newItem = { 
+      name, 
+      priceTableId: 
+      priceTableId == '0' ? undefined : priceTableId 
+    };
 
     const item = await Item.findByIdAndUpdate(itemId, 
-      { ...req.body },
+      { ...newItem },
       { new: true}
     );
 
