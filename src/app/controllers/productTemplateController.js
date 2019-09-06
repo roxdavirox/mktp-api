@@ -6,26 +6,37 @@ const ProductTemplate = require('../models/productTemplate');
 
 const router = express.Router();
 
-router.post('/:templateCategoryId', async (req, res) => {
+// utils for image upload
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+const { uploadImage } = require('../../services/azureStorage');
+
+// faz upload da imagem e do PSD 
+// salva o PSD no servidor do CC
+// salva a imagem no servidor do azure
+router.post('/:templateCategoryId', upload.any(), async (req, res) => {
   try {
     const { templateCategoryId } = req.params;
-    const { name, stateId, imageUrl, productId } = req.body;
+    console.log('templateCategoryId:', templateCategoryId);
+    console.log('req files:', req.files);
+    // const { name, stateId, imageUrl, productId } = req.body;
 
-    const templateCategory =
-      await TemplateCategory.findById(templateCategoryId);
+    // const templateCategory =
+    //   await TemplateCategory.findById(templateCategoryId);
 
-    const productTemplate = await ProductTemplate.create({
-      name,
-      stateId,
-      imageUrl,
-      product: productId,
-      templateCategory: templateCategoryId
-    });
+    // const productTemplate = await ProductTemplate.create({
+    //   name,
+    //   stateId,
+    //   imageUrl,
+    //   product: productId,
+    //   templateCategory: templateCategoryId
+    // });
 
-    templateCategory.productTemplates.push(productTemplate);
-    await templateCategory.save();
+    // templateCategory.productTemplates.push(productTemplate);
+    // await templateCategory.save();
 
-    return res.send({ productTemplate });
+    // return res.send({ productTemplate });
   } catch(e) {
     return res.status(400)
       .send({ error: `Error on creating product category: ${e}`});
