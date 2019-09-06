@@ -30,10 +30,18 @@ function getRandomFileName(originalfilename) {
   return newFileName;
 }
 
-async function uploadImage(imageFile) {
+async function productImageUpload(imageFile) {
+  return await uploadImage(imageFile, 'fotos-produtos');
+}
+
+async function templatePreviewUpload(imageFile) {
+  return await uploadImage(imageFile, 'preview-templates');
+}
+
+async function uploadImage(imageFile, containerName) {
   const { originalname, buffer } = imageFile;
 
-  const containerName = "fotos-produtos";
+  // const containerName = "fotos-produtos";
   console.log('nome do container:', containerName);
   console.log('autenticando azure credentials');
   console.log('NAME:', STORAGE_ACCOUNT_NAME, ' KEY:', ACCOUNT_ACCESS_KEY);
