@@ -10,7 +10,8 @@ const router = express.Router();
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const { uploadImage } = require('../../services/azureStorage');
+const { templatePreviewUpload } = require('../../services/azureStorage');
+const { uploadPsdToCustomerCanvas } = require('../../services/customerCanvas');
 
 // faz upload da imagem e do PSD 
 // salva o PSD no servidor do CC
@@ -18,10 +19,18 @@ const { uploadImage } = require('../../services/azureStorage');
 router.post('/:templateCategoryId', upload.any(), async (req, res) => {
   try {
     const { templateCategoryId } = req.params;
+    const { name, productId } = req.body;
+    const [image, psd] = req.files;
+    console.log('req body:', req.body);
+    console.log('nome do template:', req.body.name);
+    console.log('id do produto:', req.body.productId);
     console.log('templateCategoryId:', templateCategoryId);
     console.log('req files:', req.files);
-    // const { name, stateId, imageUrl, productId } = req.body;
-
+    const response = await templatePreviewUpload(image);
+    console.log('azure blob response:', response);
+    const { imageUrl } = response;
+    // fazer request para o customer canvas enviando o psd
+    await uploadPsdToCustomerCanvas(psd);
     // const templateCategory =
     //   await TemplateCategory.findById(templateCategoryId);
 
@@ -39,7 +48,7 @@ router.post('/:templateCategoryId', upload.any(), async (req, res) => {
     // return res.send({ productTemplate });
   } catch(e) {
     return res.status(400)
-      .send({ error: `Error on creating product category: ${e}`});
+      .send({ error: `Error on creating a product template: ${e}`});
   }
 });
 
