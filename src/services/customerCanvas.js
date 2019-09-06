@@ -28,9 +28,9 @@ async function uploadPsdToCustomerCanvas(psdFile) {
             'Content-Type': fd.getHeaders()['content-type']
         }
     };
-    axios.post(url, fd, options)
-        .then(res => console.log('response axios cc:', res))
-        .catch(err => console.log('erro no request do cc:', err));
+
+    const response = await axios.post(url, fd, options);
+    return response;
 }
 
 module.exports = {

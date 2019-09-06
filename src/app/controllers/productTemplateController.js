@@ -26,26 +26,29 @@ router.post('/:templateCategoryId', upload.any(), async (req, res) => {
     console.log('id do produto:', req.body.productId);
     console.log('templateCategoryId:', templateCategoryId);
     console.log('req files:', req.files);
-    const response = await templatePreviewUpload(image);
-    console.log('azure blob response:', response);
-    const { imageUrl } = response;
+    const imgResponse = await templatePreviewUpload(image);
+    console.log('azure blob response:', imgResponse);
+    const { imageUrl } = imgResponse;
     // fazer request para o customer canvas enviando o psd
-    await uploadPsdToCustomerCanvas(psd);
-    // const templateCategory =
-    //   await TemplateCategory.findById(templateCategoryId);
+    const psdResponse = await uploadPsdToCustomerCanvas(psd);
+    
+    const { data: psdUrl } = psdResponse;
+    console.log('psd url:', psdUrl);
+    const templateCategory =
+      await TemplateCategory.findById(templateCategoryId);
 
-    // const productTemplate = await ProductTemplate.create({
-    //   name,
-    //   stateId,
-    //   imageUrl,
-    //   product: productId,
-    //   templateCategory: templateCategoryId
-    // });
+    const productTemplate = await ProductTemplate.create({
+      name,
+      imageUrl,
+      psdUrl,
+      product: productId,
+      templateCategory: templateCategoryId
+    });
 
-    // templateCategory.productTemplates.push(productTemplate);
-    // await templateCategory.save();
+    templateCategory.productTemplates.push(productTemplate);
+    await templateCategory.save();
 
-    // return res.send({ productTemplate });
+    return res.send({ productTemplate });
   } catch(e) {
     return res.status(400)
       .send({ error: `Error on creating a product template: ${e}`});

@@ -7,9 +7,9 @@ const ProductTemplateSchema = new Schema({
     type: String,
     required: true,
   },
-  stateId: {
+  psdUrl: {
     type: String,
-    requierd: false
+    required: false
   },
   imageUrl: {
     type: String,
