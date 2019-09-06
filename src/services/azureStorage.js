@@ -83,5 +83,7 @@ async function uploadImage(imageFile, containerName) {
 }
 
 module.exports = {
+  productImageUpload,
+  templatePreviewUpload,
   uploadImage
 };
