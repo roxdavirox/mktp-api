@@ -8,7 +8,7 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const { uploadImage } = require('../../services/azureStorage');
+const { productImageUpload } = require('../../services/azureStorage');
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router.post('/', upload.single('image'), async (req, res) => {
     const newOptions = JSON.parse(prevOptions);
     console.log('newOptions', newOptions);
     console.log('iniciando upload de imagem');
-    const response = await uploadImage(file);
+    const response = await productImageUpload(file);
     console.log('azure blob response: ', response);
     const { imageUrl } = response;
     console.log('url imagem', imageUrl);
