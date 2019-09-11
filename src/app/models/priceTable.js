@@ -13,6 +13,10 @@ const PriceTableSchema = new Schema({
     required: false,
     select: false,
   }],
+  unit: {
+    type: String,
+    required: false
+  },
   createdAt: {
     type: Date,
     default: Date.now,

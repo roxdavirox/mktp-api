@@ -36,9 +36,11 @@ router.post('/:priceTableId', async (req, res) => {
 router.post('/:priceTableId/range', async (req, res) => {
   try {
     const { priceTableId } = req.params;
-    const { prices } = req.body;
+    const { prices, unit } = req.body;
 
-    const priceTable = await PriceTable.findById(priceTableId);
+    const priceTable = await PriceTable.findByIdAndUpdate(priceTableId, {
+      unit
+    }, { new: true });
     priceTable.prices = [];
 
     await Promise.all(prices.map(async p => {
@@ -54,9 +56,9 @@ router.post('/:priceTableId/range', async (req, res) => {
 
     await priceTable.save();
 
-    const { prices: newPrices } = priceTable;
+    // const { prices: newPrices } = priceTable;
 
-    return res.send({ prices: newPrices });
+    return res.send({ priceTable });
   } catch(e) {
     return res.status(400)
       .send({ error: 'Error on post price range into priceTable' });
@@ -101,7 +103,7 @@ router.get('/:priceTableId', async (req, res) => {
 
     const { prices } = priceTable;
 
-    return res.send({ prices });
+    return res.send({ priceTable });
   } catch(e) {
     return res.status(400)
       .send({ error: `Error on get prices: ${e}`});
