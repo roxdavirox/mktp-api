@@ -65,17 +65,6 @@ router.post('/:priceTableId/range', async (req, res) => {
   }
 });
 
-// router.get('/', async (req, res) => {
-//   try {
-//     const priceTables = await PriceTable.find();
-
-//     return res.send({ priceTables });
-//   } catch(e) {
-//     return res.status(400)
-//       .send({ error: `Error on get price tables: ${e}`});
-//   }
-// });
-
 router.put('/:priceId', async (req, res) => {
   try {
     const { priceId } = req.params;
