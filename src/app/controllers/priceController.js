@@ -128,7 +128,7 @@ router.post('/:priceTableId/last', async (req, res) => {
     return res.send({ prices: [newLastPrice, newPrice] });
   } catch(e) {
     return res.status(400)
-      .send({ error: `Error on get latests prices: ${e}`});
+      .send({ error: `Error when add last price: ${e}`});
   }
 });
 
