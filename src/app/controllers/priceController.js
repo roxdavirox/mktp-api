@@ -65,6 +65,7 @@ router.post('/:priceTableId/range', async (req, res) => {
   }
 });
 
+// atualizar um preço na tabela
 router.put('/:priceId', async (req, res) => {
   try {
     const { priceId } = req.params;
@@ -96,6 +97,38 @@ router.get('/:priceTableId', async (req, res) => {
   } catch(e) {
     return res.status(400)
       .send({ error: `Error on get prices: ${e}`});
+  }
+});
+
+// atualizar o ultimo preço da tabela
+router.post('/:priceTableId/last', async (req, res) => {
+  try {
+    const { priceTableId } = req.params;
+    const { price } = req.body;
+
+    const prices = await Price
+      .find({ priceTable: priceTableId })
+      .sort({ _id: -1 })
+      .limit(1);
+
+    const [lastPrice] = prices;
+
+    const newLastPrice = await Price.findByIdAndUpdate(lastPrice._id, 
+      { end: price.start - 0.0001},
+      { new: true }
+    );
+
+    const newPrice = await Price.create({ ...price, priceTable: priceTableId });
+
+    const priceTable = await PriceTable.findById(priceTableId);
+    priceTable.prices.push(newPrice);
+
+    await priceTable.save();
+
+    return res.send({ prices: [newLastPrice, newPrice] });
+  } catch(e) {
+    return res.status(400)
+      .send({ error: `Error on get latests prices: ${e}`});
   }
 });
 
