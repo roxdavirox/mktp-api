@@ -5,7 +5,7 @@ const PriceTable = require('../models/priceTable');
 
 const router = express.Router();
 
-router.post('/:priceTableId', async (req, res) => {
+const createPriceByPriceTableId = async (req, res) => {
   try {
     const { priceTableId } = req.params;
     const { prices } = req.body;
@@ -31,9 +31,9 @@ router.post('/:priceTableId', async (req, res) => {
       .send({ error: `Error on post new price table: ${e}` })
   }
 
-});
+};
 
-router.post('/:priceTableId/range', async (req, res) => {
+const generatePriceRange = async (req, res) => {
   try {
     const { priceTableId } = req.params;
     const { prices, unit } = req.body;
@@ -63,10 +63,9 @@ router.post('/:priceTableId/range', async (req, res) => {
     return res.status(400)
       .send({ error: 'Error on post price range into priceTable' });
   }
-});
+};
 
-// atualizar um preço na tabela
-router.put('/:priceId', async (req, res) => {
+const updatePriceById = async (req, res) => {
   try {
     const { priceId } = req.params;
 
@@ -80,9 +79,9 @@ router.put('/:priceId', async (req, res) => {
     return res.status(400)
       .send({ error: `Error on update price: ${e}`});
   }
-});
+};
 
-router.get('/:priceTableId', async (req, res) => {
+const getPricesByPriceTableId = async (req, res) => {
   try {
     const { priceTableId } = req.params;
 
@@ -98,10 +97,9 @@ router.get('/:priceTableId', async (req, res) => {
     return res.status(400)
       .send({ error: `Error on get prices: ${e}`});
   }
-});
+}
 
-// atualizar o ultimo preço da tabela
-router.post('/:priceTableId/last', async (req, res) => {
+const createLastPrice = async (req, res) => {
   try {
     const { priceTableId } = req.params;
     const { price } = req.body;
@@ -130,19 +128,26 @@ router.post('/:priceTableId/last', async (req, res) => {
     return res.status(400)
       .send({ error: `Error when add last price: ${e}`});
   }
-});
+};
 
-router.delete('/', async (req, res) => {
+const deleteManyPrices = async (req, res) => {
   try {
     const { priceIds } = req.body;
-
+    
     await Price.deleteMany({ _id: { $in: priceIds } });
-
+    
     return res.send({ deletedCount: priceIds.length });
   } catch(e) {
     return res.status(400)
-      .send({ error: `Error on delete prices: ${e}`});
+    .send({ error: `Error on delete prices: ${e}`});
   }
-});
+};
+
+router.post('/:priceTableId', createPriceByPriceTableId);
+router.post('/:priceTableId/range', generatePriceRange);
+router.put('/:priceId', updatePriceById);
+router.get('/:priceTableId', getPricesByPriceTableId);
+router.post('/:priceTableId/last', createLastPrice);
+router.delete('/', deleteManyPrices);
 
 module.exports = app => app.use('/prices', router);
