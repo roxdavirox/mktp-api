@@ -54,7 +54,7 @@ const getDesignTemplatesByTemplateCategoryId = async (req, res) => {
 
     const templateCategory = await TemplateCategory
       .findById(templateCategoryId)
-      .populate('productTemplates');
+      .populate('designTemplates');
 
     return res.send({ designTemplates: templateCategory.designTemplates })
   } catch(e) {

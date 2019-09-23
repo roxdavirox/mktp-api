@@ -7,7 +7,7 @@ const TemplateCategorySchema = new Schema({
     type: String,
     required: true,
   },
-  DesignTemplates: [{
+  designTemplates: [{
     type: Schema.Types.ObjectId,
     ref: 'DesignTemplate',
     required: false
