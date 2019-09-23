@@ -5,32 +5,31 @@ const Price = require('../models/price');
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+const createNewPriceTable = async (req, res) => {
   try {
     const { name } = req.body;
 
     const priceTable = await PriceTable.create({ name });
 
     return res.send({ priceTable });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-      .send({ erro: `Error on post new price table: ${e}` })
+      .send({ erro: `Error on post new price table: ${e}` });
   }
+};
 
-});
-
-router.get('/', async (req, res) => {
+const getPriceTables = async (req, res) => {
   try {
     const priceTables = await PriceTable.find().select('-prices');
 
     return res.send({ priceTables });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-      .send({ error: `Error on get price tables: ${e}`});
+      .send({ error: `Error on get price tables: ${e}` });
   }
-});
+};
 
-router.get('/:priceTableId', async (req, res) => {
+const getPricesByPriceTableId = async (req, res) => {
   try {
     const { priceTableId } = req.params;
 
@@ -40,27 +39,26 @@ router.get('/:priceTableId', async (req, res) => {
       .select('+prices');
 
     return res.send({ priceTable });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-      .send({ error: `Error on get price tables: ${e}`});
+      .send({ error: `Error on get price tables: ${e}` });
   }
-});
+};
 
-router.delete('/', async (req, res) => {
+const deleteManyPriceTablesByIds = async (req, res) => {
   try {
     const { priceTableIds } = req.body;
 
     await PriceTable.deleteMany({ _id: { $in: priceTableIds } });
 
     return res.send({ deletedCount: priceTableIds.length });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-      .send({ error: `Error on delete price tables: ${e}`});
+      .send({ error: `Error on delete price tables: ${e}` });
   }
-});
+};
 
-// usando put para criar child element
-router.put('/:priceTableId', async(req, res) => {
+const createPriceTableChild = async (req, res) => {
   try {
     const { priceTableId } = req.params;
     const { price } = req.body;
@@ -69,16 +67,22 @@ router.put('/:priceTableId', async(req, res) => {
       .findById(priceTableId).populate('prices');
 
     const p = await Price.create({ ...price, priceTable: priceTableId });
-    
+
     priceTable.prices.push(p);
 
     await priceTable.save();
 
     return res.send({ price: p });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-      .send({ error: `Error on update price table: ${e}`});
+      .send({ error: `Error on update price table with new child: ${e}` });
   }
-});
+};
 
-module.exports = app => app.use('/price-tables', router);
+router.post('/', createNewPriceTable);
+router.get('/', getPriceTables);
+router.get('/:priceTableId', getPricesByPriceTableId);
+router.delete('/', deleteManyPriceTablesByIds);
+router.put('/:priceTableId', createPriceTableChild);
+
+module.exports = (app) => app.use('/price-tables', router);
