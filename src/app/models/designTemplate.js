@@ -1,6 +1,6 @@
 const mongoose = require('../../data');
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const DesignTemplateSchema = new Schema({
   name: {
@@ -9,16 +9,16 @@ const DesignTemplateSchema = new Schema({
   },
   psdUrl: {
     type: String,
-    required: false
+    required: false,
   },
   imageUrl: {
     type: String,
-    required: false
+    required: false,
   },
   templateCategory: {
     type: Schema.Types.ObjectId,
     ref: 'TemplateCategory',
-    required: false
+    required: false,
   },
   product: {
     type: Schema.Types.ObjectId,
@@ -32,8 +32,8 @@ const DesignTemplateSchema = new Schema({
 });
 
 const DesignTemplate = mongoose.model(
-    'DesignTemplate',
-    DesignTemplateSchema
-  );
+  'DesignTemplate',
+  DesignTemplateSchema,
+);
 
 module.exports = DesignTemplate;
