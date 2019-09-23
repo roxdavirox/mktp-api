@@ -1,6 +1,6 @@
 const mongoose = require('../../data');
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const PriceTableSchema = new Schema({
   name: {
@@ -15,7 +15,7 @@ const PriceTableSchema = new Schema({
   }],
   unit: {
     type: String,
-    required: false
+    required: false,
   },
   createdAt: {
     type: Date,

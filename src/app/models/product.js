@@ -1,6 +1,6 @@
 const mongoose = require('../../data');
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const ProductSchema = new Schema({
   name: {
@@ -10,7 +10,7 @@ const ProductSchema = new Schema({
   options: [{
     type: Schema.Types.ObjectId,
     ref: 'ProductOption',
-    required: false
+    required: false,
   }],
   category: {
     type: Schema.Types.ObjectId,
@@ -20,11 +20,11 @@ const ProductSchema = new Schema({
   templatesCategory: [{
     type: Schema.Types.ObjectId,
     ref: 'TemplateCategory',
-    required: false
+    required: false,
   }],
   imageUrl: {
     type: String,
-    required: false
+    required: false,
   },
   createdAt: {
     type: Date,

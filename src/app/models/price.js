@@ -1,6 +1,6 @@
 const mongoose = require('../../data');
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const PriceSchema = new Schema({
   start: {
@@ -9,11 +9,11 @@ const PriceSchema = new Schema({
   },
   end: {
     type: Number,
-    required: true
+    required: true,
   },
   value: {
     type: Number,
-    required: true
+    required: true,
   },
   priceTable: {
     type: Schema.Types.ObjectId,

@@ -1,6 +1,6 @@
 const mongoose = require('../../data');
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const OptionSchema = new Schema({
   name: {

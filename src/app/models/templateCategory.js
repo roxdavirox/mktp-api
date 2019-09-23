@@ -1,6 +1,6 @@
 const mongoose = require('../../data');
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const TemplateCategorySchema = new Schema({
   name: {
@@ -10,7 +10,7 @@ const TemplateCategorySchema = new Schema({
   designTemplates: [{
     type: Schema.Types.ObjectId,
     ref: 'DesignTemplate',
-    required: false
+    required: false,
   }],
   createdAt: {
     type: Date,
