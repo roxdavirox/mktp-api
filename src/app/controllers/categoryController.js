@@ -1,18 +1,19 @@
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
 
 const Category = require('../models/category');
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+const createCategoryWithSubCategories = async (req, res) => {
   try {
     const { name, subCategories } = req.body;
 
-    const category = await Category.create({ name, parentId: null });;
+    const category = await Category.create({ name, parentId: null });
 
     if (subCategories) {
-      await Promise.all(subCategories.map(async name => {
-        const subCategory = new Category({ name, parentId: category._id});
+      await Promise.all(subCategories.map(async (subCategoryName) => {
+        const subCategory = new Category({ name: subCategoryName, parentId: category._id });
         subCategory.save();
         category.subCategories.push(subCategory);
       }));
@@ -22,11 +23,11 @@ router.post('/', async (req, res) => {
 
     return res.send({ category });
   } catch (e) {
-    return res.status(400).send({ error: 'Error when creating category'});
+    return res.status(400).send({ error: 'Error when creating category' });
   }
-});
+};
 
-router.post('/:categoryId', async (req, res) => {
+const createSubCategoryByCategoryId = async (req, res) => {
   try {
     const { categoryId } = req.params;
     const { name } = req.body;
@@ -38,11 +39,11 @@ router.post('/:categoryId', async (req, res) => {
     await category.save();
     return res.send({ subCategory });
   } catch (e) {
-    return res.status(400).send({ error: 'Error when creating category'});
+    return res.status(400).send({ error: 'Error when creating category' });
   }
-});
+};
 
-router.get('/', async (req, res) => {
+const getAllCategories = async (req, res) => {
   try {
     const categories = await Category
       .find({ parentId: null })
@@ -50,21 +51,26 @@ router.get('/', async (req, res) => {
 
     return res.send({ categories });
   } catch (e) {
-    return res.status(400).send({ error: 'Error on load categories'});    
+    return res.status(400).send({ error: 'Error on load categories' });
   }
-});
+};
 
-router.delete('/', async (req, res) => {
+const deleteManyCategoriesByIds = async (req, res) => {
   try {
     const { categoryIds } = req.body;
 
-    await Category.deleteMany({ _id:{ $in: categoryIds }});
+    await Category.deleteMany({ _id: { $in: categoryIds } });
 
     return res.send({ deletedCount: categoryIds.length });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-      .send({ error: `Error on deleting categories: ${e}`});
+      .send({ error: `Error on deleting categories: ${e}` });
   }
-});
+};
 
-module.exports = app => app.use('/categories', router);
+router.post('/', createCategoryWithSubCategories);
+router.post('/:categoryId', createSubCategoryByCategoryId);
+router.get('/', getAllCategories);
+router.delete('/', deleteManyCategoriesByIds);
+
+module.exports = (app) => app.use('/categories', router);
