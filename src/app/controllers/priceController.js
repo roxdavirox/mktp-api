@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
 
 const Price = require('../models/price');
@@ -12,10 +13,10 @@ const createPriceByPriceTableId = async (req, res) => {
 
     const priceTable = await PriceTable.findById(priceTableId);
 
-    await Promise.all(prices.map(async p => {
-      const price = new Price({ 
-        ...p, 
-        priceTable: priceTableId 
+    await Promise.all(prices.map(async (p) => {
+      const price = new Price({
+        ...p,
+        priceTable: priceTableId,
       });
 
       await price.save();
@@ -26,11 +27,10 @@ const createPriceByPriceTableId = async (req, res) => {
     await priceTable.save();
 
     return res.send({ priceTable });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-      .send({ error: `Error on post new price table: ${e}` })
+      .send({ error: `Error on post new price table: ${e}` });
   }
-
 };
 
 const generatePriceRange = async (req, res) => {
@@ -39,14 +39,14 @@ const generatePriceRange = async (req, res) => {
     const { prices, unit } = req.body;
 
     const priceTable = await PriceTable.findByIdAndUpdate(priceTableId, {
-      unit
+      unit,
     }, { new: true });
     priceTable.prices = [];
 
-    await Promise.all(prices.map(async p => {
-      const price = new Price({ 
+    await Promise.all(prices.map(async (p) => {
+      const price = new Price({
         ...p,
-        priceTable: priceTableId
+        priceTable: priceTableId,
       });
 
       price.save();
@@ -56,10 +56,8 @@ const generatePriceRange = async (req, res) => {
 
     await priceTable.save();
 
-    // const { prices: newPrices } = priceTable;
-
     return res.send({ priceTable });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
       .send({ error: 'Error on post price range into priceTable' });
   }
@@ -69,15 +67,14 @@ const updatePriceById = async (req, res) => {
   try {
     const { priceId } = req.params;
 
-    const price = await Price.findByIdAndUpdate(priceId, 
-      {...req.body },
-      { new: true }
-    );
+    const price = await Price.findByIdAndUpdate(priceId,
+      { ...req.body },
+      { new: true });
 
     return res.send({ price });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-      .send({ error: `Error on update price: ${e}`});
+      .send({ error: `Error on update price: ${e}` });
   }
 };
 
@@ -87,17 +84,14 @@ const getPricesByPriceTableId = async (req, res) => {
 
     const priceTable = await PriceTable
       .findById(priceTableId)
-      .populate('prices')
-      // .select('+prices');
-
-    const { prices } = priceTable;
+      .populate('prices');
 
     return res.send({ priceTable });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-      .send({ error: `Error on get prices: ${e}`});
+      .send({ error: `Error on get prices: ${e}` });
   }
-}
+};
 
 const createLastPrice = async (req, res) => {
   try {
@@ -111,10 +105,12 @@ const createLastPrice = async (req, res) => {
 
     const [lastPrice] = prices;
 
-    const newLastPrice = await Price.findByIdAndUpdate(lastPrice._id, 
-      { end: price.start - 0.0001},
-      { new: true }
-    );
+    const newLastPrice = await Price
+      .findByIdAndUpdate(
+        lastPrice._id,
+        { end: price.start - 0.0001 },
+        { new: true },
+      );
 
     const newPrice = await Price.create({ ...price, priceTable: priceTableId });
 
@@ -124,22 +120,22 @@ const createLastPrice = async (req, res) => {
     await priceTable.save();
 
     return res.send({ prices: [newLastPrice, newPrice] });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-      .send({ error: `Error when add last price: ${e}`});
+      .send({ error: `Error when add last price: ${e}` });
   }
 };
 
 const deleteManyPrices = async (req, res) => {
   try {
     const { priceIds } = req.body;
-    
+
     await Price.deleteMany({ _id: { $in: priceIds } });
-    
+
     return res.send({ deletedCount: priceIds.length });
-  } catch(e) {
+  } catch (e) {
     return res.status(400)
-    .send({ error: `Error on delete prices: ${e}`});
+      .send({ error: `Error on delete prices: ${e}` });
   }
 };
 
@@ -150,4 +146,4 @@ router.get('/:priceTableId', getPricesByPriceTableId);
 router.post('/:priceTableId/last', createLastPrice);
 router.delete('/', deleteManyPrices);
 
-module.exports = app => app.use('/prices', router);
+module.exports = (app) => app.use('/prices', router);
