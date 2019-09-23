@@ -7,9 +7,9 @@ const TemplateCategorySchema = new Schema({
     type: String,
     required: true,
   },
-  productTemplates: [{
+  DesignTemplates: [{
     type: Schema.Types.ObjectId,
-    ref: 'ProductTemplate',
+    ref: 'DesignTemplate',
     required: false
   }],
   createdAt: {

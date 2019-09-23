@@ -2,7 +2,7 @@ const mongoose = require('../../data');
 
 const Schema = mongoose.Schema;
 
-const ProductTemplateSchema = new Schema({
+const DesignTemplateSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -31,9 +31,9 @@ const ProductTemplateSchema = new Schema({
   },
 });
 
-const ProductTemplate = mongoose.model(
-    'ProductTemplate',
-    ProductTemplateSchema
+const DesignTemplate = mongoose.model(
+    'DesignTemplate',
+    DesignTemplateSchema
   );
 
-module.exports = ProductTemplate;
+module.exports = DesignTemplate;
