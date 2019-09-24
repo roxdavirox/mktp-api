@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
-
+const mongoose = require('../../data');
 const Price = require('../models/price');
 const PriceTable = require('../models/priceTable');
 
@@ -129,26 +129,29 @@ const createLastPrice = async (req, res) => {
 // quando deletar o sistema deve ajustar o vão que sobra entre os intervalos de preço
 const deleteManyPrices = async (req, res) => {
   try {
+    const { ObjectId } = mongoose.Types;
     const { priceIds } = req.body;
     const [priceId] = priceIds;
 
-    const price = await Price.findById(priceId);
-    const { priceTable: priceTableId } = price;
-
     await Price.deleteMany({ _id: { $in: priceIds } });
 
-    const prices = await Price.find({ priceTable: priceTableId });
+    const priceTable = await PriceTable
+      .findOne({ prices: { $in: new ObjectId(priceId) } })
+      .populate('prices');
+
+    const { prices } = priceTable;
 
     const newPrices = [];
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < prices.length - 1; i++) {
       // preenche vãos de intervalos após deletados
-      if (prices[i].end + 0.0001 !== prices[i + 1].start) {
+      if (prices[i].end + 0.0001 !== prices[i + 1].start || prices[i].end > prices[i + 1].start) {
         prices[i].end = prices[i + 1].start - 0.0001;
         newPrices.push(prices[i]);
-        prices[i].save();
       }
     }
+
+    await priceTable.save();
 
     return res.send({ deletedCount: priceIds.length, newPrices });
   } catch (e) {
