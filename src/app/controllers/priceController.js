@@ -66,6 +66,12 @@ const generatePriceRange = async (req, res) => {
 const updatePriceById = async (req, res) => {
   try {
     const { priceId } = req.params;
+    const { start, end, value } = req.body;
+
+    if (!start || !end || !value) {
+      res.status(400)
+        .send({ error: 'Invalid input values' });
+    }
 
     const price = await Price.findByIdAndUpdate(priceId,
       { ...req.body },
