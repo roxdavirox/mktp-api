@@ -68,9 +68,9 @@ const updatePriceById = async (req, res) => {
     const { priceId } = req.params;
     const { start, end, value } = req.body;
 
-    if (!start || !end || !value) {
-      res.status(400)
-        .send({ error: 'Invalid input values' });
+    if (start === null || end === null || value === null) {
+      return res.status(400)
+        .send({ error: 'Input null' });
     }
 
     const price = await Price.findByIdAndUpdate(priceId,
