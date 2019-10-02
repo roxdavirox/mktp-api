@@ -17,7 +17,17 @@ const createProductTemplate = async (req, res) => {
 
 const getAllProductTemplates = async (req, res) => {
   try {
-    const productTemplates = await ProductTemplate.find();
+    const productTemplates = await ProductTemplate
+      .find()
+      .populate({
+        path: 'options.option',
+        select: 'name',
+      })
+      .populate({
+        path: 'options.item',
+        select: 'name',
+      });
+
     return res.send({ productTemplates });
   } catch (e) {
     return res.status(400)
