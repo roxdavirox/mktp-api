@@ -25,6 +25,6 @@ const ProductTemplateSchema = new Schema({
   },
 });
 
-const ProductOption = mongoose.model('ProductOption', ProductTemplateSchema);
+const ProductTemplate = mongoose.model('ProductTemplate', ProductTemplateSchema);
 
-module.exports = ProductOption;
+module.exports = ProductTemplate;
