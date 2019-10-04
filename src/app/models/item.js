@@ -17,6 +17,18 @@ const ItemSchema = new Schema({
     ref: 'Option',
     select: false,
   }],
+  templateOptions: [{
+    option: {
+      type: Schema.Types.ObjectId,
+      ref: 'Option',
+      required: true,
+    },
+    item: {
+      type: Schema.Types.ObjectId,
+      ref: 'Item',
+      required: true,
+    },
+  }],
   createdAt: {
     type: Date,
     default: Date.now,
