@@ -69,17 +69,7 @@ const getProducts = async (req, res) => {
   }
 };
 
-const getProductsBase = async (req, res) => {
-  try {
-    const productsBase = await Product.find().select('_id name');
-    return res.send({ productsBase });
-  } catch (e) {
-    return res.status(400)
-      .send({ error: `Error on get products base: ${e}` });
-  }
-};
-
-const getAllProductTemplates = async (req, res) => {
+const getAllTemplatesCategory = async (req, res) => {
   try {
     const products = await Product.find().populate('templatesCategory');
     return res.send(products);
@@ -127,8 +117,7 @@ const getProductDetailsByProductId = async (req, res) => {
 
 router.post('/', upload.single('image'), uploadProduct);
 router.get('/', getProducts);
-router.get('/base', getProductsBase);
-router.get('/templates', getAllProductTemplates);
+router.get('/templates', getAllTemplatesCategory);
 router.get('/home', getHomeProducts);
 router.get('/details/:productId', getProductDetailsByProductId);
 
