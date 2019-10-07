@@ -53,6 +53,35 @@ const createItemIntoOptions = async (req, res) => {
   }
 };
 
+const createTemplateItem = async (req, res) => {
+  try {
+    const { optionId } = req.params;
+
+    const option = await Option.findById(optionId).populate('items');
+
+    const { name, options } = req.body;
+    const templateItem = {
+      name,
+      priceTableId: undefined,
+      templateOptions: options,
+    };
+
+    const item = await Item.create({ ...templateItem });
+
+    item.options.push(optionId);
+
+    await item.save();
+
+    option.items.push(item);
+
+    await option.save();
+
+    return res.send({ templateItem });
+  } catch (err) {
+    return res.status(400).send({ error: "Error on add option's item" });
+  }
+};
+
 const updateItemById = async (req, res) => {
   try {
     const { itemId } = req.params;
@@ -122,6 +151,7 @@ const removeOptionsItemsWithoutDeleteFromDB = async (req, res) => {
 
 router.post('/', createItemWithoutOption);
 router.post('/:optionId', createItemIntoOptions);
+router.post('/templates/:optionId', createTemplateItem);
 router.put('/:itemId', updateItemById);
 router.get('/', getAllItems);
 router.delete('/', deleteManyItemsByIds);
