@@ -13,8 +13,6 @@ const uuid = require('uuid/v1');
 
 const streamifier = require('streamifier');
 
-require("dotenv").config();
-
 const STORAGE_ACCOUNT_NAME = process.env.AZURE_STORAGE_ACCOUNT_NAME;
 const ACCOUNT_ACCESS_KEY = process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY;
 console.log('iniciando variaveis de ambiente');
