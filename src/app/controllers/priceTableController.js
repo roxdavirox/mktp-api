@@ -7,9 +7,9 @@ const router = express.Router();
 
 const createNewPriceTable = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, unit } = req.body;
 
-    const priceTable = await PriceTable.create({ name });
+    const priceTable = await PriceTable.create({ name, unit });
 
     return res.send({ priceTable });
   } catch (e) {

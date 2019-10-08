@@ -33,20 +33,24 @@ const registerNewUser = async (req, res) => {
 };
 
 const authenticateUser = async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = await User.findOne({ email }).select('+password');
-
-  if (!user) { return res.status(400).send({ error: 'User not found' }); }
-
-  if (!await bcrypt.compare(password, user.password)) {
-    return res.status(400)
-      .send({ error: 'Invalid password' });
+    const user = await User.findOne({ email }).select('+password');
+  
+    if (!user) { return res.status(400).send({ error: 'User not found' }); }
+  
+    if (!await bcrypt.compare(password, user.password)) {
+      return res.status(400)
+        .send({ error: 'Invalid password' });
+    }
+  
+    user.password = undefined;
+  
+    return res.send({ user, auth: true, token: createToken({ user }) });
+  } catch (err) {
+    return res.status(400).send({ error: "Error " + err });
   }
-
-  user.password = undefined;
-
-  return res.send({ user, auth: true, token: createToken({ user }) });
 };
 
 router.post('/register', registerNewUser);
