@@ -13,6 +13,8 @@ app.get('/', (req, res) => {
   res.send('ok');
 });
 
+require('dotenv').config();
+
 require('./app/controllers/index')(app);
 
 const port = process.env.PORT || 3001;
