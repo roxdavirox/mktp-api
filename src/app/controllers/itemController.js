@@ -76,7 +76,7 @@ const createTemplateItem = async (req, res) => {
 
     await option.save();
 
-    return res.send({ templateItem });
+    return res.send({ templateItem: item });
   } catch (err) {
     return res.status(400).send({ error: "Error on add option's item" });
   }
