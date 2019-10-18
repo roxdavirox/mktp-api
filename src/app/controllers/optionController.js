@@ -17,7 +17,14 @@ const createOption = async (req, res) => {
 
 const getAllOptions = async (req, res) => {
   try {
-    const options = await Option.find().populate('items');
+    const options = await Option.find()
+      .populate({
+        path: 'items',
+        populate: {
+          path: 'priceTableId',
+          select: 'unit',
+        },
+      });
 
     return res.send({ options });
   } catch (e) {
