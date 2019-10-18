@@ -12,11 +12,11 @@ const ItemSchema = new Schema({
     ref: 'PriceTable',
     required: false,
   },
-  options: [{
+  options: {
     type: Schema.Types.ObjectId,
     ref: 'Option',
     select: false,
-  }],
+  },
   templateOptions: [{
     option: {
       type: Schema.Types.ObjectId,

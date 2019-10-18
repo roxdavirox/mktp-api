@@ -4,7 +4,7 @@ const Item = require('../models/item');
 const Option = require('../models/option');
 
 const router = express.Router();
-
+// TODO: remover funções relacionadas a itens existentes
 const createItemWithoutOption = async (req, res) => {
   const { name, priceTableId } = req.body;
 
