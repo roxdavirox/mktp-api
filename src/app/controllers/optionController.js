@@ -52,24 +52,25 @@ const updateItemIntoOptions = async (req, res) => {
   }
 };
 
-const addExistingItemsIntoOptions = async (req, res) => {
-  try {
-    const { optionId } = req.params;
-    const { itemsId } = req.body;
+// TODO: Remover função
+// const addExistingItemsIntoOptions = async (req, res) => {
+//   try {
+//     const { optionId } = req.params;
+//     const { itemsId } = req.body;
 
-    const option = await Option
-      .findOneAndUpdate({ _id: optionId }, {
-        $addToSet: { items: { $each: itemsId } },
-      });
+//     const option = await Option
+//       .findOneAndUpdate({ _id: optionId }, {
+//         $addToSet: { items: { $each: itemsId } },
+//       });
 
-    await option.save();
+//     await option.save();
 
-    return res.send({ itemsCount: itemsId.length });
-  } catch (err) {
-    return res.status(400)
-      .send({ error: 'Error on add existing items into option' });
-  }
-};
+//     return res.send({ itemsCount: itemsId.length });
+//   } catch (err) {
+//     return res.status(400)
+//       .send({ error: 'Error on add existing items into option' });
+//   }
+// };
 
 const deleteManyOptionsByIds = async (req, res) => {
   try {
@@ -86,7 +87,7 @@ const deleteManyOptionsByIds = async (req, res) => {
 router.post('/', createOption);
 router.get('/', getAllOptions);
 router.put('/', updateItemIntoOptions);
-router.put('/:optionId', addExistingItemsIntoOptions);
+// router.put('/:optionId', addExistingItemsIntoOptions);
 router.delete('/', deleteManyOptionsByIds);
 
 module.exports = (app) => app.use('/options', router);

@@ -12,7 +12,7 @@ const ItemSchema = new Schema({
     ref: 'PriceTable',
     required: false,
   },
-  options: {
+  option: {
     type: Schema.Types.ObjectId,
     ref: 'Option',
     select: false,

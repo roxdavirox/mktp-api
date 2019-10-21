@@ -35,17 +35,10 @@ const createItemIntoOptions = async (req, res) => {
       priceTableId:
       // eslint-disable-next-line eqeqeq
       priceTableId == '0' ? undefined : priceTableId,
+      option,
     };
 
     const item = await Item.create({ ...newItem });
-
-    item.options.push(optionId);
-
-    await item.save();
-
-    option.items.push(item);
-
-    await option.save();
 
     return res.send({ item });
   } catch (err) {
@@ -118,6 +111,16 @@ const getAllItems = async (req, res) => {
   }
 };
 
+const getItemsWithOption = async (req, res) => {
+  try {
+    // TODO: buscar items com opção
+    const items = await Item.find().populate('option');
+    return res.send({ items });
+  } catch (e) {
+    return res.status(400).send({ error: 'Error on creating a item' });
+  }
+};
+
 const deleteManyItemsByIds = async (req, res) => {
   try {
     const { itemsId } = req.body;
@@ -154,6 +157,7 @@ router.post('/:optionId', createItemIntoOptions);
 router.post('/templates/:optionId', createTemplateItem);
 router.put('/:itemId', updateItemById);
 router.get('/', getAllItems);
+router.get('/templates', getItemsWithOption);
 router.delete('/', deleteManyItemsByIds);
 // deleta os itens de uma opção, mas sem excluir do banco de dados
 router.delete('/:optionId', removeOptionsItemsWithoutDeleteFromDB);
