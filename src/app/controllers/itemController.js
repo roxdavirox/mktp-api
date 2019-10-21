@@ -35,10 +35,13 @@ const createItemIntoOptions = async (req, res) => {
       priceTableId:
       // eslint-disable-next-line eqeqeq
       priceTableId == '0' ? undefined : priceTableId,
-      option,
+      option: optionId,
     };
 
     const item = await Item.create({ ...newItem });
+
+    option.items.push(item);
+    await option.save();
 
     return res.send({ item });
   } catch (err) {

@@ -15,7 +15,8 @@ const ItemSchema = new Schema({
   option: {
     type: Schema.Types.ObjectId,
     ref: 'Option',
-    select: false,
+    select: true,
+    required: true,
   },
   templateOptions: [{
     option: {
