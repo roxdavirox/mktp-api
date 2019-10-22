@@ -29,6 +29,18 @@ const ItemSchema = new Schema({
       ref: 'Item',
       required: true,
     },
+    quantity: {
+      type: Number,
+      required: true,
+    },
+    measurement: { // medida
+      x: {
+        type: Number,
+      },
+      y: {
+        type: Number,
+      },
+    },
   }],
   createdAt: {
     type: Date,
