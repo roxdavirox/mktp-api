@@ -60,13 +60,10 @@ const createTemplateItem = async (req, res) => {
       name,
       priceTableId: undefined,
       templateOptions: options,
+      option: optionId,
     };
 
     const item = await Item.create({ ...templateItem });
-
-    item.options.push(optionId);
-
-    await item.save();
 
     option.items.push(item);
 
