@@ -111,7 +111,7 @@ const createPriceTableChild = async (req, res) => {
 };
 
 router.post('/', createNewPriceTable);
-router.get('/total/:priceTableId', getPriceValue);
+router.post('/total/:priceTableId', getPriceValue);
 router.get('/', getPriceTables);
 router.get('/:priceTableId', getPricesByPriceTableId);
 router.delete('/', deleteManyPriceTablesByIds);
