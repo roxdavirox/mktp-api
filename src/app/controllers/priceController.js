@@ -153,6 +153,7 @@ const deleteManyPrices = async (req, res) => {
       // preenche vãos de intervalos após deletados
       if (prices[i].end + 0.0001 !== prices[i + 1].start || prices[i].end > prices[i + 1].start) {
         prices[i].end = prices[i + 1].start - 0.0001;
+        prices[i].save();
         newPrices.push(prices[i]);
       }
     }

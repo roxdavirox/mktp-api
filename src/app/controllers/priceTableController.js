@@ -18,6 +18,37 @@ const createNewPriceTable = async (req, res) => {
   }
 };
 
+const getPriceValue = async (req, res) => {
+  try {
+    const { priceTableId } = req.params;
+    const { quantity, size: { x, y } } = req.body;
+    const totalArea = quantity * x * y;
+
+    const priceTable = await PriceTable.findById(priceTableId)
+      .populate('prices');
+
+    const { prices } = priceTable;
+    const preco = prices.find((price) => (price.start <= totalArea && totalArea <= price.end));
+
+    if (!preco) {
+      const lastPrice = prices[prices.length - 1];
+      const total = lastPrice.value * totalArea;
+      return res.send({
+        total,
+      });
+    }
+
+    const total = preco.value * totalArea;
+
+    return res.send({
+      total,
+    });
+  } catch (e) {
+    return res.status(400)
+      .send({ error: `Error on get price tables: ${e}` });
+  }
+};
+
 const getPriceTables = async (req, res) => {
   try {
     const priceTables = await PriceTable.find().select('-prices');
@@ -80,6 +111,7 @@ const createPriceTableChild = async (req, res) => {
 };
 
 router.post('/', createNewPriceTable);
+router.get('/total/:priceTableId', getPriceValue);
 router.get('/', getPriceTables);
 router.get('/:priceTableId', getPricesByPriceTableId);
 router.delete('/', deleteManyPriceTablesByIds);
