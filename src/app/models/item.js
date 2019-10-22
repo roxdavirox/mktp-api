@@ -33,7 +33,7 @@ const ItemSchema = new Schema({
       type: Number,
       required: true,
     },
-    measurement: { // medida
+    size: { // medida
       x: {
         type: Number,
       },
