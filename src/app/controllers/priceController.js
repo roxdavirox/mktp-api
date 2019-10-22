@@ -114,7 +114,7 @@ const createLastPrice = async (req, res) => {
     const newLastPrice = await Price
       .findByIdAndUpdate(
         lastPrice._id,
-        { end: price.start - 0.0001 },
+        { end: Number.isInteger(price.start) ? price.start : price.start - 0.0001 },
         { new: true },
       );
 
