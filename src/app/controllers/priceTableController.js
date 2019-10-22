@@ -18,6 +18,7 @@ const createNewPriceTable = async (req, res) => {
   }
 };
 
+// TODO: Calcular total quando a unidade for quantidade
 const getPriceValue = async (req, res) => {
   try {
     const { priceTableId } = req.params;
