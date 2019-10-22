@@ -117,10 +117,15 @@ const getAllItems = async (req, res) => {
 const getItemsWithOption = async (req, res) => {
   try {
     // TODO: buscar items com opção
-    const items = await Item.find().populate('option');
+    const items = await Item.find().populate({
+      path: 'option',
+    }).populate({
+      path: 'priceTableId',
+      select: 'unit',
+    });
     return res.send({ items });
   } catch (e) {
-    return res.status(400).send({ error: 'Error on creating a item' });
+    return res.status(400).send({ error: 'Error on get items' });
   }
 };
 
