@@ -18,59 +18,28 @@ const createNewPriceTable = async (req, res) => {
   }
 };
 
-// TODO: Calcular total quando a unidade for quantidade
-const calculatePriceByQuantity = async (req, res) => {
-  try {
-    const { priceTableId } = req.params;
-    const { quantity } = req.body;
-    const totalArea = quantity;
-
-    const priceTable = await PriceTable.findById(priceTableId)
-      .populate('prices');
-
-    const { prices } = priceTable;
-    const preco = prices.find((price) => (price.start <= totalArea && totalArea <= price.end));
-
-    if (!preco) {
-      const lastPrice = prices[prices.length - 1];
-      const total = lastPrice.value * totalArea;
-      return res.send({
-        total,
-      });
-    }
-
-    const total = preco.value * totalArea;
-
-    return res.send({
-      total,
-    });
-  } catch (e) {
-    return res.status(400)
-      .send({ error: `Error on get price tables: ${e}` });
-  }
-};
-
 const calculatePriceByArea = async (req, res) => {
   try {
     const { priceTableId } = req.params;
-    const { quantity, size: { x, y } } = req.body;
-    const totalArea = quantity * x * y;
+    const { quantity } = req.body;
+    const { size = { x: 1, y: 1 } } = req.body;
+    let total = quantity * size.x * size.y;
 
     const priceTable = await PriceTable.findById(priceTableId)
       .populate('prices');
 
     const { prices } = priceTable;
-    const preco = prices.find((price) => (price.start <= totalArea && totalArea <= price.end));
+    const preco = prices.find((price) => (price.start <= total && total <= price.end));
 
     if (!preco) {
       const lastPrice = prices[prices.length - 1];
-      const total = lastPrice.value * totalArea;
+      total *= lastPrice.value;
       return res.send({
         total,
       });
     }
 
-    const total = preco.value * totalArea;
+    total *= preco.value;
 
     return res.send({
       total,
@@ -144,7 +113,7 @@ const createPriceTableChild = async (req, res) => {
 
 router.post('/', createNewPriceTable);
 router.post('/total-area/:priceTableId', calculatePriceByArea);
-router.post('/total-quantity/:priceTableId', calculatePriceByArea);
+router.post('/total/:priceTableId', calculatePriceByArea);
 router.get('/', getPriceTables);
 router.get('/:priceTableId', getPricesByPriceTableId);
 router.delete('/', deleteManyPriceTablesByIds);
