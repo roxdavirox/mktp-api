@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 const mongoose = require('../../data');
@@ -65,6 +66,7 @@ const generatePriceRange = async (req, res) => {
 
 const updatePriceById = async (req, res) => {
   try {
+    const { ObjectId } = mongoose.Types;
     const { priceId } = req.params;
     const { start, end, value } = req.body;
 
@@ -73,11 +75,48 @@ const updatePriceById = async (req, res) => {
         .send({ error: 'Input null' });
     }
 
-    const price = await Price.findByIdAndUpdate(priceId,
-      { ...req.body },
-      { new: true });
+    // const price = await Price.findByIdAndUpdate(priceId,
+    //   { ...req.body },
+    //   { new: true });
 
-    return res.send({ price });
+    const priceTable = await PriceTable
+      .findOne({ prices: { $in: new ObjectId(priceId) } })
+      .populate('prices');
+
+    const { prices } = priceTable;
+    // TODO: atualizar preço e outros em volta preenchendo o vao
+    const newPrices = [];
+    let index = 0;
+    if (end >= 1) {
+      for (let i = 0; i < prices.length - 1; i++) {
+        if (prices[i]._id.toString() === priceId && end < prices[i + 1].start) {
+          index = i;
+          prices[i].end = end;
+          prices[i + 1].start = end + 0.0001;
+          prices[i + 1].save();
+          newPrices.push(prices[i + 1]);
+          break;
+        }
+      }
+    } 
+    // else if (start >= 1) {
+    //   for (let i = 0; i < prices.length - 1; i++) {
+    //     if (prices[i]._id.toString() === priceId && prices[i - 1].end < start) {
+    //       index = i;
+    //       prices[i].start = start;
+    //       prices[i].save();
+    //       prices[i + 1].end = start - 0.0001;
+    //       prices[i + 1].save();
+    //       newPrices.push(prices[i + 1]);
+    //       break;
+    //     }
+    //   }
+    // }
+    // eslint-disable-next-line no-plusplus
+
+    await priceTable.save();
+
+    return res.send({ price: prices[index], newPrices });
   } catch (e) {
     return res.status(400)
       .send({ error: `Error on update price: ${e}` });
