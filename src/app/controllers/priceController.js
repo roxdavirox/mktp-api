@@ -97,7 +97,7 @@ const updatePriceById = async (req, res) => {
     let index = 0;
     const price = await Price.findById(priceId);
 
-    if (end >= 1 && price.end !== end) {
+    if (price.end !== end) {
       for (let i = 0; i < prices.length - 1; i++) {
         // eslint-disable-next-line max-len
         if (prices[i]._id.toString() === priceId && end < prices[i + 1].start) {
@@ -111,7 +111,7 @@ const updatePriceById = async (req, res) => {
         }
       }
     }
-    if (start >= 1 && price.start !== start) {
+    if (price.start !== start) {
       for (let i = 1; i < prices.length - 1; i++) {
         // eslint-disable-next-line max-len
         if (prices[i]._id.toString() === priceId && prices[i - 1].end < start) {
