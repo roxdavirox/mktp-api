@@ -79,13 +79,17 @@ const updatePriceById = async (req, res) => {
       return res.status(400).send({ error: 'inicio nao pode ser maior do o final' });
     }
 
-    // const price = await Price.findByIdAndUpdate(priceId,
-    //   { ...req.body },
-    //   { new: true });
 
     const priceTable = await PriceTable
       .findOne({ prices: { $in: new ObjectId(priceId) } })
       .populate('prices');
+
+    if (priceTable.unit === 'quantidade') {
+      const price = await Price.findByIdAndUpdate(priceId,
+        { ...req.body },
+        { new: true });
+      return res.send({ price });
+    }
 
     const { prices } = priceTable;
     // TODO: atualizar preço e outros em volta preenchendo o vao
