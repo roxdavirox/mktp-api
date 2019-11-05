@@ -64,96 +64,6 @@ const generatePriceRange = async (req, res) => {
   }
 };
 
-const updatePriceQuantity = async (priceId, price, priceTable) => {
-  const { prices } = priceTable;
-  const newPrices = [];
-  let index = 0;
-  const _price = await Price.findById(priceId);
-
-  if (_price.value !== Number(price.value)) {
-    const newPrice = await Price.findByIdAndUpdate(priceId,
-      { ...price },
-      { new: true });
-    return { price: newPrice, newPrices: [] };
-  }
-
-  if (_price.end !== Number(price.end)) {
-    for (let i = 0; i < prices.length - 1; i++) {
-      // eslint-disable-next-line max-len
-      if (prices[i]._id.toString() === priceId && price.end < prices[i + 1].start) {
-        index = i;
-        prices[i].end = Number(price.end);
-        prices[i].save();
-        prices[i + 1].start = Number(price.end) + 1;
-        prices[i + 1].save();
-        newPrices.push(prices[i + 1]);
-        break;
-      }
-    }
-  }
-  if (_price.start !== price.start) {
-    for (let i = 1; i < prices.length - 1; i++) {
-      // eslint-disable-next-line max-len
-      if (prices[i]._id.toString() === priceId && prices[i - 1].end < price.start) {
-        index = i;
-        prices[i].start = Number(price.start);
-        prices[i].save();
-        prices[i - 1].end = Number(price.start) - 1;
-        prices[i - 1].save();
-        newPrices.push(prices[i - 1]);
-        break;
-      }
-    }
-  }
-
-  return { price: prices[index], newPrices };
-};
-
-const updatePriceSize = async (priceId, price, priceTable) => {
-  const { prices } = priceTable;
-  const newPrices = [];
-  let index = 0;
-  const _price = await Price.findById(priceId);
-
-  if (_price.value !== price.value) {
-    const newPrice = await Price.findByIdAndUpdate(priceId,
-      { ...price },
-      { new: true });
-    return { price: newPrice, newPrices: [] };
-  }
-
-  if (_price.end !== price.end) {
-    for (let i = 0; i < prices.length - 1; i++) {
-      // eslint-disable-next-line max-len
-      if (prices[i]._id.toString() === priceId && price.end < prices[i + 1].start) {
-        index = i;
-        prices[i].end = price.end;
-        prices[i].save();
-        prices[i + 1].start = price.end + 0.0001;
-        prices[i + 1].save();
-        newPrices.push(prices[i + 1]);
-        break;
-      }
-    }
-  }
-  if (_price.start !== price.start) {
-    for (let i = 1; i < prices.length - 1; i++) {
-      // eslint-disable-next-line max-len
-      if (prices[i]._id.toString() === priceId && prices[i - 1].end < price.start) {
-        index = i;
-        prices[i].start = price.start;
-        prices[i].save();
-        prices[i - 1].end = price.start - 0.0001;
-        prices[i - 1].save();
-        newPrices.push(prices[i - 1]);
-        break;
-      }
-    }
-  }
-
-  return { price: prices[index], newPrices };
-};
-
 const updatePriceById = async (req, res) => {
   try {
     const { ObjectId } = mongoose.Types;
@@ -169,20 +79,59 @@ const updatePriceById = async (req, res) => {
       return res.status(400).send({ error: 'inicio nao pode ser maior do o final' });
     }
 
+    const price = await Price.findById(priceId);
+
+    if (
+      price.start === Number(start)
+      && price.end === Number(end)
+      && price.value !== Number(value)) {
+      const newPrice = await Price.findByIdAndUpdate(priceId,
+        { ...price },
+        { new: true });
+      return { price: newPrice, newPrices: [] };
+    }
+
     const priceTable = await PriceTable
       .findOne({ prices: { $in: new ObjectId(priceId) } })
       .populate('prices');
 
-    if (priceTable.unit === 'quantidade') {
-      const { price, newPrices } = await updatePriceQuantity(priceId, req.body, priceTable);
-      return res.send({ price, newPrices });
-    }
+    const { prices } = priceTable;
+    const newPrices = [];
+    let index = 0;
+    const diff = priceTable.unit === 'quantidade' ? 1 : 0.0001;
 
-    const { price, newPrices } = await updatePriceSize(priceId, req.body, priceTable);
+    if (price.end !== Number(end)) {
+      for (let i = 0; i < prices.length - 1; i++) {
+      // eslint-disable-next-line max-len
+        if (prices[i]._id.toString() === priceId && price.end < prices[i + 1].start) {
+          index = i;
+          prices[i].end = Number(end);
+          prices[i].save();
+          prices[i + 1].start = Number(end) + diff;
+          prices[i + 1].save();
+          newPrices.push(prices[i + 1]);
+          break;
+        }
+      }
+    }
+    if (price.start !== Number(start)) {
+      for (let i = 1; i < prices.length - 1; i++) {
+      // eslint-disable-next-line max-len
+        if (prices[i]._id.toString() === priceId && prices[i - 1].end < price.start) {
+          index = i;
+          prices[i].start = Number(start);
+          prices[i].save();
+          prices[i - 1].end = Number(start) - diff;
+          prices[i - 1].save();
+          newPrices.push(prices[i - 1]);
+          break;
+        }
+      }
+    }
 
     await priceTable.save();
 
-    return res.send({ price, newPrices });
+    return res.send({ price: prices[index], newPrices });
   } catch (e) {
     return res.status(400)
       .send({ error: `Error on update price: ${e}` });
@@ -259,7 +208,8 @@ const deleteManyPrices = async (req, res) => {
       if (prices[i].end + 0.0001 !== prices[i + 1].start || prices[i].end > prices[i + 1].start) {
         const averageValue = (prices[i].value + prices[i + 1].value) / 2;
         prices[i].value = averageValue || prices[i].value;
-        prices[i].end = prices[i + 1].start - 0.0001;
+        const diff = priceTable.unit === 'quantidade' ? 1 : 0.0001;
+        prices[i].end = prices[i + 1].start - diff;
         prices[i].save();
         newPrices.push(prices[i]);
       }
