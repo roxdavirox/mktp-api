@@ -32,6 +32,7 @@ const createItemIntoOptions = async (req, res) => {
     const { name, priceTableId } = req.body;
     const newItem = {
       name,
+      itemType: 'item',
       priceTableId:
       // eslint-disable-next-line eqeqeq
       priceTableId == '0' ? undefined : priceTableId,
@@ -58,6 +59,7 @@ const createTemplateItem = async (req, res) => {
     const { name, options } = req.body;
     const templateItem = {
       name,
+      itemType: 'template',
       priceTableId: undefined,
       templateOptions: options,
       option: optionId,
