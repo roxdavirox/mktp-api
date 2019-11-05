@@ -75,16 +75,16 @@ const updatePriceById = async (req, res) => {
         .send({ error: 'Input null' });
     }
 
-    if (start > end) {
+    if (Number(start) > Number(end)) {
       return res.status(400).send({ error: 'inicio nao pode ser maior do o final' });
     }
 
     const price = await Price.findById(priceId);
 
     if (
-      price.start === Number(start)
-      && price.end === Number(end)
-      && price.value !== Number(value)) {
+      Number(price.start) === Number(start)
+      && Number(price.end) === Number(end)
+      && Number(price.value) !== Number(value)) {
       const newPrice = await Price.findByIdAndUpdate(priceId,
         { ...price },
         { new: true });
@@ -100,10 +100,10 @@ const updatePriceById = async (req, res) => {
     let index = 0;
     const diff = priceTable.unit === 'quantidade' ? 1 : 0.0001;
 
-    if (price.end !== Number(end)) {
+    if (Number(price.end) !== Number(end)) {
       for (let i = 0; i < prices.length - 1; i++) {
       // eslint-disable-next-line max-len
-        if (prices[i]._id.toString() === priceId && price.end < prices[i + 1].start) {
+        if (prices[i]._id.toString() === priceId && Number(end) < Number(prices[i + 1].start)) {
           index = i;
           prices[i].end = Number(end);
           prices[i].save();
@@ -114,11 +114,11 @@ const updatePriceById = async (req, res) => {
         }
       }
     }
-    if (price.start !== Number(start)) {
-      for (let i = 1; i < prices.length - 1; i++) {
+    if (Number(price.start) !== Number(start)) {
+      for (let i = 1; i <= prices.length - 1; i++) {
       // eslint-disable-next-line max-len
-        if (prices[i]._id.toString() === priceId && prices[i - 1].end < price.start) {
-          index = i;
+        if (prices[i]._id.toString() === priceId && Number(prices[i - 1].end) < Number(start)) {
+          index = i - 1;
           prices[i].start = Number(start);
           prices[i].save();
           prices[i - 1].end = Number(start) - diff;
@@ -158,6 +158,8 @@ const createLastPrice = async (req, res) => {
     const { priceTableId } = req.params;
     const { price } = req.body;
 
+    const priceTable = await PriceTable.findById(priceTableId);
+
     const prices = await Price
       .find({ priceTable: priceTableId })
       .sort({ _id: -1 })
@@ -168,13 +170,12 @@ const createLastPrice = async (req, res) => {
     const newLastPrice = await Price
       .findByIdAndUpdate(
         lastPrice._id,
-        { end: Number.isInteger(price.start) ? price.start : price.start - 0.0001 },
+        { end: priceTable.unit === 'quantidade' ? price.start - 1 : price.start - 0.0001 },
         { new: true },
       );
 
     const newPrice = await Price.create({ ...price, priceTable: priceTableId });
 
-    const priceTable = await PriceTable.findById(priceTableId);
     priceTable.prices.push(newPrice);
 
     await priceTable.save();
