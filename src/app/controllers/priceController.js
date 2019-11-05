@@ -64,13 +64,49 @@ const generatePriceRange = async (req, res) => {
   }
 };
 
-const updatePriceQuantity = async (priceId, price) => {
-  // TODO: atualizar preço de quantidade e preencher os vãos entre os intervalos
-  const _price = await Price.findByIdAndUpdate(priceId,
-    { ...price },
-    { new: true });
+const updatePriceQuantity = async (priceId, price, priceTable) => {
+  const { prices } = priceTable;
+  const newPrices = [];
+  let index = 0;
+  const _price = await Price.findById(priceId);
 
-  return _price;
+  if (_price.value !== Number(price.value)) {
+    const newPrice = await Price.findByIdAndUpdate(priceId,
+      { ...price },
+      { new: true });
+    return { price: newPrice, newPrices: [] };
+  }
+
+  if (_price.end !== Number(price.end)) {
+    for (let i = 0; i < prices.length - 1; i++) {
+      // eslint-disable-next-line max-len
+      if (prices[i]._id.toString() === priceId && price.end < prices[i + 1].start) {
+        index = i;
+        prices[i].end = Number(price.end);
+        prices[i].save();
+        prices[i + 1].start = Number(price.end) + 1;
+        prices[i + 1].save();
+        newPrices.push(prices[i + 1]);
+        break;
+      }
+    }
+  }
+  if (_price.start !== price.start) {
+    for (let i = 1; i < prices.length - 1; i++) {
+      // eslint-disable-next-line max-len
+      if (prices[i]._id.toString() === priceId && prices[i - 1].end < price.start) {
+        index = i;
+        prices[i].start = Number(price.start);
+        prices[i].save();
+        prices[i - 1].end = Number(price.start) - 1;
+        prices[i - 1].save();
+        newPrices.push(prices[i - 1]);
+        break;
+      }
+    }
+  }
+
+  return { price: prices[index], newPrices };
 };
 
 const updatePriceSize = async (priceId, price, priceTable) => {
@@ -138,8 +174,8 @@ const updatePriceById = async (req, res) => {
       .populate('prices');
 
     if (priceTable.unit === 'quantidade') {
-      const price = await updatePriceQuantity(priceId, req.body);
-      return res.send({ price, newPrices: [] });
+      const { price, newPrices } = await updatePriceQuantity(priceId, req.body, priceTable);
+      return res.send({ price, newPrices });
     }
 
     const { price, newPrices } = await updatePriceSize(priceId, req.body, priceTable);
