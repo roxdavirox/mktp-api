@@ -97,14 +97,12 @@ const updatePriceById = async (req, res) => {
 
     const { prices } = priceTable;
     const newPrices = [];
-    let index = 0;
     const diff = priceTable.unit === 'quantidade' ? 1 : 0.0001;
 
     if (Number(price.end) !== Number(end)) {
       for (let i = 0; i < prices.length - 1; i++) {
       // eslint-disable-next-line max-len
         if (prices[i]._id.toString() === priceId && Number(end) < Number(prices[i + 1].start)) {
-          index = i;
           prices[i].end = Number(end);
           prices[i].save();
           prices[i + 1].start = Number(end) + diff;
@@ -118,7 +116,6 @@ const updatePriceById = async (req, res) => {
       for (let i = 1; i <= prices.length - 1; i++) {
       // eslint-disable-next-line max-len
         if (prices[i]._id.toString() === priceId && Number(prices[i - 1].end) < Number(start)) {
-          index = i - 1;
           prices[i].start = Number(start);
           prices[i].save();
           prices[i - 1].end = Number(start) - diff;
@@ -130,8 +127,9 @@ const updatePriceById = async (req, res) => {
     }
 
     await priceTable.save();
+    const newPrice = await Price.findById(priceId);
 
-    return res.send({ price: prices[index], newPrices });
+    return res.send({ price: newPrice, newPrices });
   } catch (e) {
     return res.status(400)
       .send({ error: `Error on update price: ${e}` });
