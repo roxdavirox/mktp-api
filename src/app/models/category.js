@@ -1,8 +1,8 @@
-const mongoose = require('../../data');
+const mongoose = require( '../../data' )
 
-const { Schema } = mongoose;
+const { Schema } = mongoose
 
-const CategorySchema = new Schema({
+const CategorySchema = new Schema( {
   name: {
     type: String,
     required: true,
@@ -21,8 +21,8 @@ const CategorySchema = new Schema({
     type: Date,
     default: Date.now,
   },
-});
+} )
 
-const Category = mongoose.model('Category', CategorySchema);
+const Category = mongoose.model( 'Category', CategorySchema )
 
-module.exports = Category;
+module.exports = Category

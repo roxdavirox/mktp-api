@@ -1,8 +1,8 @@
-const mongoose = require('../../data');
+const mongoose = require( '../../data' )
 
-const { Schema } = mongoose;
+const { Schema } = mongoose
 
-const ProductOptionSchema = new Schema({
+const ProductOptionSchema = new Schema( {
   option: {
     type: Schema.Types.ObjectId,
     ref: 'Option',
@@ -17,8 +17,8 @@ const ProductOptionSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-});
+} )
 
-const ProductOption = mongoose.model('ProductOption', ProductOptionSchema);
+const ProductOption = mongoose.model( 'ProductOption', ProductOptionSchema )
 
-module.exports = ProductOption;
+module.exports = ProductOption

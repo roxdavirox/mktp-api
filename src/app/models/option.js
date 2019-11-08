@@ -1,8 +1,8 @@
-const mongoose = require('../../data');
+const mongoose = require( '../../data' )
 
-const { Schema } = mongoose;
+const { Schema } = mongoose
 
-const OptionSchema = new Schema({
+const OptionSchema = new Schema( {
   name: {
     type: String,
     required: true,
@@ -15,8 +15,8 @@ const OptionSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-});
+} )
 
-const Option = mongoose.model('Option', OptionSchema);
+const Option = mongoose.model( 'Option', OptionSchema )
 
-module.exports = Option;
+module.exports = Option

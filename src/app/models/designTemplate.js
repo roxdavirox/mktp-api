@@ -1,8 +1,8 @@
-const mongoose = require('../../data');
+const mongoose = require( '../../data' )
 
-const { Schema } = mongoose;
+const { Schema } = mongoose
 
-const DesignTemplateSchema = new Schema({
+const DesignTemplateSchema = new Schema( {
   name: {
     type: String,
     required: true,
@@ -29,11 +29,11 @@ const DesignTemplateSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-});
+} )
 
 const DesignTemplate = mongoose.model(
   'DesignTemplate',
   DesignTemplateSchema,
-);
+)
 
-module.exports = DesignTemplate;
+module.exports = DesignTemplate

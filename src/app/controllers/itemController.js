@@ -1,12 +1,12 @@
-const express = require('express');
+const express = require( 'express' )
 
-const Item = require('../models/item');
-const Option = require('../models/option');
+const Item = require( '../models/item' )
+const Option = require( '../models/option' )
 
-const router = express.Router();
+const router = express.Router()
 // TODO: remover funções relacionadas a itens existentes
-const createItemWithoutOption = async (req, res) => {
-  const { name, priceTableId } = req.body;
+const createItemWithoutOption = async ( req, res ) => {
+  const { name, priceTableId } = req.body
 
   try {
     const newItem = {
@@ -14,22 +14,22 @@ const createItemWithoutOption = async (req, res) => {
       priceTableId:
       // eslint-disable-next-line eqeqeq
       priceTableId == '0' ? undefined : priceTableId,
-    };
-    const item = await Item.create({ ...newItem });
+    }
+    const item = await Item.create( { ...newItem } )
 
-    return res.send({ item });
-  } catch (e) {
-    return res.status(400).send({ error: 'Error on creating a item' });
+    return res.send( { item } )
+  } catch ( e ) {
+    return res.status( 400 ).send( { error: 'Error on creating a item' } )
   }
-};
+}
 
-const createItemIntoOptions = async (req, res) => {
+const createItemIntoOptions = async ( req, res ) => {
   try {
-    const { optionId } = req.params;
+    const { optionId } = req.params
 
-    const option = await Option.findById(optionId).populate('items');
+    const option = await Option.findById( optionId ).populate( 'items' )
 
-    const { name, priceTableId } = req.body;
+    const { name, priceTableId } = req.body
     const newItem = {
       name,
       itemType: 'item',
@@ -37,136 +37,136 @@ const createItemIntoOptions = async (req, res) => {
       // eslint-disable-next-line eqeqeq
       priceTableId == '0' ? undefined : priceTableId,
       option: optionId,
-    };
+    }
 
-    const item = await Item.create({ ...newItem });
+    const item = await Item.create( { ...newItem } )
 
-    option.items.push(item);
-    await option.save();
+    option.items.push( item )
+    await option.save()
 
-    return res.send({ item });
-  } catch (err) {
-    return res.status(400).send({ error: "Error on add option's item" });
+    return res.send( { item } )
+  } catch ( err ) {
+    return res.status( 400 ).send( { error: "Error on add option's item" } )
   }
-};
+}
 
-const createTemplateItem = async (req, res) => {
+const createTemplateItem = async ( req, res ) => {
   try {
-    const { optionId } = req.params;
+    const { optionId } = req.params
 
-    const option = await Option.findById(optionId).populate('items');
+    const option = await Option.findById( optionId ).populate( 'items' )
 
-    const { name, options } = req.body;
+    const { name, options } = req.body
     const templateItem = {
       name,
       itemType: 'template',
       priceTableId: undefined,
       templateOptions: options,
       option: optionId,
-    };
+    }
 
-    const item = await Item.create({ ...templateItem });
+    const item = await Item.create( { ...templateItem } )
 
-    option.items.push(item);
+    option.items.push( item )
 
-    await option.save();
+    await option.save()
 
-    return res.send({ templateItem: item });
-  } catch (err) {
-    return res.status(400).send({ error: "Error on add option's item" });
+    return res.send( { templateItem: item } )
+  } catch ( err ) {
+    return res.status( 400 ).send( { error: "Error on add option's item" } )
   }
-};
+}
 
-const updateItemById = async (req, res) => {
+const updateItemById = async ( req, res ) => {
   try {
-    const { itemId } = req.params;
+    const { itemId } = req.params
 
-    const { name, priceTableId } = req.body;
+    const { name, priceTableId } = req.body
     const newItem = {
       name,
       priceTableId:
       // eslint-disable-next-line eqeqeq
       priceTableId == '0' ? undefined : priceTableId,
-    };
+    }
 
     const item = await Item
       .findByIdAndUpdate(
         itemId,
         { ...newItem },
         { new: true },
-      );
+      )
 
-    return res.send({ item });
-  } catch (e) {
-    return res.status(400)
-      .send({ error: 'Error on update item' });
+    return res.send( { item } )
+  } catch ( e ) {
+    return res.status( 400 )
+      .send( { error: 'Error on update item' } )
   }
-};
+}
 
-const getAllItems = async (req, res) => {
+const getAllItems = async ( req, res ) => {
   try {
-    const items = await Item.find();
+    const items = await Item.find()
 
-    return res.send({ items });
-  } catch (e) {
-    return res.status(400).send({ error: 'Error on load items' });
+    return res.send( { items } )
+  } catch ( e ) {
+    return res.status( 400 ).send( { error: 'Error on load items' } )
   }
-};
+}
 
-const getItemsWithOption = async (req, res) => {
+const getItemsWithOption = async ( req, res ) => {
   try {
     // TODO: buscar items com opção
-    const items = await Item.find().populate({
+    const items = await Item.find().populate( {
       path: 'option',
-    }).populate({
+    } ).populate( {
       path: 'priceTableId',
       select: 'unit',
-    });
-    return res.send({ items });
-  } catch (e) {
-    return res.status(400).send({ error: 'Error on get items' });
+    } )
+    return res.send( { items } )
+  } catch ( e ) {
+    return res.status( 400 ).send( { error: 'Error on get items' } )
   }
-};
+}
 
-const deleteManyItemsByIds = async (req, res) => {
+const deleteManyItemsByIds = async ( req, res ) => {
   try {
-    const { itemsId } = req.body;
+    const { itemsId } = req.body
 
-    await Item.deleteMany({ _id: { $in: itemsId } });
+    await Item.deleteMany( { _id: { $in: itemsId } } )
 
-    return res.send({ deletedItemsCount: itemsId.length });
-  } catch (e) {
-    return res.status(400).send({ error: `Error on deleting item(s): ${e}` });
+    return res.send( { deletedItemsCount: itemsId.length } )
+  } catch ( e ) {
+    return res.status( 400 ).send( { error: `Error on deleting item(s): ${e}` } )
   }
-};
+}
 
-const removeOptionsItemsWithoutDeleteFromDB = async (req, res) => {
+const removeOptionsItemsWithoutDeleteFromDB = async ( req, res ) => {
   try {
-    const { optionId } = req.params;
+    const { optionId } = req.params
 
-    const { itemsId } = req.body;
+    const { itemsId } = req.body
 
-    const option = await Option.findById(optionId);
+    const option = await Option.findById( optionId )
 
-    if (itemsId) {
-      itemsId.forEach((id) => option.items.pull(id));
-      await option.save();
+    if ( itemsId ) {
+      itemsId.forEach(( id ) => option.items.pull( id ))
+      await option.save()
     }
 
-    return res.send({ deletedItemsCount: itemsId.length });
-  } catch (e) {
-    return res.status(400).send({ error: `Error on deleting option item(s): ${e}` });
+    return res.send( { deletedItemsCount: itemsId.length } )
+  } catch ( e ) {
+    return res.status( 400 ).send( { error: `Error on deleting option item(s): ${e}` } )
   }
-};
+}
 
-router.post('/', createItemWithoutOption);
-router.post('/:optionId', createItemIntoOptions);
-router.post('/templates/:optionId', createTemplateItem);
-router.put('/:itemId', updateItemById);
-router.get('/', getAllItems);
-router.get('/templates', getItemsWithOption);
-router.delete('/', deleteManyItemsByIds);
+router.post( '/', createItemWithoutOption )
+router.post( '/:optionId', createItemIntoOptions )
+router.post( '/templates/:optionId', createTemplateItem )
+router.put( '/:itemId', updateItemById )
+router.get( '/', getAllItems )
+router.get( '/templates', getItemsWithOption )
+router.delete( '/', deleteManyItemsByIds )
 // deleta os itens de uma opção, mas sem excluir do banco de dados
-router.delete('/:optionId', removeOptionsItemsWithoutDeleteFromDB);
+router.delete( '/:optionId', removeOptionsItemsWithoutDeleteFromDB )
 
-module.exports = (app) => app.use('/items', router);
+module.exports = ( app ) => app.use( '/items', router )
