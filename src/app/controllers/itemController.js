@@ -127,6 +127,20 @@ const getItemsWithOption = async ( req, res ) => {
   }
 }
 
+const getItemById = async ( req, res ) => {
+  try {
+    const item = await Item
+      .findById( req.params.itemId )
+      .populate( {
+        path: 'templateOptions.item',
+      } )
+
+    return res.send( { item } )
+  } catch ( e ) {
+    return res.status( 400 ).send( { error: 'Error on load items' } )
+  }
+}
+
 const deleteManyItemsByIds = async ( req, res ) => {
   try {
     const { itemsId } = req.body
@@ -163,6 +177,7 @@ router.post( '/:optionId', createItemIntoOptions )
 router.post( '/templates/:optionId', createTemplateItem )
 router.put( '/:itemId', updateItemById )
 router.get( '/', getAllItems )
+router.get( '/:itemId', getItemById )
 router.get( '/templates', getItemsWithOption )
 router.delete( '/', deleteManyItemsByIds )
 // deleta os itens de uma opção, mas sem excluir do banco de dados
