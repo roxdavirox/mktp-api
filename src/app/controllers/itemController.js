@@ -115,7 +115,6 @@ const getAllItems = async ( req, res ) => {
 
 const getItemsWithOption = async ( req, res ) => {
   try {
-    // TODO: buscar items com opção
     const items = await Item.find().populate( {
       path: 'option',
     } ).populate( {
