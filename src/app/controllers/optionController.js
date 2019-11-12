@@ -20,10 +20,6 @@ const getAllOptions = async ( req, res ) => {
     const options = await Option.find()
       .populate( {
         path: 'items',
-        populate: {
-          path: 'priceTableId',
-          select: 'unit',
-        },
       } )
 
     return res.send( { options } )
@@ -52,26 +48,6 @@ const updateItemIntoOptions = async ( req, res ) => {
   }
 }
 
-// TODO: Remover função
-// const addExistingItemsIntoOptions = async (req, res) => {
-//   try {
-//     const { optionId } = req.params;
-//     const { itemsId } = req.body;
-
-//     const option = await Option
-//       .findOneAndUpdate({ _id: optionId }, {
-//         $addToSet: { items: { $each: itemsId } },
-//       });
-
-//     await option.save();
-
-//     return res.send({ itemsCount: itemsId.length });
-//   } catch (err) {
-//     return res.status(400)
-//       .send({ error: 'Error on add existing items into option' });
-//   }
-// };
-
 const deleteManyOptionsByIds = async ( req, res ) => {
   try {
     const { optionsId } = req.body
@@ -87,7 +63,6 @@ const deleteManyOptionsByIds = async ( req, res ) => {
 router.post( '/', createOption )
 router.get( '/', getAllOptions )
 router.put( '/', updateItemIntoOptions )
-// router.put('/:optionId', addExistingItemsIntoOptions);
 router.delete( '/', deleteManyOptionsByIds )
 
 module.exports = ( app ) => app.use( '/options', router )
