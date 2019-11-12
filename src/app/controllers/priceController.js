@@ -86,9 +86,9 @@ const updatePriceById = async ( req, res ) => {
       && Number( price.end ) === Number( end )
       && Number( price.value ) !== Number( value )) {
       const newPrice = await Price.findByIdAndUpdate( priceId,
-        { ...price },
+        { value },
         { new: true } )
-      return { price: newPrice, newPrices: [] }
+      return res.send( { price: newPrice, newPrices: [] } )
     }
 
     const priceTable = await PriceTable
