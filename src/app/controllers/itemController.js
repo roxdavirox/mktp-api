@@ -109,7 +109,7 @@ const getAllItems = async ( req, res ) => {
 
     return res.send( { items } )
   } catch ( e ) {
-    return res.status( 400 ).send( { error: 'Error on load items' } )
+    return res.status( 400 ).send( { error: 'Error on load all items' } )
   }
 }
 
@@ -123,7 +123,7 @@ const getItemsWithOption = async ( req, res ) => {
     } )
     return res.send( { items } )
   } catch ( e ) {
-    return res.status( 400 ).send( { error: 'Error on get items' } )
+    return res.status( 400 ).send( { error: 'Error on get items with price table' } )
   }
 }
 
@@ -177,8 +177,8 @@ router.post( '/:optionId', createItemIntoOptions )
 router.post( '/templates/:optionId', createTemplateItem )
 router.put( '/:itemId', updateItemById )
 router.get( '/', getAllItems )
-router.get( '/:itemId', getItemById )
 router.get( '/templates', getItemsWithOption )
+router.get( '/:itemId', getItemById )
 router.delete( '/', deleteManyItemsByIds )
 // deleta os itens de uma opção, mas sem excluir do banco de dados
 router.delete( '/:optionId', removeOptionsItemsWithoutDeleteFromDB )
