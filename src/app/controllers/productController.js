@@ -11,7 +11,7 @@ const { productImageUpload } = require( '../../services/azureStorage' )
 
 const router = express.Router()
 
-const uploadProduct = async ( req, res ) => {
+const createProduct = async ( req, res ) => {
   try {
     const { name, categoryId, options: prevOptions } = req.body
     const { file } = req
@@ -140,10 +140,10 @@ const getProductDetailsByProductId = async ( req, res ) => {
   }
 }
 
-router.post( '/', upload.single( 'image' ), uploadProduct )
+router.post( '/', upload.single( 'image' ), createProduct )
 router.get( '/', getProducts )
-router.get( '/:productId', getProductById )
 router.get( '/templates', getAllTemplatesCategory )
+router.get( '/:productId', getProductById )
 router.get( '/home', getHomeProducts )
 router.get( '/details/:productId', getProductDetailsByProductId )
 

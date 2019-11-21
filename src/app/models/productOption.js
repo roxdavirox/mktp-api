@@ -2,6 +2,8 @@ const mongoose = require( '../../data' )
 
 const { Schema } = mongoose
 
+// schema utilizado para relacionar o produto com opções especificas já existentes
+
 const ProductOptionSchema = new Schema( {
   option: {
     type: Schema.Types.ObjectId,
