@@ -69,6 +69,31 @@ const getProducts = async ( req, res ) => {
   }
 }
 
+const getProductById = async ( req, res ) => {
+  try {
+    const { productId } = req.params
+    const product = await Product
+      .findById( productId )
+      .populate( [
+        {
+          path: 'templatesCategory',
+          populate: {
+            path: 'productTemplates',
+          },
+        },
+        {
+          path: 'options',
+          populate: ['option', 'items'],
+        },
+      ] )
+
+    return res.send( product )
+  } catch ( e ) {
+    return res.status( 400 )
+      .send( { error: `Error on get product by id: ${e}` } )
+  }
+}
+
 const getAllTemplatesCategory = async ( req, res ) => {
   try {
     const products = await Product.find().populate( 'templatesCategory' )
@@ -117,6 +142,7 @@ const getProductDetailsByProductId = async ( req, res ) => {
 
 router.post( '/', upload.single( 'image' ), uploadProduct )
 router.get( '/', getProducts )
+router.get( '/:productId', getProductById )
 router.get( '/templates', getAllTemplatesCategory )
 router.get( '/home', getHomeProducts )
 router.get( '/details/:productId', getProductDetailsByProductId )
