@@ -7,11 +7,11 @@ const router = express.Router()
 const createProductTemplate = async ( req, res ) => {
   try {
     const { name, options } = req.body
-    const productTemplate = await ProductTemplate.create( { name, options } )
-    return res.send( { productTemplate } )
+    const productTemplate = await ProductTemplate.create({ name, options })
+    return res.send({ productTemplate })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error when creating a product template: ${e}` } )
+      .send({ error: `Error when creating a product template: ${e}` })
   }
 }
 
@@ -19,19 +19,19 @@ const getAllProductTemplates = async ( req, res ) => {
   try {
     const productTemplates = await ProductTemplate
       .find()
-      .populate( {
+      .populate({
         path: 'options.option',
         select: 'name',
-      } )
-      .populate( {
+      })
+      .populate({
         path: 'options.item',
         select: 'name',
-      } )
+      })
 
-    return res.send( { productTemplates } )
+    return res.send({ productTemplates })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error on product templates: ${e}` } )
+      .send({ error: `Error on product templates: ${e}` })
   }
 }
 

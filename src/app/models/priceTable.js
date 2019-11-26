@@ -2,7 +2,7 @@ const mongoose = require( '../../data' )
 
 const { Schema } = mongoose
 
-const PriceTableSchema = new Schema( {
+const PriceTableSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -21,7 +21,7 @@ const PriceTableSchema = new Schema( {
     type: Date,
     default: Date.now,
   },
-} )
+})
 
 const PriceTable = mongoose.model( 'PriceTable', PriceTableSchema )
 

@@ -8,10 +8,10 @@ const Product = require( '../models/product' )
 const getAllTemplatesCategory = async ( req, res ) => {
   try {
     const templatesCategory = await TemplateCategory.find()
-    return res.send( { templatesCategory } )
+    return res.send({ templatesCategory })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error when get all templates category ${e}` } )
+      .send({ error: `Error when get all templates category ${e}` })
   }
 }
 
@@ -23,10 +23,10 @@ const getTemplatesCategoryByProductId = async ( req, res ) => {
       .populate( 'templatesCategory' )
 
     const { templatesCategory } = product
-    return res.send( { templatesCategory } )
+    return res.send({ templatesCategory })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error when get templates category by product id ${e}` } )
+      .send({ error: `Error when get templates category by product id ${e}` })
   }
 }
 
@@ -36,16 +36,16 @@ const createTemplateCategory = async ( req, res ) => {
     const { name } = req.body
 
     const product = await Product.findById( productId )
-    const templateCategory = await TemplateCategory.create( { name } )
+    const templateCategory = await TemplateCategory.create({ name })
 
     product.templatesCategory.push( templateCategory )
 
     await product.save()
 
-    return res.send( { templateCategory } )
+    return res.send({ templateCategory })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error on creating template category ${e}` } )
+      .send({ error: `Error on creating template category ${e}` })
   }
 }
 

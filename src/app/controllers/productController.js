@@ -34,7 +34,7 @@ const createProduct = async ( req, res ) => {
       product.options.push( option )
 
       return option
-    }) )
+    }))
 
     await product.save()
 

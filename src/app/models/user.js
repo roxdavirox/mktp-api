@@ -1,7 +1,7 @@
 const bcrypt = require( 'bcryptjs' )
 const mongoose = require( '../../data' )
 
-const UserSchema = new mongoose.Schema( {
+const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema( {
     type: Date,
     default: Date.now,
   },
-} )
+})
 
 // eslint-disable-next-line func-names
 UserSchema.pre( 'save', async function ( next ) {
@@ -41,7 +41,7 @@ UserSchema.pre( 'save', async function ( next ) {
   this.password = hash
 
   next()
-} )
+})
 
 const User = mongoose.model( 'User', UserSchema )
 

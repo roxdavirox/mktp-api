@@ -2,7 +2,7 @@ const mongoose = require( '../../data' )
 
 const { Schema } = mongoose
 
-const PriceSchema = new Schema( {
+const PriceSchema = new Schema({
   start: {
     type: Number,
     required: true,
@@ -24,7 +24,7 @@ const PriceSchema = new Schema( {
     type: Date,
     default: Date.now,
   },
-} )
+})
 
 const Price = mongoose.model( 'Price', PriceSchema )
 

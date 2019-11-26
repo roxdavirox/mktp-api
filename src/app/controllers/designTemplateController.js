@@ -8,7 +8,7 @@ const DesignTemplate = require( '../models/designTemplate' )
 const router = express.Router()
 
 const storage = multer.memoryStorage()
-const upload = multer( { storage } )
+const upload = multer({ storage })
 const { templatePreviewUpload } = require( '../../services/azureStorage' )
 const { uploadPsdToCustomerCanvas } = require( '../../services/customerCanvas' )
 
@@ -28,21 +28,21 @@ const uploadDesignTemplateFiles = async ( req, res ) => {
 
     const templateCategory = await TemplateCategory.findById( templateCategoryId )
 
-    const designTemplate = await DesignTemplate.create( {
+    const designTemplate = await DesignTemplate.create({
       name,
       imageUrl,
       psdUrl,
       product: productId,
       templateCategory: templateCategoryId,
-    } )
+    })
 
     templateCategory.designTemplates.push( designTemplate )
     await templateCategory.save()
 
-    return res.send( { designTemplate } )
+    return res.send({ designTemplate })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error on creating a product design template: ${e}` } )
+      .send({ error: `Error on creating a product design template: ${e}` })
   }
 }
 
@@ -54,10 +54,10 @@ const getDesignTemplatesByTemplateCategoryId = async ( req, res ) => {
       .findById( templateCategoryId )
       .populate( 'designTemplates' )
 
-    return res.send( { designTemplates: templateCategory.designTemplates } )
+    return res.send({ designTemplates: templateCategory.designTemplates })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error on get product design template: ${e}` } )
+      .send({ error: `Error on get product design template: ${e}` })
   }
 }
 
@@ -67,13 +67,13 @@ const getDesignTemplatesByProductId = async ( req, res ) => {
     const { productId } = req.params
 
     const designTemplates = await DesignTemplate
-      .find( { product: { $in: new ObjectId( productId ) } } )
+      .find({ product: { $in: new ObjectId( productId ) } })
       .populate( 'product' )
 
-    return res.send( { designTemplates } )
+    return res.send({ designTemplates })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error on get product design template: ${e}` } )
+      .send({ error: `Error on get product design template: ${e}` })
   }
 }
 
@@ -81,10 +81,10 @@ const getAllDesignTemplates = async ( req, res ) => {
   try {
     const designTemplates = await DesignTemplate.find()
 
-    return res.send( { designTemplates } )
+    return res.send({ designTemplates })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error on get product design template: ${e}` } )
+      .send({ error: `Error on get product design template: ${e}` })
   }
 }
 

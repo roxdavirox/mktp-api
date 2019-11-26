@@ -15,22 +15,22 @@ const createPriceByPriceTableId = async ( req, res ) => {
     const priceTable = await PriceTable.findById( priceTableId )
 
     await Promise.all( prices.map( async ( p ) => {
-      const price = new Price( {
+      const price = new Price({
         ...p,
         priceTable: priceTableId,
-      } )
+      })
 
       await price.save()
 
       priceTable.prices.push( price )
-    } ))
+    }))
 
     await priceTable.save()
 
-    return res.send( { priceTable } )
+    return res.send({ priceTable })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error on post new price table: ${e}` } )
+      .send({ error: `Error on post new price table: ${e}` })
   }
 }
 
@@ -41,26 +41,26 @@ const generatePriceRange = async ( req, res ) => {
 
     const priceTable = await PriceTable.findByIdAndUpdate( priceTableId, {
       unit,
-    }, { new: true } )
+    }, { new: true })
     priceTable.prices = []
 
     await Promise.all( prices.map( async ( p ) => {
-      const price = new Price( {
+      const price = new Price({
         ...p,
         priceTable: priceTableId,
-      } )
+      })
 
       price.save()
 
       priceTable.prices.push( price )
-    } ))
+    }))
 
     await priceTable.save()
 
-    return res.send( { priceTable } )
+    return res.send({ priceTable })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: 'Error on post price range into priceTable' } )
+      .send({ error: 'Error on post price range into priceTable' })
   }
 }
 
@@ -72,11 +72,11 @@ const updatePriceById = async ( req, res ) => {
 
     if ( start === null || end === null || value === null ) {
       return res.status( 400 )
-        .send( { error: 'Input null' } )
+        .send({ error: 'Input null' })
     }
 
     if ( Number( start ) > Number( end )) {
-      return res.status( 400 ).send( { error: 'inicio nao pode ser maior do o final' } )
+      return res.status( 400 ).send({ error: 'inicio nao pode ser maior do o final' })
     }
 
     const price = await Price.findById( priceId )
@@ -87,12 +87,12 @@ const updatePriceById = async ( req, res ) => {
       && Number( price.value ) !== Number( value )) {
       const newPrice = await Price.findByIdAndUpdate( priceId,
         { value },
-        { new: true } )
-      return res.send( { price: newPrice, newPrices: [] } )
+        { new: true })
+      return res.send({ price: newPrice, newPrices: [] })
     }
 
     const priceTable = await PriceTable
-      .findOne( { prices: { $in: new ObjectId( priceId ) } } )
+      .findOne({ prices: { $in: new ObjectId( priceId ) } })
       .populate( 'prices' )
 
     const { prices } = priceTable
@@ -107,7 +107,7 @@ const updatePriceById = async ( req, res ) => {
           prices[i].save()
           prices[i + 1].start = Number( end ) + diff
           prices[i + 1].save()
-          newPrices.push( prices[i + 1] )
+          newPrices.push( prices[i + 1])
           break
         }
       }
@@ -120,7 +120,7 @@ const updatePriceById = async ( req, res ) => {
           prices[i].save()
           prices[i - 1].end = Number( start ) - diff
           prices[i - 1].save()
-          newPrices.push( prices[i - 1] )
+          newPrices.push( prices[i - 1])
           break
         }
       }
@@ -129,10 +129,10 @@ const updatePriceById = async ( req, res ) => {
     await priceTable.save()
     const newPrice = await Price.findById( priceId )
 
-    return res.send( { price: newPrice, newPrices } )
+    return res.send({ price: newPrice, newPrices })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error on update price: ${e}` } )
+      .send({ error: `Error on update price: ${e}` })
   }
 }
 
@@ -144,10 +144,10 @@ const getPricesByPriceTableId = async ( req, res ) => {
       .findById( priceTableId )
       .populate( 'prices' )
 
-    return res.send( { priceTable } )
+    return res.send({ priceTable })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error on get prices: ${e}` } )
+      .send({ error: `Error on get prices: ${e}` })
   }
 }
 
@@ -159,8 +159,8 @@ const createLastPrice = async ( req, res ) => {
     const priceTable = await PriceTable.findById( priceTableId )
 
     const prices = await Price
-      .find( { priceTable: priceTableId } )
-      .sort( { _id: -1 } )
+      .find({ priceTable: priceTableId })
+      .sort({ _id: -1 })
       .limit( 1 )
 
     const [lastPrice] = prices
@@ -172,16 +172,16 @@ const createLastPrice = async ( req, res ) => {
         { new: true },
       )
 
-    const newPrice = await Price.create( { ...price, priceTable: priceTableId } )
+    const newPrice = await Price.create({ ...price, priceTable: priceTableId })
 
     priceTable.prices.push( newPrice )
 
     await priceTable.save()
 
-    return res.send( { prices: [newLastPrice, newPrice] } )
+    return res.send({ prices: [newLastPrice, newPrice] })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error when add last price: ${e}` } )
+      .send({ error: `Error when add last price: ${e}` })
   }
 }
 
@@ -192,10 +192,10 @@ const deleteManyPrices = async ( req, res ) => {
     const { priceIds } = req.body
     const [priceId] = priceIds
 
-    await Price.deleteMany( { _id: { $in: priceIds } } )
+    await Price.deleteMany({ _id: { $in: priceIds } })
 
     const priceTable = await PriceTable
-      .findOne( { prices: { $in: new ObjectId( priceId ) } } )
+      .findOne({ prices: { $in: new ObjectId( priceId ) } })
       .populate( 'prices' )
 
     const { prices } = priceTable
@@ -210,16 +210,16 @@ const deleteManyPrices = async ( req, res ) => {
         const diff = priceTable.unit === 'quantidade' ? 1 : 0.0001
         prices[i].end = prices[i + 1].start - diff
         prices[i].save()
-        newPrices.push( prices[i] )
+        newPrices.push( prices[i])
       }
     }
 
     await priceTable.save()
 
-    return res.send( { deletedCount: priceIds.length, newPrices } )
+    return res.send({ deletedCount: priceIds.length, newPrices })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: `Error on delete prices: ${e}` } )
+      .send({ error: `Error on delete prices: ${e}` })
   }
 }
 

@@ -15,11 +15,11 @@ const createItemWithoutOption = async ( req, res ) => {
       // eslint-disable-next-line eqeqeq
       priceTableId == '0' ? undefined : priceTableId,
     }
-    const item = await Item.create( { ...newItem } )
+    const item = await Item.create({ ...newItem })
 
-    return res.send( { item } )
+    return res.send({ item })
   } catch ( e ) {
-    return res.status( 400 ).send( { error: 'Error on creating a item' } )
+    return res.status( 400 ).send({ error: 'Error on creating a item' })
   }
 }
 
@@ -39,14 +39,14 @@ const createItemIntoOptions = async ( req, res ) => {
       option: optionId,
     }
 
-    const item = await Item.create( { ...newItem } )
+    const item = await Item.create({ ...newItem })
 
     option.items.push( item )
     await option.save()
 
-    return res.send( { item } )
+    return res.send({ item })
   } catch ( err ) {
-    return res.status( 400 ).send( { error: "Error on add option's item" } )
+    return res.status( 400 ).send({ error: "Error on add option's item" })
   }
 }
 
@@ -65,15 +65,15 @@ const createTemplateItem = async ( req, res ) => {
       option: optionId,
     }
 
-    const item = await Item.create( { ...templateItem } )
+    const item = await Item.create({ ...templateItem })
 
     option.items.push( item )
 
     await option.save()
 
-    return res.send( { templateItem: item } )
+    return res.send({ templateItem: item })
   } catch ( err ) {
-    return res.status( 400 ).send( { error: "Error on add option's item" } )
+    return res.status( 400 ).send({ error: "Error on add option's item" })
   }
 }
 
@@ -96,10 +96,10 @@ const updateItemById = async ( req, res ) => {
         { new: true },
       )
 
-    return res.send( { item } )
+    return res.send({ item })
   } catch ( e ) {
     return res.status( 400 )
-      .send( { error: 'Error on update item' } )
+      .send({ error: 'Error on update item' })
   }
 }
 
@@ -107,23 +107,23 @@ const getAllItems = async ( req, res ) => {
   try {
     const items = await Item.find()
 
-    return res.send( { items } )
+    return res.send({ items })
   } catch ( e ) {
-    return res.status( 400 ).send( { error: 'Error on load all items' } )
+    return res.status( 400 ).send({ error: 'Error on load all items' })
   }
 }
 
 const getItemsWithOption = async ( req, res ) => {
   try {
-    const items = await Item.find().populate( {
+    const items = await Item.find().populate({
       path: 'option',
-    } ).populate( {
+    }).populate({
       path: 'priceTableId',
       select: 'unit',
-    } )
-    return res.send( { items } )
+    })
+    return res.send({ items })
   } catch ( e ) {
-    return res.status( 400 ).send( { error: 'Error on get items with price table' } )
+    return res.status( 400 ).send({ error: 'Error on get items with price table' })
   }
 }
 
@@ -131,13 +131,13 @@ const getItemById = async ( req, res ) => {
   try {
     const item = await Item
       .findById( req.params.itemId )
-      .populate( {
+      .populate({
         path: 'templateOptions.item',
-      } )
+      })
 
-    return res.send( { item } )
+    return res.send({ item })
   } catch ( e ) {
-    return res.status( 400 ).send( { error: 'Error on load items' } )
+    return res.status( 400 ).send({ error: 'Error on load items' })
   }
 }
 
@@ -145,11 +145,11 @@ const deleteManyItemsByIds = async ( req, res ) => {
   try {
     const { itemsId } = req.body
 
-    await Item.deleteMany( { _id: { $in: itemsId } } )
+    await Item.deleteMany({ _id: { $in: itemsId } })
 
-    return res.send( { deletedItemsCount: itemsId.length } )
+    return res.send({ deletedItemsCount: itemsId.length })
   } catch ( e ) {
-    return res.status( 400 ).send( { error: `Error on deleting item(s): ${e}` } )
+    return res.status( 400 ).send({ error: `Error on deleting item(s): ${e}` })
   }
 }
 
@@ -166,9 +166,9 @@ const removeOptionsItemsWithoutDeleteFromDB = async ( req, res ) => {
       await option.save()
     }
 
-    return res.send( { deletedItemsCount: itemsId.length } )
+    return res.send({ deletedItemsCount: itemsId.length })
   } catch ( e ) {
-    return res.status( 400 ).send( { error: `Error on deleting option item(s): ${e}` } )
+    return res.status( 400 ).send({ error: `Error on deleting option item(s): ${e}` })
   }
 }
 

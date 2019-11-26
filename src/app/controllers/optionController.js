@@ -9,22 +9,22 @@ const createOption = async ( req, res ) => {
   try {
     const option = await Option.create( req.body )
 
-    return res.send( { option } )
+    return res.send({ option })
   } catch ( e ) {
-    return res.status( 400 ).send( { error: 'Error when try to create a option' } )
+    return res.status( 400 ).send({ error: 'Error when try to create a option' })
   }
 }
 
 const getAllOptions = async ( req, res ) => {
   try {
     const options = await Option.find()
-      .populate( {
+      .populate({
         path: 'items',
-      } )
+      })
 
-    return res.send( { options } )
+    return res.send({ options })
   } catch ( e ) {
-    return res.status( 400 ).send( { error: 'Error on load options' } )
+    return res.status( 400 ).send({ error: 'Error on load options' })
   }
 }
 
@@ -42,9 +42,9 @@ const updateItemIntoOptions = async ( req, res ) => {
 
     await option.save()
 
-    return res.send( { option } )
+    return res.send({ option })
   } catch ( err ) {
-    return res.status( 400 ).send( { error: 'Error on update option' } )
+    return res.status( 400 ).send({ error: 'Error on update option' })
   }
 }
 
@@ -52,11 +52,11 @@ const deleteManyOptionsByIds = async ( req, res ) => {
   try {
     const { optionsId } = req.body
 
-    await Option.deleteMany( { _id: { $in: optionsId } } )
+    await Option.deleteMany({ _id: { $in: optionsId } })
 
-    return res.send( { deletedOptionsCount: optionsId.length } )
+    return res.send({ deletedOptionsCount: optionsId.length })
   } catch ( e ) {
-    return res.status( 400 ).send( { error: `Error on deleting option(s): ${e}` } )
+    return res.status( 400 ).send({ error: `Error on deleting option(s): ${e}` })
   }
 }
 

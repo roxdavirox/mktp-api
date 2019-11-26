@@ -23,7 +23,7 @@ async function uploadPsdToCustomerCanvas( psdFile ) {
   const { buffer } = psdFile
   // eslint-disable-next-line new-cap
   const newBuffer = new Buffer.from( buffer )
-  fd.append( 'file', newBuffer, { filename: newFileName, contentType: 'application/octet-stream' } )
+  fd.append( 'file', newBuffer, { filename: newFileName, contentType: 'application/octet-stream' })
   const options = {
     headers: {
       'X-CustomersCanvasAPIKey': ccSecurityKey,

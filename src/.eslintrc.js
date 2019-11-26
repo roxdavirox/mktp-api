@@ -3,6 +3,6 @@ module.exports = {
     "rules": {
         "linebreak-style": 0,
         "semi": ["error","never"],
-        "space-in-parens": ["error", "always", { "exceptions": ["()"] }]
+        "space-in-parens": ["error", "always", { "exceptions": ["{}", "[]", "()"] }]
       }
 };

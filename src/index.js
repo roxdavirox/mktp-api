@@ -1,22 +1,18 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require( 'express' )
+const bodyParser = require( 'body-parser' )
 
-const cors = require('cors');
+const cors = require( 'cors' )
 
-const app = express();
+const app = express()
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use( bodyParser.json())
+app.use( bodyParser.urlencoded({ extended: false }))
+app.use( cors())
 
-app.get('/', (req, res) => {
-  res.send('ok');
-});
+require( 'dotenv' ).config()
 
-require('dotenv').config();
+require( './app/controllers/index' )( app )
 
-require('./app/controllers/index')(app);
+const port = process.env.PORT || 3001
 
-const port = process.env.PORT || 3001;
-
-app.listen(port);
+app.listen( port )

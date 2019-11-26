@@ -2,7 +2,7 @@ const mongoose = require( '../../data' )
 
 const { Schema } = mongoose
 
-const ProductTemplateSchema = new Schema( {
+const ProductTemplateSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -23,7 +23,7 @@ const ProductTemplateSchema = new Schema( {
     type: Date,
     default: Date.now,
   },
-} )
+})
 
 const ProductTemplate = mongoose.model( 'ProductTemplate', ProductTemplateSchema )
 
