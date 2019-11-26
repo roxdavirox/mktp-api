@@ -1,4 +1,4 @@
-const mongoose = require( '../../data' )
+const mongoose = require('../../data')
 
 const { Schema } = mongoose
 
@@ -23,6 +23,6 @@ const PriceTableSchema = new Schema({
   },
 })
 
-const PriceTable = mongoose.model( 'PriceTable', PriceTableSchema )
+const PriceTable = mongoose.model('PriceTable', PriceTableSchema)
 
 module.exports = PriceTable

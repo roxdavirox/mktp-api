@@ -1,4 +1,4 @@
-const mongoose = require( '../../data' )
+const mongoose = require('../../data')
 
 const { Schema } = mongoose
 
@@ -21,6 +21,6 @@ const ProductOptionSchema = new Schema({
   },
 })
 
-const ProductOption = mongoose.model( 'ProductOption', ProductOptionSchema )
+const ProductOption = mongoose.model('ProductOption', ProductOptionSchema)
 
 module.exports = ProductOption

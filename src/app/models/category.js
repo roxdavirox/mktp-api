@@ -1,4 +1,4 @@
-const mongoose = require( '../../data' )
+const mongoose = require('../../data')
 
 const { Schema } = mongoose
 
@@ -23,6 +23,6 @@ const CategorySchema = new Schema({
   },
 })
 
-const Category = mongoose.model( 'Category', CategorySchema )
+const Category = mongoose.model('Category', CategorySchema)
 
 module.exports = Category

@@ -1,22 +1,22 @@
-const express = require( 'express' )
+const express = require('express')
 
-const multer = require( 'multer' )
-const Product = require( '../models/product' )
-const ProductOption = require( '../models/productOption' )
+const multer = require('multer')
+const Product = require('../models/product')
+const ProductOption = require('../models/productOption')
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
-const { productImageUpload } = require( '../../services/azureStorage' )
+const { productImageUpload } = require('../../services/azureStorage')
 
 const router = express.Router()
 
-const createProduct = async ( req, res ) => {
+const createProduct = async (req, res) => {
   try {
     const { name, categoryId, options: prevOptions } = req.body
     const { file } = req
-    const newOptions = JSON.parse( prevOptions )
-    const response = await productImageUpload( file )
+    const newOptions = JSON.parse(prevOptions)
+    const response = await productImageUpload(file)
     const { imageUrl } = response
 
     const product = await Product.create({
@@ -25,13 +25,13 @@ const createProduct = async ( req, res ) => {
       imageUrl,
     })
 
-    await Promise.all( newOptions.map( async ( op ) => {
+    await Promise.all(newOptions.map(async (op) => {
       const option = await ProductOption.create({
         option: op.id,
         items: op.items,
       })
 
-      product.options.push( option )
+      product.options.push(option)
 
       return option
     }))
@@ -39,13 +39,13 @@ const createProduct = async ( req, res ) => {
     await product.save()
 
     return res.send({ product })
-  } catch ( e ) {
-    return res.status( 400 )
+  } catch (e) {
+    return res.status(400)
       .send({ error: `Error on post new product: ${e}` })
   }
 }
 
-const getProducts = async ( req, res ) => {
+const getProducts = async (req, res) => {
   try {
     const products = await Product
       .find()
@@ -62,17 +62,17 @@ const getProducts = async ( req, res ) => {
         },
       ])
 
-    return res.send( products )
-  } catch ( e ) {
-    return res.status( 400 )
+    return res.send(products)
+  } catch (e) {
+    return res.status(400)
       .send({ error: `Error on get products: ${e}` })
   }
 }
 
-const getItemsByProductId = async ( req, res ) => {
+const getItemsByProductId = async (req, res) => {
   try {
     const product = await Product
-      .findById( req.params.productId )
+      .findById(req.params.productId)
       .populate([
         {
           path: 'templatesCategory',
@@ -87,17 +87,17 @@ const getItemsByProductId = async ( req, res ) => {
       ])
 
     return res.send({ product })
-  } catch ( e ) {
-    return res.status( 400 )
+  } catch (e) {
+    return res.status(400)
       .send({ error: `Error on get products: ${e}` })
   }
 }
 
-const getProductById = async ( req, res ) => {
+const getProductById = async (req, res) => {
   try {
     const { productId } = req.params
     const product = await Product
-      .findById( productId )
+      .findById(productId)
       .populate([
         {
           path: 'templatesCategory',
@@ -111,39 +111,39 @@ const getProductById = async ( req, res ) => {
         },
       ])
 
-    return res.send( product )
-  } catch ( e ) {
-    return res.status( 400 )
+    return res.send(product)
+  } catch (e) {
+    return res.status(400)
       .send({ error: `Error on get product by id: ${e}` })
   }
 }
 
-const getAllTemplatesCategory = async ( req, res ) => {
+const getAllTemplatesCategory = async (req, res) => {
   try {
-    const products = await Product.find().populate( 'templatesCategory' )
-    return res.send( products )
-  } catch ( e ) {
-    return res.status( 400 )
+    const products = await Product.find().populate('templatesCategory')
+    return res.send(products)
+  } catch (e) {
+    return res.status(400)
       .send({ error: `Error on get products: ${e}` })
   }
 }
 
-const getHomeProducts = async ( req, res ) => {
+const getHomeProducts = async (req, res) => {
   try {
     const fields = ['name', 'imageUrl', 'description', 'price']
-    const products = await Product.find({}, fields )
+    const products = await Product.find({}, fields)
     return res.send({ products })
-  } catch ( e ) {
-    return res.status( 400 )
+  } catch (e) {
+    return res.status(400)
       .send({ error: `Error on get products for home page: ${e}` })
   }
 }
 
-const getProductDetailsByProductId = async ( req, res ) => {
+const getProductDetailsByProductId = async (req, res) => {
   try {
     const { productId } = req.params
     const product = await Product
-      .findById( productId )
+      .findById(productId)
       .populate([
         {
           path: 'templatesCategory',
@@ -158,18 +158,18 @@ const getProductDetailsByProductId = async ( req, res ) => {
       ])
 
     return res.send({ product })
-  } catch ( e ) {
-    return res.status( 400 )
+  } catch (e) {
+    return res.status(400)
       .send({ error: `Error on get product details by id: ${e}` })
   }
 }
 
-router.post( '/', upload.single( 'image' ), createProduct )
-router.get( '/', getProducts )
-router.get( '/:productId/items', getItemsByProductId )
-router.get( '/templates', getAllTemplatesCategory )
-router.get( '/:productId', getProductById )
-router.get( '/home', getHomeProducts )
-router.get( '/details/:productId', getProductDetailsByProductId )
+router.post('/', upload.single('image'), createProduct)
+router.get('/', getProducts)
+router.get('/:productId/items', getItemsByProductId)
+router.get('/templates', getAllTemplatesCategory)
+router.get('/:productId', getProductById)
+router.get('/home', getHomeProducts)
+router.get('/details/:productId', getProductDetailsByProductId)
 
-module.exports = ( app ) => app.use( '/products', router )
+module.exports = (app) => app.use('/products', router)

@@ -1,29 +1,29 @@
 /* eslint-disable no-console */
-const uuid = require( 'uuid/v1' )
-const axios = require( 'axios' )
-const FormData = require( 'form-data' )
+const uuid = require('uuid/v1')
+const axios = require('axios')
+const FormData = require('form-data')
 
-function getRandomFileName( originalfilename ) {
+function getRandomFileName(originalfilename) {
   // eslint-disable-next-line no-unused-vars
-  const [_, ext] = originalfilename.split( '.' )
-  console.log( 'extension:', ext )
+  const [_, ext] = originalfilename.split('.')
+  console.log('extension:', ext)
   const newFileName = `${uuid()}.${ext}`
   return newFileName
 }
 
-async function uploadPsdToCustomerCanvas( psdFile ) {
+async function uploadPsdToCustomerCanvas(psdFile) {
   const { originalname } = psdFile
-  const newFileName = getRandomFileName( originalname )
+  const newFileName = getRandomFileName(originalname)
 
   const customerCanvasUrlApi = process.env.CUSTOMER_CANVAS_URL_API
   const ccSecurityKey = process.env.CUSTOMER_CANVAS_SECURITY_KEY
   const url = `${customerCanvasUrlApi}/ProductTemplates/designs/test`
   const fd = new FormData()
-  console.log( 'enviando psd para url:', url )
+  console.log('enviando psd para url:', url)
   const { buffer } = psdFile
   // eslint-disable-next-line new-cap
-  const newBuffer = new Buffer.from( buffer )
-  fd.append( 'file', newBuffer, { filename: newFileName, contentType: 'application/octet-stream' })
+  const newBuffer = new Buffer.from(buffer)
+  fd.append('file', newBuffer, { filename: newFileName, contentType: 'application/octet-stream' })
   const options = {
     headers: {
       'X-CustomersCanvasAPIKey': ccSecurityKey,
@@ -33,7 +33,7 @@ async function uploadPsdToCustomerCanvas( psdFile ) {
     },
   }
 
-  const response = await axios.post( url, fd, options )
+  const response = await axios.post(url, fd, options)
   return response
 }
 

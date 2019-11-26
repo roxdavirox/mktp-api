@@ -1,4 +1,4 @@
-const mongoose = require( '../../data' )
+const mongoose = require('../../data')
 
 const { Schema } = mongoose
 
@@ -17,6 +17,6 @@ const OptionSchema = new Schema({
   },
 })
 
-const Option = mongoose.model( 'Option', OptionSchema )
+const Option = mongoose.model('Option', OptionSchema)
 
 module.exports = Option
