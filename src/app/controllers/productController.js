@@ -45,6 +45,43 @@ const createProduct = async (req, res) => {
   }
 }
 
+const updateProduct = async (req, res) => {
+  try {
+    const {
+      name, categoryId, options: prevOptions, isImageChanged = false,
+    } = req.body
+    // TODO: atualizar productOptions usando subdoc
+    // const { file } = req
+    // const response = await productImageUpload(file)
+    // const { imageUrl } = response
+
+    // const productUpdated = await Product.findByIdAndUpdate(req.params.productId, {
+    //   name,
+    //   category: categoryId,
+    // }, { new: true })
+    // const { options: productOptions } = productUpdated
+    // const newOptions = JSON.parse(prevOptions)
+
+    // await Promise.all(newOptions.map(async (op) => {
+    //   const option = await ProductOption.create({
+    //     option: op.id,
+    //     items: op.items,
+    //   })
+
+    //   productUpdated.options.push(option)
+
+    //   return option
+    // }))
+
+    // await productUpdated.save()
+
+    return res.send({ product: [] })
+  } catch (e) {
+    return res.status(400)
+      .send({ error: `Error on post new product: ${e}` })
+  }
+}
+
 const getProducts = async (req, res) => {
   try {
     const products = await Product
@@ -165,6 +202,7 @@ const getProductDetailsByProductId = async (req, res) => {
 }
 
 router.post('/', upload.single('image'), createProduct)
+router.put('/:productId', upload.single('image'), updateProduct)
 router.get('/', getProducts)
 router.get('/:productId/items', getItemsByProductId)
 router.get('/templates', getAllTemplatesCategory)
