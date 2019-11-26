@@ -69,6 +69,32 @@ const getProducts = async ( req, res ) => {
   }
 }
 
+const getItemsByProductId = async ( req, res ) => {
+  try {
+    const products = await Product
+      .find()
+      .populate( [
+        {
+          path: 'templatesCategory',
+          populate: {
+            path: 'productTemplates',
+          },
+        },
+        {
+          path: 'options',
+          populate: ['option'],
+        },
+      ] )
+
+    // const items = products.reduce(( all, crr ) => [...all, ...crr.options.items], [] )
+
+    return res.send( products )
+  } catch ( e ) {
+    return res.status( 400 )
+      .send( { error: `Error on get products: ${e}` } )
+  }
+}
+
 const getProductById = async ( req, res ) => {
   try {
     const { productId } = req.params
@@ -142,6 +168,7 @@ const getProductDetailsByProductId = async ( req, res ) => {
 
 router.post( '/', upload.single( 'image' ), createProduct )
 router.get( '/', getProducts )
+router.get( '/:productId/items', getItemsByProductId )
 router.get( '/templates', getAllTemplatesCategory )
 router.get( '/:productId', getProductById )
 router.get( '/home', getHomeProducts )
