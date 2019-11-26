@@ -7,10 +7,15 @@ const ProductSchema = new Schema({
     type: String,
     required: true,
   },
-  options: [{
-    type: Schema.Types.ObjectId,
-    ref: 'ProductOption',
-    required: false,
+  productOptions: [{ // usado para composição do produto
+    option: {
+      type: Schema.Types.ObjectId,
+      ref: 'Option',
+    },
+    item: {
+      type: Schema.Types.ObjectId,
+      ref: 'Item',
+    },
   }],
   category: {
     type: Schema.Types.ObjectId,

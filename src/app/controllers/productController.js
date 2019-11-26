@@ -2,7 +2,6 @@ const express = require('express')
 
 const multer = require('multer')
 const Product = require('../models/product')
-const ProductOption = require('../models/productOption')
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
@@ -13,9 +12,9 @@ const router = express.Router()
 
 const createProduct = async (req, res) => {
   try {
-    const { name, categoryId, options: prevOptions } = req.body
+    const { name, categoryId, productOptions: _productOptions } = req.body
     const { file } = req
-    const newOptions = JSON.parse(prevOptions)
+    const productOptions = JSON.parse(_productOptions)
     const response = await productImageUpload(file)
     const { imageUrl } = response
 
@@ -23,20 +22,8 @@ const createProduct = async (req, res) => {
       name,
       category: categoryId,
       imageUrl,
+      productOptions,
     })
-
-    await Promise.all(newOptions.map(async (op) => {
-      const option = await ProductOption.create({
-        option: op.id,
-        items: op.items,
-      })
-
-      product.options.push(option)
-
-      return option
-    }))
-
-    await product.save()
 
     return res.send({ product })
   } catch (e) {
