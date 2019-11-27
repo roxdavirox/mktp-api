@@ -48,12 +48,13 @@ const updateItemIntoOptions = async (req, res) => {
   }
 }
 
-const deleteManyOptionsByIds = async (req, res) => {
+const deleteManyOptionsAndChildItemsByIds = async (req, res) => {
   try {
     const { optionsId } = req.body
-
+    const options = await Option.find({ _id: { $in: optionsId } })
+    const itemsId = options.reduce((allItemsId, crrOption) => [...allItemsId, ...crrOption.items], [])
     await Option.deleteMany({ _id: { $in: optionsId } })
-
+    await Item.deleteMany({ _id: { $in: itemsId } })
     return res.send({ deletedOptionsCount: optionsId.length })
   } catch (e) {
     return res.status(400).send({ error: `Error on deleting option(s): ${e}` })
@@ -63,6 +64,6 @@ const deleteManyOptionsByIds = async (req, res) => {
 router.post('/', createOption)
 router.get('/', getAllOptions)
 router.put('/', updateItemIntoOptions)
-router.delete('/', deleteManyOptionsByIds)
+router.delete('/', deleteManyOptionsAndChildItemsByIds)
 
 module.exports = (app) => app.use('/options', router)
