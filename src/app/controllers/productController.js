@@ -1,7 +1,7 @@
 const express = require('express')
-
 const multer = require('multer')
 const Product = require('../models/product')
+const { isTrue } = require('../../helpers/boolean')
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
@@ -35,34 +35,29 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const {
-      name, categoryId, options: prevOptions, isImageChanged = false,
+      name, categoryId, productOptions, isImageChanged = false, isImageDeleted = false,
     } = req.body
-    // TODO: atualizar productOptions usando subdoc
-    // const { file } = req
-    // const response = await productImageUpload(file)
-    // const { imageUrl } = response
 
-    // const productUpdated = await Product.findByIdAndUpdate(req.params.productId, {
-    //   name,
-    //   category: categoryId,
-    // }, { new: true })
-    // const { options: productOptions } = productUpdated
-    // const newOptions = JSON.parse(prevOptions)
+    const newProduct = await Product.findByIdAndUpdate(req.params.productId, {
+      name,
+      category: categoryId,
+      productOptions: JSON.parse(productOptions),
+    }, { new: true })
 
-    // await Promise.all(newOptions.map(async (op) => {
-    //   const option = await ProductOption.create({
-    //     option: op.id,
-    //     items: op.items,
-    //   })
+    if (isTrue(isImageChanged)) {
+      const { file } = req
+      const response = await productImageUpload(file)
+      const { imageUrl } = response
+      newProduct.imageUrl = imageUrl
+      newProduct.save()
+    }
 
-    //   productUpdated.options.push(option)
+    if (isTrue(isImageDeleted)) {
+      newProduct.imageUrl = undefined
+      newProduct.save()
+    }
 
-    //   return option
-    // }))
-
-    // await productUpdated.save()
-
-    return res.send({ product: [] })
+    return res.send({ product: newProduct })
   } catch (e) {
     return res.status(400)
       .send({ error: `Error on post new product: ${e}` })
