@@ -188,6 +188,18 @@ const getProductDetailsByProductId = async (req, res) => {
   }
 }
 
+const deleteManyProductsByIds = async (req, res) => {
+  try {
+    const { productsId } = req.body
+
+    await Product.deleteMany({ _id: { $in: productsId } })
+
+    return res.send({ deletedItemsCount: productsId.length })
+  } catch (e) {
+    return res.status(400).send({ error: `Error on deleting product(s): ${e}` })
+  }
+}
+
 router.post('/', upload.single('image'), createProduct)
 router.put('/:productId', upload.single('image'), updateProduct)
 router.get('/', getProducts)
@@ -196,5 +208,6 @@ router.get('/templates', getAllTemplatesCategory)
 router.get('/:productId', getProductById)
 router.get('/home', getHomeProducts)
 router.get('/details/:productId', getProductDetailsByProductId)
+router.delete('/', deleteManyProductsByIds)
 
 module.exports = (app) => app.use('/products', router)
