@@ -1,7 +1,11 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-underscore-dangle */
 const express = require('express')
 
 const Item = require('../models/item')
 const Option = require('../models/option')
+const PriceTable = require('../models/priceTable')
+const Price = require('../models/price')
 
 const router = express.Router()
 // TODO: remover funções relacionadas a itens existentes
@@ -113,6 +117,33 @@ const getAllItems = async (req, res) => {
   }
 }
 
+const calculateItemPrice = async (templateItem) => {
+  const { quantity, size = { x: 1, y: 1 } } = templateItem
+  const { priceTableId } = templateItem.item
+  let total = quantity * size.x * size.y
+
+  // const priceTable = PriceTable.findById(priceTableId)
+  //   .populate('prices')
+
+  // const { prices } = priceTable
+  // const _price = prices.find((price) => (price.start <= total && total <= price.end))
+
+  const _price = await Price.findOne({
+    priceTable: priceTableId,
+    start: { $lt: total },
+    end: { $gt: total },
+  })
+  // if (!_price) {
+  //   const lastPrice = prices[prices.length - 1]
+  //   total *= lastPrice.value
+  //   return total
+  // }
+
+  total *= _price.value
+  console.log('total', total)
+  return total
+}
+
 const getItemsWithOption = async (req, res) => {
   try {
     const items = await Item.find().populate({
@@ -120,10 +151,21 @@ const getItemsWithOption = async (req, res) => {
     }).populate({
       path: 'priceTableId',
       select: 'unit',
-    })
-    return res.send({ items })
+    }).populate({ path: 'templateOptions.item' })
+
+    // eslint-disable-next-line no-underscore-dangle
+    const _items = await Promise.all(items.map(async (item) => {
+      if (item.itemType === 'template' && item.templateOptions) {
+        const itemPrice = await calculateItemPrice(item.templateOptions[0])
+        console.log('itemPrice', itemPrice)
+        return { ...item.toObject(), itemPrice }
+      }
+      return item
+    }))
+
+    return res.send({ items: _items })
   } catch (e) {
-    return res.status(400).send({ error: 'Error on get items with price table' })
+    return res.status(400).send({ error: `Error on get items with price table ${e}` })
   }
 }
 
