@@ -119,8 +119,20 @@ const getAllItems = async (req, res) => {
 
 const calculateItemPrice = async (templateItem) => {
   const { quantity, size = { x: 1, y: 1 } } = templateItem
-  const { priceTableId } = templateItem.item
+  const _item = await Item.findById(templateItem.item._id).populate({
+    path: 'option',
+  }).populate({ path: 'templateOptions.item' })
+
+  const { priceTableId, itemType } = _item
   let total = quantity * size.x * size.y
+
+  if (itemType === 'template' && _item.templateOptions) {
+    const priceItem = await Promise.resolve(
+      _item.templateOptions
+        .reduce(async (_total, crrItem) => _total + await calculateItemPrice(crrItem), 0),
+    )
+    return priceItem
+  }
 
   const _price = await Price.findOne({
     priceTable: priceTableId,
@@ -139,8 +151,7 @@ const calculateItemPrice = async (templateItem) => {
     return total
   }
 
-  total *= _price.value
-  return total
+  return total + _price.value
 }
 
 const getItemsWithOption = async (req, res) => {
@@ -155,8 +166,9 @@ const getItemsWithOption = async (req, res) => {
     // eslint-disable-next-line no-underscore-dangle
     const _items = await Promise.all(items.map(async (item) => {
       if (item.itemType === 'template' && item.templateOptions) {
-        const reducePrice = async (total, crrItem) => total + await calculateItemPrice(crrItem)
-        const itemPrice = await item.templateOptions.reduce(reducePrice, 0)
+        const itemPrice = await item.templateOptions
+          .reduce(async (_total, crrItem) => await _total + await calculateItemPrice(crrItem), 0)
+        console.log('item price', itemPrice)
         return { ...item.toObject(), itemPrice }
       }
       return item
