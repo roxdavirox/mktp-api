@@ -168,7 +168,6 @@ const getItemsWithOption = async (req, res) => {
       if (item.itemType === 'template' && item.templateOptions) {
         const itemPrice = await item.templateOptions
           .reduce(async (_total, crrItem) => await _total + await calculateItemPrice(crrItem), 0)
-        console.log('item price', itemPrice)
         return { ...item.toObject(), itemPrice }
       }
       return item
@@ -218,7 +217,9 @@ const removeOptionsItemsWithoutDeleteFromDB = async (req, res) => {
       itemsId.forEach((id) => option.items.pull(id))
       await option.save()
     }
-
+    if (itemsId) {
+      await Item.deleteMany({ _id: { $in: itemsId } })
+    }
     return res.send({ deletedItemsCount: itemsId.length })
   } catch (e) {
     return res.status(400).send({ error: `Error on deleting option item(s): ${e}` })
