@@ -122,22 +122,22 @@ const calculateItemPrice = async (templateItem) => {
   const { priceTableId } = templateItem.item
   let total = quantity * size.x * size.y
 
-  // const priceTable = PriceTable.findById(priceTableId)
-  //   .populate('prices')
-
-  // const { prices } = priceTable
-  // const _price = prices.find((price) => (price.start <= total && total <= price.end))
-
   const _price = await Price.findOne({
     priceTable: priceTableId,
     start: { $lt: total },
     end: { $gt: total },
   })
-  // if (!_price) {
-  //   const lastPrice = prices[prices.length - 1]
-  //   total *= lastPrice.value
-  //   return total
-  // }
+
+  if (!_price) {
+    const prices = await Price
+      .find({ priceTable: priceTableId })
+      .sort({ _id: -1 })
+      .limit(1)
+
+    const [lastPrice] = prices
+    total *= lastPrice.value
+    return total
+  }
 
   total *= _price.value
   return total
