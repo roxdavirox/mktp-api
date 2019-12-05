@@ -1,10 +1,10 @@
+/* eslint-disable radix */
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 const express = require('express')
 
 const Item = require('../models/item')
 const Option = require('../models/option')
-const PriceTable = require('../models/priceTable')
 const Price = require('../models/price')
 
 const router = express.Router()
@@ -119,19 +119,21 @@ const getAllItems = async (req, res) => {
 
 const calculateItemPrice = async (templateItem) => {
   const { quantity, size = { x: 1, y: 1 } } = templateItem
-  const _item = await Item.findById(templateItem.item._id).populate({
-    path: 'option',
-  }).populate({ path: 'templateOptions.item' })
+  const item = await Item.findById(templateItem.item._id)
+    .populate({
+      path: 'option',
+    })
+    .populate({ path: 'templateOptions.item' })
 
-  const { priceTableId, itemType } = _item
-  let total = quantity * size.x * size.y
+  const { priceTableId, itemType } = item
+  let total = Number(quantity * size.x * size.y)
 
-  if (itemType === 'template' && _item.templateOptions) {
-    const priceItem = await Promise.resolve(
-      _item.templateOptions
-        .reduce(async (_total, crrItem) => _total + await calculateItemPrice(crrItem), 0),
-    )
-    return priceItem
+  if (itemType === 'template' && item.templateOptions) {
+    total *= Number(await Promise.resolve(
+      item.templateOptions
+        .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0),
+    ))
+    return total
   }
 
   const _price = await Price.findOne({
@@ -151,7 +153,8 @@ const calculateItemPrice = async (templateItem) => {
     return total
   }
 
-  return total + _price.value
+  total = Number(_price.value) * Number(total)
+  return total
 }
 
 const getItemsWithOption = async (req, res) => {
@@ -167,7 +170,7 @@ const getItemsWithOption = async (req, res) => {
     const _items = await Promise.all(items.map(async (item) => {
       if (item.itemType === 'template' && item.templateOptions) {
         const itemPrice = await item.templateOptions
-          .reduce(async (_total, crrItem) => await _total + await calculateItemPrice(crrItem), 0)
+          .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0)
         return { ...item.toObject(), itemPrice }
       }
       return item
@@ -175,7 +178,8 @@ const getItemsWithOption = async (req, res) => {
 
     return res.send({ items: _items })
   } catch (e) {
-    return res.status(400).send({ error: `Error on get items with price table ${e}` })
+    return res.status(400)
+      .send({ error: `Error on get items with price table ${e}` })
   }
 }
 
