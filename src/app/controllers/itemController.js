@@ -140,7 +140,6 @@ const calculateItemPrice = async (templateItem) => {
   // }
 
   total *= _price.value
-  console.log('total', total)
   return total
 }
 
@@ -156,8 +155,8 @@ const getItemsWithOption = async (req, res) => {
     // eslint-disable-next-line no-underscore-dangle
     const _items = await Promise.all(items.map(async (item) => {
       if (item.itemType === 'template' && item.templateOptions) {
-        const itemPrice = await calculateItemPrice(item.templateOptions[0])
-        console.log('itemPrice', itemPrice)
+        const reducePrice = async (total, crrItem) => total + await calculateItemPrice(crrItem)
+        const itemPrice = await item.templateOptions.reduce(reducePrice, 0)
         return { ...item.toObject(), itemPrice }
       }
       return item
