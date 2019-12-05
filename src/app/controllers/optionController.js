@@ -52,7 +52,8 @@ const deleteManyOptionsAndChildItemsByIds = async (req, res) => {
   try {
     const { optionsId } = req.body
     const options = await Option.find({ _id: { $in: optionsId } })
-    const itemsId = options.reduce((allItemsId, crrOption) => [...allItemsId, ...crrOption.items], [])
+    const itemsId = options
+      .reduce((allItemsId, crrOption) => [...allItemsId, ...crrOption.items], [])
     await Option.deleteMany({ _id: { $in: optionsId } })
     await Item.deleteMany({ _id: { $in: itemsId } })
     return res.send({ deletedOptionsCount: optionsId.length })
