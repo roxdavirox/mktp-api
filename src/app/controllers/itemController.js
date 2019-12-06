@@ -119,6 +119,7 @@ const getAllItems = async (req, res) => {
 
 const calculateItemPrice = async (templateItem) => {
   const { quantity, size = { x: 1, y: 1 } } = templateItem
+  if (!templateItem.item) return 0
   const item = await Item.findById(templateItem.item._id)
     .populate({
       path: 'option',
