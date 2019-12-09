@@ -186,6 +186,7 @@ const getItemById = async (req, res) => {
   try {
     const item = await Item
       .findById(req.params.itemId)
+      .populate('option')
       .populate({
         path: 'templates.item',
       })
