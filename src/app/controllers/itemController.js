@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable radix */
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
@@ -65,7 +66,7 @@ const createTemplateItem = async (req, res) => {
       name,
       itemType: 'template',
       priceTableId: undefined,
-      templateOptions: options,
+      templates: options,
       option: optionId,
     }
 
@@ -121,17 +122,14 @@ const calculateItemPrice = async (templateItem) => {
   const { quantity, size = { x: 1, y: 1 } } = templateItem
   if (!templateItem.item) return 0
   const item = await Item.findById(templateItem.item._id)
-    .populate({
-      path: 'option',
-    })
-    .populate({ path: 'templateOptions.item' })
+    .populate({ path: 'templates.item' })
 
   const { priceTableId, itemType } = item
   let total = Number(quantity * size.x * size.y)
 
-  if (itemType === 'template' && item.templateOptions) {
+  if (itemType === 'template' && item.templates) {
     total *= Number(await Promise.resolve(
-      item.templateOptions
+      item.templates
         .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0),
     ))
     return total
@@ -165,12 +163,12 @@ const getItemsWithOption = async (req, res) => {
     }).populate({
       path: 'priceTableId',
       select: 'unit',
-    }).populate({ path: 'templateOptions.item' })
+    }).populate({ path: 'templates.item' })
 
     // eslint-disable-next-line no-underscore-dangle
     const _items = await Promise.all(items.map(async (item) => {
-      if (item.itemType === 'template' && item.templateOptions) {
-        const itemPrice = await item.templateOptions
+      if (item.itemType === 'template' && item.templates) {
+        const itemPrice = await item.templates
           .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0)
         return { ...item.toObject(), itemPrice }
       }
@@ -189,7 +187,7 @@ const getItemById = async (req, res) => {
     const item = await Item
       .findById(req.params.itemId)
       .populate({
-        path: 'templateOptions.item',
+        path: 'templates.item',
       })
 
     return res.send({ item })
@@ -216,15 +214,23 @@ const removeOptionsItemsWithoutDeleteFromDB = async (req, res) => {
 
     const { itemsId } = req.body
 
-    const option = await Option.findById(optionId)
+    const option = await Option.findById(optionId).populate(['items', 'items.templates'])
 
     if (itemsId) {
-      itemsId.forEach((id) => option.items.pull(id))
-      await option.save()
-    }
-    if (itemsId) {
+      itemsId.forEach((id) => {
+        option.items.pull(id)
+      })
+      option.save()
+      await Item.update(
+        {},
+        {
+          $pull: { templates: { item: { $in: itemsId } } },
+        },
+        { multi: true },
+      )
       await Item.deleteMany({ _id: { $in: itemsId } })
     }
+
     return res.send({ deletedItemsCount: itemsId.length })
   } catch (e) {
     return res.status(400).send({ error: `Error on deleting option item(s): ${e}` })

@@ -22,7 +22,7 @@ const ItemSchema = new Schema({
     select: true,
     required: true,
   },
-  templateOptions: [{
+  templates: [{
     option: {
       type: Schema.Types.ObjectId,
       ref: 'Option',
