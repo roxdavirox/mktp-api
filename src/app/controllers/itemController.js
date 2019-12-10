@@ -190,6 +190,7 @@ const getItemById = async (req, res) => {
       .populate({
         path: 'templates.item',
       })
+      .populate({ path: 'templates.option' })
 
     return res.send({ item })
   } catch (e) {
