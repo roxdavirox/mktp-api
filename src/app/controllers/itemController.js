@@ -189,6 +189,7 @@ const getItemById = async (req, res) => {
       .populate('option')
       .populate({
         path: 'templates.item',
+        populate: { path: 'priceTableId' },
       })
       .populate({ path: 'templates.option' })
 
