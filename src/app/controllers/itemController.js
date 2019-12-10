@@ -193,6 +193,14 @@ const getItemById = async (req, res) => {
       })
       .populate({ path: 'templates.option' })
 
+    if (item.itemType === 'template') {
+      const templates = await Promise.all(item.templates.map(async (_item) => {
+        const itemPrice = await calculateItemPrice(_item)
+        return { ..._item.toObject(), itemPrice }
+      }))
+      return res.send({ item: { ...item.toObject(), templates } })
+    }
+
     return res.send({ item })
   } catch (e) {
     return res.status(400).send({ error: 'Error on load items' })
