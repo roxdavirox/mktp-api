@@ -125,7 +125,7 @@ const calculateItemPrice = async (templateItem) => {
     .populate({ path: 'templates.item' })
 
   const { priceTableId, itemType } = item
-  let total = Number(quantity * size.x * size.y)
+  let total = Number(size.x * size.y)
 
   if (itemType === 'template' && item.templates) {
     total *= Number(await Promise.resolve(
@@ -149,11 +149,11 @@ const calculateItemPrice = async (templateItem) => {
 
     const [lastPrice] = prices
     total *= lastPrice.value
-    return total
+    return total * quantity
   }
 
   total = Number(_price.value) * Number(total)
-  return total
+  return total * quantity
 }
 
 const getItemsWithOption = async (req, res) => {
