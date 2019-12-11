@@ -149,8 +149,10 @@ const calculateItemPrice = async (templateItem) => {
 
   const _price = await Price.findOne({
     priceTable: priceTableId,
-    start: { $lt: total },
-    end: { $gt: total },
+
+    start: { $lte: total },
+    end: { $gte: total },
+
   })
 
   if (!_price) {
