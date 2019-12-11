@@ -40,9 +40,11 @@ const ItemSchema = new Schema({
     size: { // medida
       x: {
         type: Number,
+        default: 1,
       },
       y: {
         type: Number,
+        default: 1,
       },
     },
   }],

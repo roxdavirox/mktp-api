@@ -7,6 +7,7 @@ const express = require('express')
 const Item = require('../models/item')
 const Option = require('../models/option')
 const Price = require('../models/price')
+const PriceTable = require('../models/priceTable')
 
 const router = express.Router()
 // TODO: remover funções relacionadas a itens existentes
@@ -94,6 +95,17 @@ const updateItemById = async (req, res) => {
       priceTableId == '0' ? undefined : priceTableId,
     }
 
+    const priceTable = await PriceTable.findById(priceTableId)
+    // eslint-disable-next-line eqeqeq
+    if (priceTable.unit === 'quantidade') {
+      await Item.update(
+        { 'templates.item': itemId },
+        {
+          $set: { 'templates.$.size': { x: 1, y: 1 } },
+        },
+      )
+    }
+
     const item = await Item
       .findByIdAndUpdate(
         itemId,
@@ -104,7 +116,7 @@ const updateItemById = async (req, res) => {
     return res.send({ item })
   } catch (e) {
     return res.status(400)
-      .send({ error: 'Error on update item' })
+      .send({ error: `Error on update item ${e}` })
   }
 }
 

@@ -23,10 +23,14 @@ const calculatePriceByArea = async (req, res) => {
     const { priceTableId } = req.params
     const { quantity } = req.body
     const { size = { x: 1, y: 1 } } = req.body
-    let total = quantity * size.x * size.y
+    let total = quantity
 
     const priceTable = await PriceTable.findById(priceTableId)
       .populate('prices')
+
+    if (priceTable.unit !== 'quantidade') {
+      total *= size.x * size.y
+    }
 
     const { prices } = priceTable
     const preco = prices.find((price) => (price.start <= total && total <= price.end))
