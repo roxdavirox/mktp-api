@@ -136,7 +136,7 @@ const calculateItemPrice = async (templateItem) => {
   const item = await Item.findById(templateItem.item._id)
     .populate({ path: 'templates.item' })
 
-  const { priceTableId, itemType } = item
+  const { priceTable, itemType } = item
   let total = Number(size.x * size.y)
 
   if (itemType === 'template' && item.templates) {
@@ -148,7 +148,7 @@ const calculateItemPrice = async (templateItem) => {
   }
 
   const _price = await Price.findOne({
-    priceTable: priceTableId,
+    priceTable,
 
     start: { $lte: total },
     end: { $gte: total },
@@ -157,7 +157,7 @@ const calculateItemPrice = async (templateItem) => {
 
   if (!_price) {
     const prices = await Price
-      .find({ priceTable: priceTableId })
+      .find({ priceTable })
       .sort({ _id: -1 })
       .limit(1)
 
@@ -175,7 +175,7 @@ const getItemsWithOption = async (req, res) => {
     const items = await Item.find().populate({
       path: 'option',
     }).populate({
-      path: 'priceTableId',
+      path: 'priceTable',
       select: 'unit',
     }).populate({ path: 'templates.item' })
 
