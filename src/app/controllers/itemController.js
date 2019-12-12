@@ -87,10 +87,10 @@ const updateItemById = async (req, res) => {
   try {
     const { itemId } = req.params
 
-    const { name, priceTableId } = req.body
+    const { name, priceTable: priceTableId } = req.body
     const newItem = {
       name,
-      priceTableId:
+      priceTable:
       // eslint-disable-next-line eqeqeq
       priceTableId == '0' ? undefined : priceTableId,
     }
