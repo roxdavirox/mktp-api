@@ -170,7 +170,7 @@ const calculateItemPrice = async (templateItem) => {
   return total * quantity
 }
 
-const getItemsWithOption = async (req, res) => {
+const getTemplateItems = async (req, res) => {
   try {
     const items = await Item.find().populate({
       path: 'option',
@@ -267,7 +267,7 @@ router.post('/:optionId', createItemIntoOptions)
 router.post('/templates/:optionId', createTemplateItem)
 router.put('/:itemId', updateItemById)
 router.get('/', getAllItems)
-router.get('/templates', getItemsWithOption)
+router.get('/templates', getTemplateItems)
 router.get('/:itemId', getItemById)
 router.delete('/', deleteManyItemsByIds)
 // deleta os itens de uma opção, mas sem excluir do banco de dados
