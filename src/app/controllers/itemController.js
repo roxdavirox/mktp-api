@@ -182,9 +182,9 @@ const getTemplateItems = async (req, res) => {
     // eslint-disable-next-line no-underscore-dangle
     const _items = await Promise.all(items.map(async (item) => {
       if (item.itemType === 'template' && item.templates) {
-        const itemPrice = await item.templates
+        const price = await item.templates
           .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0)
-        return { ...item.toObject(), itemPrice }
+        return { ...item.toObject(), price }
       }
       return item
     }))
@@ -209,8 +209,8 @@ const getItemById = async (req, res) => {
 
     if (item.itemType === 'template') {
       const templates = await Promise.all(item.templates.map(async (_item) => {
-        const itemPrice = await calculateItemPrice(_item)
-        return { ..._item.toObject(), itemPrice }
+        const price = await calculateItemPrice(_item)
+        return { ..._item.toObject(), price }
       }))
       return res.send({ item: { ...item.toObject(), templates } })
     }
