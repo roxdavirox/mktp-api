@@ -62,12 +62,12 @@ const createTemplateItem = async (req, res) => {
 
     const option = await Option.findById(optionId).populate('items')
 
-    const { name, options } = req.body
+    const { name, templates } = req.body
     const templateItem = {
       name,
       itemType: 'template',
       priceTableId: undefined,
-      templates: options,
+      templates,
       option: optionId,
     }
 
