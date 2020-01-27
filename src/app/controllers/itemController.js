@@ -9,6 +9,46 @@ const Option = require('../models/option')
 const Price = require('../models/price')
 const PriceTable = require('../models/priceTable')
 
+async function calculateItemPrice(templateItem) {
+  const { quantity, size = { x: 1, y: 1 } } = templateItem
+  if (!templateItem.item) return 0
+  const item = await Item.findById(templateItem.item._id)
+    .populate({ path: 'templates.item' })
+
+  const { priceTable, itemType } = item
+  let total = Number(size.x * size.y)
+
+  if (itemType === 'template' && item.templates) {
+    total *= Number(await Promise.resolve(
+      item.templates
+        .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0),
+    ))
+    return total
+  }
+
+  const _price = await Price.findOne({
+    priceTable,
+
+    start: { $lte: total },
+    end: { $gte: total },
+
+  })
+
+  if (!_price) {
+    const prices = await Price
+      .find({ priceTable })
+      .sort({ _id: -1 })
+      .limit(1)
+
+    const [lastPrice] = prices
+    total *= lastPrice.value
+    return total * quantity
+  }
+
+  total = Number(_price.value) * Number(total)
+  return total * quantity
+}
+
 const router = express.Router()
 // TODO: remover funções relacionadas a itens existentes
 const createItemWithoutOption = async (req, res) => {
@@ -77,9 +117,22 @@ const createTemplateItem = async (req, res) => {
 
     await option.save()
 
-    return res.send({ templateItem: item })
+    const populatedItem = await Item.findById(item._id)
+      .populate({
+        path: 'option',
+      }).populate({
+        path: 'priceTable',
+        select: 'unit',
+      }).populate({ path: 'templates.item' })
+
+    const templatePrice = await populatedItem.templates
+      .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0)
+
+    const templateItemWithPrice = { ...populatedItem.toObject(), templatePrice }
+
+    return res.send({ templateItem: templateItemWithPrice })
   } catch (err) {
-    return res.status(400).send({ error: "Error on add option's item" })
+    return res.status(400).send({ error: 'Error when creating template item' })
   }
 }
 
@@ -128,46 +181,6 @@ const getAllItems = async (req, res) => {
   } catch (e) {
     return res.status(400).send({ error: 'Error on load all items' })
   }
-}
-
-const calculateItemPrice = async (templateItem) => {
-  const { quantity, size = { x: 1, y: 1 } } = templateItem
-  if (!templateItem.item) return 0
-  const item = await Item.findById(templateItem.item._id)
-    .populate({ path: 'templates.item' })
-
-  const { priceTable, itemType } = item
-  let total = Number(size.x * size.y)
-
-  if (itemType === 'template' && item.templates) {
-    total *= Number(await Promise.resolve(
-      item.templates
-        .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0),
-    ))
-    return total
-  }
-
-  const _price = await Price.findOne({
-    priceTable,
-
-    start: { $lte: total },
-    end: { $gte: total },
-
-  })
-
-  if (!_price) {
-    const prices = await Price
-      .find({ priceTable })
-      .sort({ _id: -1 })
-      .limit(1)
-
-    const [lastPrice] = prices
-    total *= lastPrice.value
-    return total * quantity
-  }
-
-  total = Number(_price.value) * Number(total)
-  return total * quantity
 }
 
 const getTemplateItems = async (req, res) => {
