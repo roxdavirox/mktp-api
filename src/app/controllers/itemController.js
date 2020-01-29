@@ -21,7 +21,7 @@ async function calculateItemPrice(templateItem) {
   if (itemType === 'template' && item.templates) {
     total *= Number(await Promise.resolve(
       item.templates
-        .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0),
+        .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0),
     ))
     return total
   }
@@ -126,7 +126,7 @@ const createTemplateItem = async (req, res) => {
       }).populate({ path: 'templates.item' })
 
     const templatePrice = await populatedItem.templates
-      .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0)
+      .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0)
 
     const templateItemWithPrice = { ...populatedItem.toObject(), templatePrice }
 
@@ -196,7 +196,7 @@ const getTemplateItems = async (req, res) => {
     const _items = await Promise.all(items.map(async (item) => {
       if (item.itemType === 'template' && item.templates) {
         const templatePrice = await item.templates
-          .reduce(async (acc, _item) => await acc + await calculateItemPrice(_item), 0)
+          .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0)
         return { ...item.toObject(), templatePrice }
       }
       return item
