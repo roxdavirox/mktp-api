@@ -1,12 +1,19 @@
+/* eslint-disable indent */
 /* eslint-disable no-underscore-dangle */
 const express = require('express')
 const Product = require('../models/product')
 
 const router = express.Router()
 
-router.get('/:productId', async (req, res) => {
+router.post('/:productId', async (req, res) => {
   try {
-    const { medidas, itemSelecionadoId } = req.body
+    const {
+        medidas,
+        itemSelecionadoId,
+        materialSelecionadoId,
+        quantidade,
+      } = req.body
+
     const product = await Product
       .findById(req.params.productId)
       .populate([
@@ -24,23 +31,66 @@ router.get('/:productId', async (req, res) => {
         },
       ])
 
+    const getUnique = (arr) => [...new Set(arr)]
+
+    const optionsIds = product.productOptions.map((po) => po.option._id)
+    const options = product.productOptions.map((po) => po.option)
+    const uniqueOptions = getUnique(options)
+      .reduce((all, op) => ({ ...all, [op._id]: op }), {})
+    const uniqueOptionsIds = getUnique(optionsIds)
+
+    const groupedOptions = {}
+    uniqueOptionsIds.forEach((id) => {
+      groupedOptions[id] = uniqueOptions[id]
+      groupedOptions[id].items = product
+        .productOptions
+        .filter((po) => po.option._id === id)
+        .map((po) => po.item)
+    })
+
+    const lis = Object.keys(groupedOptions)
+      .map((k) => groupedOptions[k])
+      .map((op) => `<p>${op.name}:
+        <select>${
+          op.items.map((it) => `<option ${it._id == itemSelecionadoId || it._id == materialSelecionadoId ? 'selected' : ''}>${it.name}</option>`)
+            .reduce((_, li) => _.concat(`${li}`), '')}
+        </select></p>`)
+      .reduce((_, li) => _.concat(`${li}`), '')
+
+    const range = (q) => {
+      const arr = []
+      // eslint-disable-next-line no-plusplus
+      for (let i = 1; i <= q; i++) arr.push(i)
+      return arr
+    }
+
     const html = `
     <html>
     <body>
       <div>
-        <h1>Produto:</h1>
-        <h2>${product.name}</h2>
-        <h1>Opções</h1>
-        <h2>${product.productOptions[0].option.name}</h2>
-        <ul>
-          ${product.productOptions.reduce((_li, op) => _li.concat(`<li>${op.item.name}</li>`), '')}
-        </ul>
+        <h2>Produto: ${product.name}</h2>
+        <p>Quantidade
+          <select>
+            ${range(quantidade).reduce((_, q) => _.concat(`<option>${q}</option>`), '')}
+          </select>
+        </p>
+        <p>Medidas:
+          <select>
+            ${medidas.reduce((_li, m) => _li.concat(`<option>${m}</option>`), '')}
+          </select>
+        </p>
+        ${lis}
+      </div>
+      <div id="orcamento">
+        <label>Nome: <input type="text" name="nome"></label><br />
+        <label>E-mail:<input type="text" name="email"></label><br />
+        <label>Telefone<input type="text" name="telefone"></label>
       </div>
     </body>
     </html>
     `
 
-    return res.send({ html, product })
+    return res.send({ html, product, groupedOptions })
   } catch (e) {
     return res.status(400)
       .send({ error: `Error on get product form: ${e}` })
