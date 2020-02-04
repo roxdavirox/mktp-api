@@ -82,10 +82,16 @@ router.post('/:productId', async (req, res) => {
         ${lis}
       </div>
       <div id="orcamento">
-        <label>Nome: <input type="text" name="nome"></label><br />
-        <label>E-mail:<input type="text" name="email"></label><br />
-        <label>Telefone<input type="text" name="telefone"></label>
+        <form>
+          <label>Nome: <input type="text" name="nome"></label><br />
+          <label>E-mail:<input type="text" name="email"></label><br />
+          <label>Telefone<input type="text" name="telefone"></label><br />
+        </form>
       </div>
+      <div id="preco">
+        R$ 10,00
+      </div>
+      <input type="submit" value="fazer orçamento" onclick="fazerOrcamento()">
     </body>
     </html>
     `
