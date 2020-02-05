@@ -39,13 +39,15 @@ router.get('/:productId', async (req, res) => {
       .reduce((all, op) => ({ ...all, [op._id]: op }), {})
     const uniqueOptionsIds = getUnique(optionsIds)
 
-    const groupedOptions = {}
+    const _options = {}
     uniqueOptionsIds.forEach((id) => {
-      groupedOptions[id] = uniqueOptions[id]
-      groupedOptions[id].items = product
+      const items = product
         .productOptions
         .filter((po) => po.option._id === id)
         .map((po) => po.item)
+      const option = { ...uniqueOptions[id].toObject() }
+
+      _options[id] = { option, items }
     })
 
     // const lis = Object.keys(groupedOptions)
@@ -96,7 +98,7 @@ router.get('/:productId', async (req, res) => {
     // </html>
     // `
 
-    return res.send({ product, groupedOptions })
+    return res.send({ product, options: _options })
   } catch (e) {
     return res.status(400)
       .send({ error: `Error on get product form: ${e}` })
