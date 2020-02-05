@@ -5,7 +5,7 @@ const Product = require('../models/product')
 
 const router = express.Router()
 
-router.post('/:productId', async (req, res) => {
+router.get('/:productId', async (req, res) => {
   try {
     // const {
     //     medidas,
