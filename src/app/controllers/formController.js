@@ -97,8 +97,9 @@ router.get('/:productId', async (req, res) => {
     // </body>
     // </html>
     // `
+    res.render('form', { product, options: _options })
 
-    return res.send({ product, options: _options })
+    // return res.send({ product, options: _options })
   } catch (e) {
     return res.status(400)
       .send({ error: `Error on get product form: ${e}` })

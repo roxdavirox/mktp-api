@@ -9,6 +9,16 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
 
+app.set('views', `${__dirname}/app/views`)
+app.set('view engine', 'jsx')
+const engine = require('express-react-views').createEngine()
+
+app.engine('jsx', engine)
+
+// app.get('/test', function(req, res) {
+//   res.render('form', { msg: 'ok'})
+// })
+
 require('dotenv').config()
 
 require('./app/controllers/index')(app)
