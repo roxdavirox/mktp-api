@@ -9,20 +9,27 @@ const style = {
 
 const Form = props => {
   const { product, options } = props;
-
+  
   return (
     <>
       <div>Produto: {product.name} </div>
-      <ul>
+      <form>
+        Quantidade:
+        <select className="orderby">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+        </select>
         {Object.keys(options).map(k => 
-          <li key={k}>
-              {options[k].name}
-            <ul key={k}>
-              {options[k].items.map(item => <li key={item._id}>{item.name}</li>)}
-            </ul>
-          </li>
+          <div key={k} className="orderby">
+              {options[k].name}: 
+            <select key={k}>
+              {options[k].items.map(item => <option key={item._id}>{item.name}</option>)}
+            </select>
+          </div>
         )}
-      </ul>
+        <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
+      </form>
     </>
   )
 };
