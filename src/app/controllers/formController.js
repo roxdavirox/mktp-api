@@ -52,12 +52,10 @@ router.get('/:productId', async (req, res) => {
     })
 
     const getHtml = () => new Promise((resolve, _) => {
-        let _html = ''
         res.render('form', { product, options: _options }, (err, html) => {
-          if (err) console.error(`error${err}`)
-          _html = html
+          if (err) _(err)
+          resolve(html)
         })
-        resolve(_html)
       })
 
     const html = await getHtml()
