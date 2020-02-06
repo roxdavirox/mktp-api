@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable indent */
 /* eslint-disable no-underscore-dangle */
 const express = require('express')
@@ -50,56 +51,17 @@ router.get('/:productId', async (req, res) => {
       _options[id] = { ...option, items }
     })
 
-    // const lis = Object.keys(groupedOptions)
-    //   .map((k) => groupedOptions[k])
-    //   .map((op) => `<p>${op.name}:
-    //     <select>${
-    //       op.items.map((it) => `<option ${it._id == itemSelecionadoId || it._id == materialSelecionadoId ? 'selected' : ''}>${it.name}</option>`)
-    //         .reduce((_, li) => _.concat(`${li}`), '')}
-    //     </select></p>`)
-    //   .reduce((_, li) => _.concat(`${li}`), '')
+    const getHtml = () => new Promise((resolve, _) => {
+        let _html = ''
+        res.render('form', { product, options: _options }, (err, html) => {
+          if (err) console.error(`error${err}`)
+          _html = html
+        })
+        resolve(_html)
+      })
 
-    // const range = (q) => {
-    //   const arr = []
-    //   // eslint-disable-next-line no-plusplus
-    //   for (let i = 1; i <= q; i++) arr.push(i)
-    //   return arr
-    // }
-
-    // const html = `
-    // <html>
-    // <body>
-    //   <div>
-    //     <h2>Produto: ${product.name}</h2>
-    //     <p>Quantidade
-    //       <select>
-    //         ${range(quantidade).reduce((_, q) => _.concat(`<option>${q}</option>`), '')}
-    //       </select>
-    //     </p>
-    //     <p>Medidas:
-    //       <select>
-    //         ${medidas.reduce((_li, m) => _li.concat(`<option>${m}</option>`), '')}
-    //       </select>
-    //     </p>
-    //     ${lis}
-    //   </div>
-    //   <div id="orcamento">
-    //     <form>
-    //       <label>Nome: <input type="text" name="nome"></label><br />
-    //       <label>E-mail:<input type="text" name="email"></label><br />
-    //       <label>Telefone<input type="text" name="telefone"></label><br />
-    //     </form>
-    //   </div>
-    //   <div id="preco">
-    //     R$ 10,00
-    //   </div>
-    //   <input type="submit" value="fazer orçamento" onclick="fazerOrcamento()">
-    // </body>
-    // </html>
-    // `
-    res.render('form', { product, options: _options })
-
-    // return res.send({ product, options: _options })
+    const html = await getHtml()
+    return res.send({ html, price: 'R$ 200' })
   } catch (e) {
     return res.status(400)
       .send({ error: `Error on get product form: ${e}` })
