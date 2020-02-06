@@ -51,35 +51,6 @@ async function calculateItemPrice(templateItem) {
 
 const router = express.Router()
 
-const removeOptionsItemsWithoutDeleteFromDB = async (req, res) => {
-  try {
-    const { optionId } = req.params
-
-    const { itemsId } = req.body
-
-    const option = await Option.findById(optionId).populate(['items', 'items.templates'])
-
-    if (itemsId) {
-      itemsId.forEach((id) => {
-        option.items.pull(id)
-      })
-      option.save()
-      await Item.update(
-        {},
-        {
-          $pull: { templates: { item: { $in: itemsId } } },
-        },
-        { multi: true },
-      )
-      await Item.deleteMany({ _id: { $in: itemsId } })
-    }
-
-    return res.send({ deletedItemsCount: itemsId.length })
-  } catch (e) {
-    return res.status(400).send({ error: `Error on deleting option item(s): ${e}` })
-  }
-}
-
 const itemController = {
   async getItemByIdWithPrice(req, res) {
     try {
@@ -300,6 +271,35 @@ const itemController = {
       return res.status(400).send({ error: 'Error on creating a item' })
     }
   },
+
+  async removeOptionsItemsWithoutDeleteFromDB(req, res) {
+    try {
+      const { optionId } = req.params
+
+      const { itemsId } = req.body
+
+      const option = await Option.findById(optionId).populate(['items', 'items.templates'])
+
+      if (itemsId) {
+        itemsId.forEach((id) => {
+          option.items.pull(id)
+        })
+        option.save()
+        await Item.update(
+          {},
+          {
+            $pull: { templates: { item: { $in: itemsId } } },
+          },
+          { multi: true },
+        )
+        await Item.deleteMany({ _id: { $in: itemsId } })
+      }
+
+      return res.send({ deletedItemsCount: itemsId.length })
+    } catch (e) {
+      return res.status(400).send({ error: `Error on deleting option item(s): ${e}` })
+    }
+  },
 }
 
 router.post('/', itemController.createItemWithoutOption)
@@ -312,6 +312,6 @@ router.get('/templates', itemController.getTemplateItems)
 router.get('/:itemId', itemController.getItemById)
 router.delete('/', itemController.deleteManyItemsByIds)
 // deleta os itens de uma opção, mas sem excluir do banco de dados
-router.delete('/:optionId', removeOptionsItemsWithoutDeleteFromDB)
+router.delete('/:optionId', itemController.removeOptionsItemsWithoutDeleteFromDB)
 
 module.exports = (app) => app.use('/items', router)
