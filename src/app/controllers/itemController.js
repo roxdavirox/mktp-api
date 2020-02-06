@@ -5,7 +5,6 @@
 const express = require('express');
 const ItemService = require('../services/item');
 const Item = require('../models/item');
-const Option = require('../models/option');
 
 const router = express.Router();
 
