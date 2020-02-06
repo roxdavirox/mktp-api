@@ -1,8 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 const Item = require('../models/item');
 const Price = require('../models/price');
+const PriceTable = require('../models/priceTable');
+const Option = require('../models/option');
 
-// common functions
+// common functions - shared
 async function calculateItemPrice(templateItem) {
   const { quantity, size = { x: 1, y: 1 } } = templateItem;
   if (!templateItem.item) return 0;
@@ -88,6 +90,92 @@ const itemService = {
 
     return item;
   },
+
+  async deleteManyItemsByIds(ids) {
+    await Item.deleteMany({ _id: { $in: ids } });
+    return ids.length;
+  },
+
+  async getAll() {
+    return Item.find();
+  },
+
+  async getAllItemsWithTemplates() {
+    const items = await Item.find().populate({
+      path: 'option',
+    }).populate({
+      path: 'priceTable',
+      select: 'unit',
+    }).populate({ path: 'templates.item' });
+
+    // eslint-disable-next-line no-underscore-dangle
+    const _items = await Promise.all(items.map(async (item) => {
+      if (item.itemType === 'template' && item.templates) {
+        const templatePrice = await item.templates
+          .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0);
+        return { ...item.toObject(), templatePrice };
+      }
+      return item;
+    }));
+
+    return _items;
+  },
+
+  async updateItem(itemId, priceTableId, newItem) {
+    const priceTable = await PriceTable.findById(priceTableId);
+    // eslint-disable-next-line eqeqeq
+    if (priceTable.unit === 'quantidade') {
+      await Item.update(
+        { 'templates.item': itemId },
+        {
+          $set: { 'templates.$.size': { x: 1, y: 1 } },
+        },
+      );
+    }
+
+    const item = await Item
+      .findByIdAndUpdate(
+        itemId,
+        { ...newItem },
+        { new: true },
+      );
+
+    return item;
+  },
+
+  async createTemplateItem(optionId, templateItem) {
+    const option = await Option.findById(optionId).populate('items');
+    const item = await Item.create({ ...templateItem });
+
+    option.items.push(item);
+
+    await option.save();
+
+    const populatedItem = await Item.findById(item._id)
+      .populate({
+        path: 'option',
+      }).populate({
+        path: 'priceTable',
+        select: 'unit',
+      }).populate({ path: 'templates.item' });
+
+    const templatePrice = await populatedItem.templates
+      .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0);
+
+    const templateItemWithPrice = { ...populatedItem.toObject(), templatePrice };
+
+    return templateItemWithPrice;
+  },
+
+  async createItem(optionId, newItem) {
+    const option = await Option.findById(optionId).populate('items');
+    const item = await Item.create({ ...newItem });
+
+    option.items.push(item);
+    await option.save();
+    return item;
+  },
+
 };
 
 module.exports = itemService;
