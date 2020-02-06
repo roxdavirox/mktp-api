@@ -51,14 +51,14 @@ router.get('/:productId', async (req, res) => {
       _options[id] = { ...option, items }
     })
 
-    const getHtml = () => new Promise((resolve, _) => {
-        res.render('form', { product, options: _options }, (err, html) => {
+    const getHtmlString = (view, props) => new Promise((resolve, _) => {
+        res.render(view, props, (err, html) => {
           if (err) _(err)
           resolve(html)
         })
       })
 
-    const html = await getHtml()
+    const html = await getHtmlString('form', { product, options: _options })
     return res.send({ html, price: 'R$ 200' })
   } catch (e) {
     return res.status(400)
