@@ -127,7 +127,7 @@ const itemController = {
         option: optionId,
       };
 
-      const item = await ItemService.createItem(optionId, newItem);
+      const item = await ItemService.createItemIntoOption(optionId, newItem);
 
       return res.send({ item });
     } catch (err) {
@@ -136,9 +136,8 @@ const itemController = {
   },
 
   async createItemWithoutOption(req, res) {
-    const { name, priceTableId } = req.body;
-
     try {
+      const { name, priceTableId } = req.body;
       const newItem = {
         name,
         priceTableId:
@@ -149,34 +148,20 @@ const itemController = {
 
       return res.send({ item });
     } catch (e) {
-      return res.status(400).send({ error: 'Error on creating a item' });
+      return res.status(400)
+        .send({ error: 'Error on creating a item' });
     }
   },
 
   async removeOptionsItemsWithoutDeleteFromDB(req, res) {
     try {
       const { optionId } = req.params;
-
       const { itemsId } = req.body;
 
-      const option = await Option.findById(optionId).populate(['items', 'items.templates']);
+      const deletedItemsCount = await ItemService
+        .deleteItemsWithoutRemoveFromDB(optionId, itemsId);
 
-      if (itemsId) {
-        itemsId.forEach((id) => {
-          option.items.pull(id);
-        });
-        option.save();
-        await Item.update(
-          {},
-          {
-            $pull: { templates: { item: { $in: itemsId } } },
-          },
-          { multi: true },
-        );
-        await Item.deleteMany({ _id: { $in: itemsId } });
-      }
-
-      return res.send({ deletedItemsCount: itemsId.length });
+      return res.send({ deletedItemsCount });
     } catch (e) {
       return res.status(400).send({ error: `Error on deleting option item(s): ${e}` });
     }

@@ -167,13 +167,33 @@ const itemService = {
     return templateItemWithPrice;
   },
 
-  async createItem(optionId, newItem) {
+  async createItemIntoOption(optionId, newItem) {
     const option = await Option.findById(optionId).populate('items');
     const item = await Item.create({ ...newItem });
 
     option.items.push(item);
     await option.save();
     return item;
+  },
+
+  async deleteItemsWithoutRemoveFromDB(optionId, itemsId) {
+    const option = await Option.findById(optionId).populate(['items', 'items.templates']);
+
+    if (itemsId) {
+      itemsId.forEach((id) => {
+        option.items.pull(id);
+      });
+      option.save();
+      await Item.update(
+        {},
+        {
+          $pull: { templates: { item: { $in: itemsId } } },
+        },
+        { multi: true },
+      );
+      await Item.deleteMany({ _id: { $in: itemsId } });
+    }
+    return itemsId.length;
   },
 
 };
