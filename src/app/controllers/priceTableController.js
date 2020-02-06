@@ -1,6 +1,7 @@
 const express = require('express');
 
 const PriceTable = require('../models/priceTable');
+const PriceTableService = require('../services/priceTable');
 const Price = require('../models/price');
 
 const router = express.Router();
@@ -24,31 +25,11 @@ const priceTableController = {
       const { priceTableId } = req.params;
       const { quantity } = req.body;
       const { size = { x: 1, y: 1 } } = req.body;
-      let total = quantity;
 
-      const priceTable = await PriceTable.findById(priceTableId)
-        .populate('prices');
+      const total = await PriceTableService
+        .getPriceAreaById(priceTableId, quantity, size);
 
-      if (priceTable.unit !== 'quantidade') {
-        total *= size.x * size.y;
-      }
-
-      const { prices } = priceTable;
-      const preco = prices.find((price) => (price.start <= total && total <= price.end));
-
-      if (!preco) {
-        const lastPrice = prices[prices.length - 1];
-        total *= lastPrice.value;
-        return res.send({
-          total,
-        });
-      }
-
-      total *= preco.value;
-
-      return res.send({
-        total,
-      });
+      return res.send({ total });
     } catch (e) {
       return res.status(400)
         .send({ error: `Error on get price tables: ${e}` });
