@@ -1,6 +1,6 @@
-const mongoose = require('../../data')
+const mongoose = require('../../data');
 
-const { Schema } = mongoose
+const { Schema } = mongoose;
 
 const ItemSchema = new Schema({
   name: {
@@ -52,8 +52,8 @@ const ItemSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-})
+});
 
-const Item = mongoose.model('Item', ItemSchema)
+const Item = mongoose.model('Item', ItemSchema);
 
-module.exports = Item
+module.exports = Item;

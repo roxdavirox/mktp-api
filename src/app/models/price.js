@@ -1,6 +1,6 @@
-const mongoose = require('../../data')
+const mongoose = require('../../data');
 
-const { Schema } = mongoose
+const { Schema } = mongoose;
 
 const PriceSchema = new Schema({
   start: {
@@ -24,8 +24,8 @@ const PriceSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-})
+});
 
-const Price = mongoose.model('Price', PriceSchema)
+const Price = mongoose.model('Price', PriceSchema);
 
-module.exports = Price
+module.exports = Price;

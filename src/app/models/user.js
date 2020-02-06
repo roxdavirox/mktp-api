@@ -1,5 +1,5 @@
-const bcrypt = require('bcryptjs')
-const mongoose = require('../../data')
+const bcrypt = require('bcryptjs');
+const mongoose = require('../../data');
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -33,16 +33,16 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-})
+});
 
 // eslint-disable-next-line func-names
 UserSchema.pre('save', async function (next) {
-  const hash = await bcrypt.hash(this.password, 10)
-  this.password = hash
+  const hash = await bcrypt.hash(this.password, 10);
+  this.password = hash;
 
-  next()
-})
+  next();
+});
 
-const User = mongoose.model('User', UserSchema)
+const User = mongoose.model('User', UserSchema);
 
-module.exports = User
+module.exports = User;

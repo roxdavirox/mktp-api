@@ -1,6 +1,6 @@
-const mongoose = require('../../data')
+const mongoose = require('../../data');
 
-const { Schema } = mongoose
+const { Schema } = mongoose;
 
 const TemplateCategorySchema = new Schema({
   name: {
@@ -16,8 +16,8 @@ const TemplateCategorySchema = new Schema({
     type: Date,
     default: Date.now,
   },
-})
+});
 
-const TemplateCategory = mongoose.model('TemplateCategory', TemplateCategorySchema)
+const TemplateCategory = mongoose.model('TemplateCategory', TemplateCategorySchema);
 
-module.exports = TemplateCategory
+module.exports = TemplateCategory;
