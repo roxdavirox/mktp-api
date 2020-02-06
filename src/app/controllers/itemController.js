@@ -3,103 +3,33 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
-
+const ItemService = require('../services/item');
 const Item = require('../models/item');
 const Option = require('../models/option');
-const Price = require('../models/price');
 const PriceTable = require('../models/priceTable');
-
-async function calculateItemPrice(templateItem) {
-  const { quantity, size = { x: 1, y: 1 } } = templateItem;
-  if (!templateItem.item) return 0;
-  const item = await Item.findById(templateItem.item._id)
-    .populate({ path: 'templates.item' });
-
-  const { priceTable, itemType } = item;
-  let total = Number(size.x * size.y);
-
-  if (itemType === 'template' && item.templates) {
-    total *= Number(await Promise.resolve(
-      item.templates
-        .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0),
-    ));
-    return total;
-  }
-
-  const _price = await Price.findOne({
-    priceTable,
-
-    start: { $lte: total },
-    end: { $gte: total },
-
-  });
-
-  if (!_price) {
-    const prices = await Price
-      .find({ priceTable })
-      .sort({ _id: -1 })
-      .limit(1);
-
-    const [lastPrice] = prices;
-    total *= lastPrice.value;
-    return total * quantity;
-  }
-
-  total = Number(_price.value) * Number(total);
-  return total * quantity;
-}
 
 const router = express.Router();
 
 const itemController = {
   async getItemByIdWithPrice(req, res) {
     try {
-      // TODO: Calcular o preço do item para o formulario no wp
-      const item = await Item
-        .findById(req.params.itemId)
-        .populate('option')
-        .populate({
-          path: 'templates.item',
-          populate: { path: 'priceTable', select: ' -prices' },
-        })
-        .populate({ path: 'templates.option' });
-
-      if (item.itemType === 'template') {
-        const templates = await Promise.all(item.templates.map(async (_item) => {
-          const templatePrice = await calculateItemPrice(_item);
-          return { ..._item.toObject(), templatePrice };
-        }));
-        return res.send({ item: { ...item.toObject(), templates } });
-      }
-
+      const { itemId } = req.params;
+      const item = ItemService.getItemPriceById(itemId);
       return res.send({ item });
     } catch (e) {
-      return res.status(400).send({ error: 'Error on load items' });
+      return res.status(400)
+        .send({ error: 'Error on load items' });
     }
   },
 
   async getItemById(req, res) {
     try {
-      const item = await Item
-        .findById(req.params.itemId)
-        .populate('option')
-        .populate({
-          path: 'templates.item',
-          populate: { path: 'priceTable', select: ' -prices' },
-        })
-        .populate({ path: 'templates.option' });
-
-      if (item.itemType === 'template') {
-        const templates = await Promise.all(item.templates.map(async (_item) => {
-          const templatePrice = await calculateItemPrice(_item);
-          return { ..._item.toObject(), templatePrice };
-        }));
-        return res.send({ item: { ...item.toObject(), templates } });
-      }
-
+      const { itemId } = req.params;
+      const item = await ItemService.getItemById(itemId);
       return res.send({ item });
     } catch (e) {
-      return res.status(400).send({ error: 'Error on load items' });
+      return res.status(400)
+        .send({ error: 'Error on load items' });
     }
   },
 
