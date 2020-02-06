@@ -1,4 +1,5 @@
 const PriceTable = require('../models/priceTable');
+const Price = require('../models/price');
 
 const priceTableService = {
   async getPriceAreaById(id, quantity, size) {
@@ -24,6 +25,34 @@ const priceTableService = {
     total *= preco.value;
 
     return total;
+  },
+
+  async getPriceTableWithPricesById(id) {
+    return PriceTable
+      .findById(id)
+      .populate('prices')
+      .select('+prices');
+  },
+
+  async addPrice(id, price) {
+    const priceTable = await PriceTable
+      .findById(id)
+      .populate('prices');
+
+    const p = await Price.create({ ...price, priceTable: id });
+    priceTable.prices.push(p);
+
+    await priceTable.save();
+    return p;
+  },
+
+  async deleteManyPrices(ids) {
+    await PriceTable.deleteMany({ _id: { $in: ids } });
+    return ids.length;
+  },
+
+  async createPriceTable(priceTable) {
+    return PriceTable.create(priceTable);
   },
 };
 

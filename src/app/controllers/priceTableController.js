@@ -2,7 +2,6 @@ const express = require('express');
 
 const PriceTable = require('../models/priceTable');
 const PriceTableService = require('../services/priceTable');
-const Price = require('../models/price');
 
 const router = express.Router();
 
@@ -10,9 +9,8 @@ const priceTableController = {
   async createNewPriceTable(req, res) {
     try {
       const { name, unit } = req.body;
-
-      const priceTable = await PriceTable.create({ name, unit });
-
+      const newPriceTable = { name, unit };
+      const priceTable = await PriceTableService.createPriceTable(newPriceTable);
       return res.send({ priceTable });
     } catch (e) {
       return res.status(400)
@@ -51,10 +49,8 @@ const priceTableController = {
     try {
       const { priceTableId } = req.params;
 
-      const priceTable = await PriceTable
-        .findById(priceTableId)
-        .populate('prices')
-        .select('+prices');
+      const priceTable = await PriceTableService
+        .getPriceTableWithPricesById(priceTableId);
 
       return res.send({ priceTable });
     } catch (e) {
@@ -67,9 +63,10 @@ const priceTableController = {
     try {
       const { priceTableIds } = req.body;
 
-      await PriceTable.deleteMany({ _id: { $in: priceTableIds } });
+      const deletedCount = await PriceTableService
+        .deleteManyPrices(priceTableIds);
 
-      return res.send({ deletedCount: priceTableIds.length });
+      return res.send({ deletedCount });
     } catch (e) {
       return res.status(400)
         .send({ error: `Error on delete price tables: ${e}` });
@@ -79,18 +76,11 @@ const priceTableController = {
   async addNewPrice(req, res) {
     try {
       const { priceTableId } = req.params;
-      const { price } = req.body;
+      const { price: p } = req.body;
 
-      const priceTable = await PriceTable
-        .findById(priceTableId).populate('prices');
+      const price = await PriceTableService.addPrice(priceTableId, p);
 
-      const p = await Price.create({ ...price, priceTable: priceTableId });
-
-      priceTable.prices.push(p);
-
-      await priceTable.save();
-
-      return res.send({ price: p });
+      return res.send({ price });
     } catch (e) {
       return res.status(400)
         .send({ error: `Error on update price table with new child: ${e}` });
