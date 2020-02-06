@@ -15,10 +15,6 @@ const engine = require('express-react-views').createEngine()
 
 app.engine('jsx', engine)
 
-// app.get('/test', function(req, res) {
-//   res.render('form', { msg: 'ok'})
-// })
-
 require('dotenv').config()
 
 require('./app/controllers/index')(app)

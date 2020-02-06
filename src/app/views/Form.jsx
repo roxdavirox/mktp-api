@@ -9,13 +9,15 @@ const style = {
 
 const Form = props => {
   const { product, options } = props;
+
   return (
     <>
       <div>Produto: {product.name} </div>
       <ul>
         {Object.keys(options).map(k => 
-          <li key={options[k]._id}>{options[k].name}
-            <ul>
+          <li key={k}>
+              {options[k].name}
+            <ul key={k}>
               {options[k].items.map(item => <li key={item._id}>{item.name}</li>)}
             </ul>
           </li>

@@ -47,7 +47,7 @@ router.get('/:productId', async (req, res) => {
         .map((po) => po.item)
       const option = { ...uniqueOptions[id].toObject() }
 
-      _options[id] = { option, items }
+      _options[id] = { ...option, items }
     })
 
     // const lis = Object.keys(groupedOptions)
