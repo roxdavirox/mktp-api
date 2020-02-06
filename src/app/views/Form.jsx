@@ -7,9 +7,8 @@ const style = {
   backgroundColor: "red"
 };
 
-const Form = props => {
-  const { product, options } = props;
-  
+const Form = ({ product, options, sizes, selectedItemsId }) => {
+
   return (
     <>
       <div>Produto: {product.name} </div>
@@ -20,11 +19,24 @@ const Form = props => {
           <option>2</option>
           <option>3</option>
         </select>
+        <br />
+        Medidas:
+        {sizes && 
+          <select className="orderby">
+            {sizes.map((size, index) => 
+              <option key={index} selected={index == 1}>{size.x} x {size.y}</option>)}
+          </select>}
         {Object.keys(options).map(k => 
           <div key={k} className="orderby">
               {options[k].name}: 
             <select key={k}>
-              {options[k].items.map(item => <option key={item._id}>{item.name}</option>)}
+              {options[k].items.map(item => 
+                <option 
+                  key={item._id}
+                  id={item._id}
+                  selected={selectedItemsId.indexOf(item._id.toString()) !== -1}>
+                    {item.name}
+                </option>)}
             </select>
           </div>
         )}
