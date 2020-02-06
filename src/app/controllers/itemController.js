@@ -6,7 +6,6 @@ const express = require('express');
 const ItemService = require('../services/item');
 const Item = require('../models/item');
 const Option = require('../models/option');
-const PriceTable = require('../models/priceTable');
 
 const router = express.Router();
 
@@ -14,7 +13,9 @@ const itemController = {
   async getItemByIdWithPrice(req, res) {
     try {
       const { itemId } = req.params;
+
       const item = ItemService.getItemPriceById(itemId);
+
       return res.send({ item });
     } catch (e) {
       return res.status(400)
@@ -25,7 +26,9 @@ const itemController = {
   async getItemById(req, res) {
     try {
       const { itemId } = req.params;
+
       const item = await ItemService.getItemById(itemId);
+
       return res.send({ item });
     } catch (e) {
       return res.status(400)
@@ -37,34 +40,20 @@ const itemController = {
     try {
       const { itemsId } = req.body;
 
-      await Item.deleteMany({ _id: { $in: itemsId } });
+      const deletedItemsCount = await ItemService.deleteManyItemsByIds(itemsId);
 
-      return res.send({ deletedItemsCount: itemsId.length });
+      return res.send({ deletedItemsCount });
     } catch (e) {
-      return res.status(400).send({ error: `Error on deleting item(s): ${e}` });
+      return res.status(400)
+        .send({ error: `Error on deleting item(s): ${e}` });
     }
   },
 
   async getTemplateItems(req, res) {
     try {
-      const items = await Item.find().populate({
-        path: 'option',
-      }).populate({
-        path: 'priceTable',
-        select: 'unit',
-      }).populate({ path: 'templates.item' });
+      const items = await ItemService.getAllItemsWithTemplates();
 
-      // eslint-disable-next-line no-underscore-dangle
-      const _items = await Promise.all(items.map(async (item) => {
-        if (item.itemType === 'template' && item.templates) {
-          const templatePrice = await item.templates
-            .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0);
-          return { ...item.toObject(), templatePrice };
-        }
-        return item;
-      }));
-
-      return res.send({ items: _items });
+      return res.send({ items });
     } catch (e) {
       return res.status(400)
         .send({ error: `Error on get items with price table ${e}` });
@@ -73,11 +62,12 @@ const itemController = {
 
   async getAllItems(req, res) {
     try {
-      const items = await Item.find();
+      const items = await ItemService.getAll();
 
       return res.send({ items });
     } catch (e) {
-      return res.status(400).send({ error: 'Error on load all items' });
+      return res.status(400)
+        .send({ error: 'Error on load all items' });
     }
   },
 
@@ -93,24 +83,7 @@ const itemController = {
         priceTableId == '0' ? undefined : priceTableId,
       };
 
-      const priceTable = await PriceTable.findById(priceTableId);
-      // eslint-disable-next-line eqeqeq
-      if (priceTable.unit === 'quantidade') {
-        await Item.update(
-          { 'templates.item': itemId },
-          {
-            $set: { 'templates.$.size': { x: 1, y: 1 } },
-          },
-        );
-      }
-
-      const item = await Item
-        .findByIdAndUpdate(
-          itemId,
-          { ...newItem },
-          { new: true },
-        );
-
+      const item = await ItemService.updateItem(itemId, priceTableId, newItem);
       return res.send({ item });
     } catch (e) {
       return res.status(400)
@@ -122,10 +95,8 @@ const itemController = {
     try {
       const { optionId } = req.params;
 
-      const option = await Option.findById(optionId).populate('items');
-
       const { name, templates } = req.body;
-      const templateItem = {
+      const newTemplateItem = {
         name,
         itemType: 'template',
         priceTableId: undefined,
@@ -133,36 +104,18 @@ const itemController = {
         option: optionId,
       };
 
-      const item = await Item.create({ ...templateItem });
+      const templateItem = await ItemService.createTemplateItem(optionId, newTemplateItem);
 
-      option.items.push(item);
-
-      await option.save();
-
-      const populatedItem = await Item.findById(item._id)
-        .populate({
-          path: 'option',
-        }).populate({
-          path: 'priceTable',
-          select: 'unit',
-        }).populate({ path: 'templates.item' });
-
-      const templatePrice = await populatedItem.templates
-        .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0);
-
-      const templateItemWithPrice = { ...populatedItem.toObject(), templatePrice };
-
-      return res.send({ templateItem: templateItemWithPrice });
+      return res.send({ templateItem });
     } catch (err) {
-      return res.status(400).send({ error: 'Error when creating template item' });
+      return res.status(400)
+        .send({ error: 'Error when creating template item' });
     }
   },
 
   async createItemIntoOptions(req, res) {
     try {
       const { optionId } = req.params;
-
-      const option = await Option.findById(optionId).populate('items');
 
       const { name, priceTableId } = req.body;
       const newItem = {
@@ -174,10 +127,7 @@ const itemController = {
         option: optionId,
       };
 
-      const item = await Item.create({ ...newItem });
-
-      option.items.push(item);
-      await option.save();
+      const item = await ItemService.createItem(optionId, newItem);
 
       return res.send({ item });
     } catch (err) {
