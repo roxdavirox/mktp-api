@@ -46,7 +46,7 @@ const priceTableService = {
     return p;
   },
 
-  async deleteManyPrices(ids) {
+  async deleteManyPricesByIds(ids) {
     await PriceTable.deleteMany({ _id: { $in: ids } });
     return ids.length;
   },
