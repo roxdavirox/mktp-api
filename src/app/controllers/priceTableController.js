@@ -64,7 +64,7 @@ const priceTableController = {
       const { priceTableIds } = req.body;
 
       const deletedCount = await PriceTableService
-        .deleteManyPrices(priceTableIds);
+        .deleteManyPricesByIds(priceTableIds);
 
       return res.send({ deletedCount });
     } catch (e) {
