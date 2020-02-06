@@ -1,12 +1,5 @@
 var React = require("react");
 
-const style = {
-  fontSize: "1.5em",
-  textAlign: "center",
-  color: "white",
-  backgroundColor: "red"
-};
-
 const Form = ({ product, options, sizes, selectedItemsId }) => {
 
   return (
