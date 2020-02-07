@@ -13,7 +13,7 @@ app.use(cors());
 
 console.log(`[mktp] servindo no diretório: ${__dirname}`);
 console.log('[mktp] configurando react-views');
-app.set('views', path.resolve(__dirname, 'views'));
+app.set('views', path.resolve(__dirname, 'app', 'views'));
 app.set('view engine', 'jsx');
 const engine = require('express-react-views').createEngine();
 
