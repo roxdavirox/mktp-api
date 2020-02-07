@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-app.set('views', `${__dirname}/app/views`);
+app.set('views', `${__dirname}/views`);
 app.set('view engine', 'jsx');
 const engine = require('express-react-views').createEngine();
 
