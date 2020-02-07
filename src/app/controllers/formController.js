@@ -4,6 +4,9 @@
 const express = require('express');
 const Product = require('../models/product');
 
+const ItemService = require('../services/item');
+const PriceTableService = require('../services/priceTable');
+
 const router = express.Router();
 
 const formController = {
@@ -71,8 +74,28 @@ const formController = {
         .send({ error: `Error on get product form: ${e}` });
     }
   },
+
+  async getBudget(req, res) {
+    try {
+      const { itemsId, quantity, size } = req.body;
+      const [itemId] = itemsId;
+
+      const item = await ItemService.getItemPriceById(itemId);
+      if (!item.priceTable) return res.send({ item, price: 0 });
+
+      const { priceTable } = item;
+      const price = await PriceTableService
+        .getPriceAreaById(priceTable._id, quantity, size);
+
+      return res.send({ item, price });
+    } catch (e) {
+    return res.status(400)
+      .send({ error: `Error on get product form: ${e}` });
+  }
+  },
 };
 
+router.post('/budget', formController.getBudget);
 router.post('/:productId', formController.getHtmlForm);
 
 module.exports = (app) => app.use('/form', router);
