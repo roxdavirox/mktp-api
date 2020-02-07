@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const cors = require('cors');
 
@@ -12,7 +13,7 @@ app.use(cors());
 
 console.log(`[mktp] servindo no diretório: ${__dirname}`);
 console.log('[mktp] configurando react-views');
-app.set('views', './app/views');
+app.set('views', path.resolve(__dirname, 'views'));
 app.set('view engine', 'jsx');
 const engine = require('express-react-views').createEngine();
 
