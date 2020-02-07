@@ -2,15 +2,15 @@ const PriceTable = require('../models/priceTable');
 const Price = require('../models/price');
 
 const priceTableService = {
-  async getPriceAreaById(id, quantity, size) {
-    const { _size = { x: 1, y: 1 } } = size;
+  async getPriceAreaById(id, quantity, size = { x: 1, y: 1 }) {
+    // const { _size = { x: 1, y: 1 } } = size;
     let total = quantity;
 
     const priceTable = await PriceTable.findById(id)
       .populate('prices');
 
     if (priceTable.unit !== 'quantidade') {
-      total *= _size.x * _size.y;
+      total *= size.x * size.y;
     }
 
     const { prices } = priceTable;

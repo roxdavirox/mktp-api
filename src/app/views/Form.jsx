@@ -7,22 +7,29 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
       <div>Produto: {product.name} </div>
       <form>
         Quantidade:
-        <select className="orderby">
+        <select id="quantity-select" className="orderby">
           <option>1</option>
           <option>2</option>
           <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
         </select>
         <br />
         Medidas:
         {sizes && 
-          <select className="orderby">
+          <select id="size-select" className="orderby">
             {sizes.map((size, index) => 
-              <option key={index} selected={index == 1}>{size.x} x {size.y}</option>)}
+              <option key={index} _size={JSON.stringify(size)} selected={index == 1}>{size.x} x {size.y}</option>)}
           </select>}
         {Object.keys(options).map(k => 
           <div key={k} className="orderby">
               {options[k].name}: 
-            <select key={k}>
+            <select className="item-select" key={k}>
               {options[k].items.map(item => 
                 <option 
                   key={item._id}

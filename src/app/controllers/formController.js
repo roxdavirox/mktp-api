@@ -68,7 +68,7 @@ const formController = {
         selectedItemsId,
       });
 
-      return res.send({ html, price: 'R$ 200' });
+      return res.send({ html });
     } catch (e) {
       return res.status(400)
         .send({ error: `Error on get product form: ${e}` });
@@ -78,19 +78,21 @@ const formController = {
   async getBudget(req, res) {
     try {
       const { itemsId, quantity, size } = req.body;
-      const [itemId] = itemsId;
 
-      const item = await ItemService.getItemPriceById(itemId);
-      if (!item.priceTable) return res.send({ item, price: 0 });
+      const items = await Promise.all(itemsId.map(async (itemId) => {
+        const item = await ItemService.getItemPriceById(itemId);
+        if (!item.priceTable) return { ...item.toObject(), price: 0 };
 
-      const { priceTable } = item;
-      const price = await PriceTableService
-        .getPriceAreaById(priceTable._id, quantity, size);
+        const { priceTable } = item;
+        const price = await PriceTableService
+          .getPriceAreaById(priceTable._id, quantity, size);
+        return { ...item.toObject(), price };
+      }));
 
-      return res.send({ item, price });
+      return res.send({ items });
     } catch (e) {
     return res.status(400)
-      .send({ error: `Error on get product form: ${e}` });
+      .send({ error: `Error on get budget: ${e}` });
   }
   },
 };
