@@ -61,7 +61,7 @@ const formController = {
         });
       });
 
-      const html = await getHtmlString('form', {
+      const html = await getHtmlString('Form', {
         product,
         options: _options,
         sizes,
