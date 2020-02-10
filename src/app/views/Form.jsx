@@ -1,47 +1,72 @@
 var React = require("react");
 
+const styles = {
+  container: {
+    display: 'flex',
+    maxWidth: '300px',
+    justifyContent: 'space-between'
+  },
+  label: {
+    width: '150px',
+    margin: 'auto'
+  },
+  select: {
+    width: '150px'
+  },
+  input: {
+    width: '150px'
+  }
+}
+
 const Form = ({ product, options, sizes, selectedItemsId }) => {
 
   return (
     <>
       <div>Produto: {product.name} </div>
       <form>
-        Quantidade:
-        <select id="quantity-select" className="orderby">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
-          <option>6</option>
-          <option>7</option>
-          <option>8</option>
-          <option>9</option>
-          <option>10</option>
-        </select>
-        <br />
-        {sizes && 'Medidas:'}
+        <div style={styles.container}>
+          <label for="quantity-select" style={styles.label}>Quantidade:</label>
+          <input 
+            type="number"
+            defaultValue="1"
+            id="quantity-select"
+            className="orderby" 
+            style={styles.input} />
+        </div>
+        {sizes && <label for="size-select" style={styles.label}>Medidas</label>}
         {sizes && 
-          <select id="size-select" className="orderby">
-            {sizes.map((size, index) => 
-              <option key={index} _size={JSON.stringify(size)} selected={index == 1}>{size.x} x {size.y}</option>)}
-          </select>}
-        {Object.keys(options).map(k => 
-          <div key={k} className="orderby">
-              {options[k].name}: 
-            <select className="item-select" key={k}>
-              {options[k].items.map(item => 
+          <div >
+            <select id="size-select" className="orderby" style={styles.select}>
+              {sizes.map((size, index) => 
                 <option 
-                  key={item._id}
-                  id={item._id}
-                  selected={selectedItemsId.indexOf(item._id.toString()) !== -1}>
-                    {item.name}
+                  key={index} 
+                  _size={JSON.stringify(size)} 
+                  selected={index == 1}>
+                    {size.x} x {size.y}
                 </option>)}
             </select>
-            <br />
+          </div>}
+        {Object.keys(options).map(k => 
+          <div key={k} className="orderby" style={styles.container}>
+              <label for={options[k]._id} style={styles.label}>{options[k].name}:</label> 
+            <select 
+              className="item-select"
+              id={options[k]._id}
+              key={k}
+              style={styles.select}>
+                {options[k].items.map(item => 
+                  <option 
+                    key={item._id}
+                    id={item._id}
+                    selected={selectedItemsId.indexOf(item._id.toString()) !== -1}>
+                      {item.name}
+                  </option>)}
+            </select>
           </div>
         )}
-        <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
+        <div style={{ float: 'right' }}>
+          <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
+        </div>
       </form>
     </>
   )

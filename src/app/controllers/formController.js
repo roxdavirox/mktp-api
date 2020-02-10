@@ -75,7 +75,7 @@ const formController = {
     }
   },
 
-  async getBudget(req, res) {
+  async getQuote(req, res) {
     try {
       const { itemsId, quantity, size = { x: 1, y: 1 } } = req.body;
 
@@ -92,12 +92,12 @@ const formController = {
       return res.send({ items });
     } catch (e) {
     return res.status(400)
-      .send({ error: `Error on get budget: ${e}` });
+      .send({ error: `Error on get quote: ${e}` });
   }
   },
 };
 
-router.post('/budget', formController.getBudget);
+router.post('/quote', formController.getQuote);
 router.post('/:productId', formController.getHtmlForm);
 
 module.exports = (app) => app.use('/form', router);
