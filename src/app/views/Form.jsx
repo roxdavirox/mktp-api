@@ -20,7 +20,7 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
           <option>10</option>
         </select>
         <br />
-        Medidas:
+        {sizes && 'Medidas:'}
         {sizes && 
           <select id="size-select" className="orderby">
             {sizes.map((size, index) => 

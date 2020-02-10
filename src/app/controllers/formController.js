@@ -77,7 +77,7 @@ const formController = {
 
   async getBudget(req, res) {
     try {
-      const { itemsId, quantity, size } = req.body;
+      const { itemsId, quantity, size = { x: 1, y: 1 } } = req.body;
 
       const items = await Promise.all(itemsId.map(async (itemId) => {
         const item = await ItemService.getItemPriceById(itemId);
