@@ -38,6 +38,7 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
                     {item.name}
                 </option>)}
             </select>
+            <br />
           </div>
         )}
         <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
