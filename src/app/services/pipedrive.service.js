@@ -74,6 +74,18 @@ const getDealsDetailById = (id) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
+const addNote = (note) => new Promise((resolve, reject) => {
+  const notesUrl = `notes?api_token=${pipedriveToken}`;
+  const formData = new FormData();
+  formData.append('user_id', note.user_id);
+  formData.append('person_id', note.person_id);
+  formData.append('deal_id', note.deal_id);
+  formData.append('content', note.html);
+  pipedriveApi.post(notesUrl, formData, { headers: formData.getHeaders() })
+    .then((res) => resolve(res.data))
+    .catch(reject);
+});
+
 const pipedriveService = {
   async createDeal({
     title = 'Orçamento online',
@@ -82,6 +94,7 @@ const pipedriveService = {
     phone,
     value,
     add_time,
+    html,
     user_id = 2966454,
     owner_id = 2966454,
     stage_id = 17,
@@ -96,6 +109,29 @@ const pipedriveService = {
         phone,
       });
       const { data: person } = personResponse;
+
+      const personDeals = await getDealsByPersonId(person.id);
+
+      const { data: deals } = personDeals;
+      const dealsDetails = await Promise.all(
+        deals.map(async (_deal) => await getDealsDetailById(_deal.id)),
+      );
+
+      const allDeals = dealsDetails.map(({ data: deal }) => deal);
+
+      const hasDealToday = allDeals.some((deal) => isToday(deal.add_time));
+      if (hasDealToday) {
+      // TODO: criar um note dentro do deal quando já existir na data atual
+        const dealMadeToday = allDeals.find((deal) => isToday(deal.add_time));
+        const noteResponse = await addNote({
+          user_id,
+          deal_id: dealMadeToday.id,
+          html,
+          person_id: person.id,
+        });
+        return { noteResponse };
+      }
+
       const dealResponse = await addDeal({
         title,
         value,
@@ -117,8 +153,17 @@ const pipedriveService = {
     const allDeals = dealsDetails.map(({ data: deal }) => deal);
 
     const hasDealToday = allDeals.some((deal) => isToday(deal.add_time));
-    // TODO: criar um note dentro do deal quando já existir na data atual
-    const dealMadeToday = allDeals.find((deal) => isToday(deal.add_time));
+    if (hasDealToday) {
+      // TODO: criar um note dentro do deal quando já existir na data atual
+      const dealMadeToday = allDeals.find((deal) => isToday(deal.add_time));
+      const noteResponse = await addNote({
+        user_id,
+        deal_id: dealMadeToday.id,
+        html,
+        person_id: person.id,
+      });
+      return { noteResponse };
+    }
 
     const dealResponse = await addDeal({
       title,
