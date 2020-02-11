@@ -146,25 +146,26 @@ const pipedriveService = {
     const personDeals = await getDealsByPersonId(person.id);
 
     const { data: deals } = personDeals;
-    const dealsDetails = await Promise.all(
-      deals.map(async (_deal) => await getDealsDetailById(_deal.id)),
-    );
+    if (deals) {
+      const dealsDetails = await Promise.all(
+        deals.map(async (_deal) => await getDealsDetailById(_deal.id)),
+      );
 
-    const allDeals = dealsDetails.map(({ data: deal }) => deal);
+      const allDeals = dealsDetails.map(({ data: deal }) => deal);
 
-    const hasDealToday = allDeals.some((deal) => isToday(deal.add_time));
-    if (hasDealToday) {
+      const hasDealToday = allDeals.some((deal) => isToday(deal.add_time));
+      if (hasDealToday) {
       // TODO: criar um note dentro do deal quando já existir na data atual
-      const dealMadeToday = allDeals.find((deal) => isToday(deal.add_time));
-      const noteResponse = await addNote({
-        user_id,
-        deal_id: dealMadeToday.id,
-        html,
-        person_id: person.id,
-      });
-      return { noteResponse };
+        const dealMadeToday = allDeals.find((deal) => isToday(deal.add_time));
+        const noteResponse = await addNote({
+          user_id,
+          deal_id: dealMadeToday.id,
+          html,
+          person_id: person.id,
+        });
+        return { noteResponse };
+      }
     }
-
     const dealResponse = await addDeal({
       title,
       value,
