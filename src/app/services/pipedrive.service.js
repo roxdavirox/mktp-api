@@ -38,12 +38,20 @@ const addDeal = (deal) => new Promise((resolve, reject) => {
   formData.append('user_id', deal.user_id);
   formData.append('stage_id', deal.stage_id);
   formData.append('person_id', deal.person_id);
+  formData.append('add_time', deal.add_time);
   formData.append('status', 'open');
   pipedriveApi.post(
     dealsUrl,
     formData,
     { headers: formData.getHeaders() },
   )
+    .then((res) => resolve(res.data))
+    .catch(reject);
+});
+
+const getDealsByPersonId = (id) => new Promise((resolve, reject) => {
+  const dealsUrl = `deals/find?term=Or%C3%A7amento%20online&person_id=${id}&api_token=`;
+  pipedriveApi.get(dealsUrl)
     .then((res) => resolve(res.data))
     .catch(reject);
 });
@@ -55,6 +63,7 @@ const pipedriveService = {
     email,
     phone,
     value,
+    add_time,
     user_id = 2966454,
     owner_id = 2966454,
     stage_id = 17,
@@ -68,12 +77,22 @@ const pipedriveService = {
         email,
         phone,
       });
-      return personResponse;
+      const { data: person } = personResponse;
+      const dealResponse = await addDeal({
+        title,
+        value,
+        add_time,
+        person_id: person.id,
+        user_id,
+        stage_id,
+      });
+      return { personResponse, dealResponse };
     }
     const [person] = data;
     const dealResponse = await addDeal({
       title,
       value,
+      add_time,
       person_id: person.id,
       user_id,
       stage_id,
