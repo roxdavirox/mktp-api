@@ -4,8 +4,8 @@
 const express = require('express');
 const Product = require('../models/product');
 
-const ItemService = require('../services/item');
-const PriceTableService = require('../services/priceTable');
+const ItemService = require('../services/item.service');
+const PriceTableService = require('../services/priceTable.service');
 const ProductService = require('../services/product.service');
 
 const router = express.Router();

@@ -1,7 +1,7 @@
 const express = require('express');
 
 const PriceTable = require('../models/priceTable');
-const PriceTableService = require('../services/priceTable');
+const PriceTableService = require('../services/priceTable.service');
 
 const router = express.Router();
 

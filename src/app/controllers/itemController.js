@@ -3,7 +3,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
-const ItemService = require('../services/item');
+const ItemService = require('../services/item.service');
 const Item = require('../models/item');
 
 const router = express.Router();

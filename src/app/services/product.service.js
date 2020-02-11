@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 
-const ItemService = require('../services/item');
-const PriceTableService = require('../services/priceTable');
+const ItemService = require('../services/item.service');
+const PriceTableService = require('../services/priceTable.service');
 
 const productService = {
   async getProductQuote(itemsId, quantity, size) {
