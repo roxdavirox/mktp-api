@@ -108,6 +108,16 @@ const pipedriveService = {
     }
     const [person] = data;
     const personDeals = await getDealsByPersonId(person.id);
+
+    const { data: deals } = personDeals;
+    const dealsDetails = await Promise.all(
+      deals.map(async (_deal) => await getDealsDetailById(_deal.id)),
+    );
+
+    const dealsAddTime = dealsDetails.map(({ data: deal }) => deal.add_time);
+
+    const hasDealToday = dealsAddTime.some(isToday);
+
     const dealResponse = await addDeal({
       title,
       value,
@@ -116,11 +126,7 @@ const pipedriveService = {
       user_id,
       stage_id,
     });
-    const { data: deals } = personDeals;
-    const dealsDetails = await Promise.all(
-      deals.map(async (_deal) => await getDealsDetailById(_deal.id)),
-    );
-
+    
     return { emailResponse, dealResponse };
   },
 };
