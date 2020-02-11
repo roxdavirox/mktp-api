@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
 // criar promise para as rotas da api do pipedrive
@@ -29,9 +30,34 @@ const addPerson = (person) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
+const addDeal = (deal) => new Promise((resolve, reject) => {
+  const dealsUrl = `deals?api_token=${pipedriveToken}`;
+  const formData = new FormData();
+  formData.append('title', deal.title);
+  formData.append('value', deal.value);
+  formData.append('user_id', deal.user_id);
+  formData.append('stage_id', deal.stage_id);
+  formData.append('person_id', deal.person_id);
+  formData.append('status', 'open');
+  pipedriveApi.post(
+    dealsUrl,
+    formData,
+    { headers: formData.getHeaders() },
+  )
+    .then((res) => resolve(res.data))
+    .catch(reject);
+});
+
 const pipedriveService = {
   async createDeal({
-    name, owner_id, email, phone,
+    title,
+    name,
+    email,
+    phone,
+    value,
+    user_id = 2966454,
+    owner_id = 2966454,
+    stage_id = 17,
   }) {
     const emailResponse = await getPersonByEmail(email);
     const { data } = emailResponse;
@@ -42,10 +68,18 @@ const pipedriveService = {
         email,
         phone,
       });
-      console.log('personResponse:', personResponse);
       return personResponse;
     }
-    return emailResponse;
+    const [person] = data;
+    const dealResponse = await addDeal({
+      title,
+      value,
+      person_id: person.id,
+      user_id,
+      stage_id,
+    });
+
+    return { emailResponse, dealResponse };
   },
 };
 
