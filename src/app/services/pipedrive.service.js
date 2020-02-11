@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
@@ -66,7 +67,7 @@ const getDealsByPersonId = (id) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
-const getDealsDetailBy = (id) => new Promise((resolve, reject) => {
+const getDealsDetailById = (id) => new Promise((resolve, reject) => {
   const dealsUrl = `deals/${id}?api_token=${pipedriveToken}`;
   pipedriveApi.get(dealsUrl)
     .then((res) => resolve(res.data))
@@ -75,7 +76,7 @@ const getDealsDetailBy = (id) => new Promise((resolve, reject) => {
 
 const pipedriveService = {
   async createDeal({
-    title,
+    title = 'Orçamento online',
     name,
     email,
     phone,
@@ -106,6 +107,7 @@ const pipedriveService = {
       return { personResponse, dealResponse };
     }
     const [person] = data;
+    const personDeals = await getDealsByPersonId(person.id);
     const dealResponse = await addDeal({
       title,
       value,
@@ -114,6 +116,10 @@ const pipedriveService = {
       user_id,
       stage_id,
     });
+    const { data: deals } = personDeals;
+    const dealsDetails = await Promise.all(
+      deals.map(async (_deal) => await getDealsDetailById(_deal.id)),
+    );
 
     return { emailResponse, dealResponse };
   },
