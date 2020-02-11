@@ -4,8 +4,7 @@
 const express = require('express');
 const Product = require('../models/product');
 
-const ItemService = require('../services/item.service');
-const PriceTableService = require('../services/priceTable.service');
+const PipedriveService = require('../services/pipedrive.service');
 const ProductService = require('../services/product.service');
 
 const router = express.Router();
@@ -84,12 +83,18 @@ const formController = {
 
       return res.send({ items });
     } catch (e) {
-    return res.status(400)
-      .send({ error: `Error on get product quote: ${e}` });
-  }
+      return res.status(400)
+        .send({ error: `Error on get product quote: ${e}` });
+    }
   },
+  async createDeal(req, res) {
+    const { name, owner_id, phone, email } = req.body;
+    await PipedriveService.createDeal();
+  },
+
 };
 
+router.post('/deal', formController.createDeal);
 router.post('/quote', formController.getQuote);
 router.post('/:productId', formController.getHtmlForm);
 
