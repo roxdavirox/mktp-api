@@ -7,6 +7,16 @@ const { pipedriveApi } = require('../../services/api');
 
 const pipedriveToken = process.env.PIPE_DRIVE_TOKEN_API;
 
+const isToday = (d) => {
+  const year = new Date().getFullYear();
+  const month = new Date().getMonth() + 1;
+  const day = new Date().getDate();
+  const [_year, _month, _day] = d.substring(0, d.indexOf(' ')).split('-');
+  const date = new Date(_year, _month, _day);
+  const todayDate = new Date(year, month, day);
+  return date.getTime() === todayDate.getTime();
+};
+
 const getPersonByEmail = (email) => new Promise((resolve, reject) => {
   const personEmailUrl = `persons/find?term=${email}&search_by_email=1&api_token=${pipedriveToken}`;
   pipedriveApi.get(personEmailUrl)
