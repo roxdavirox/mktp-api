@@ -114,9 +114,11 @@ const pipedriveService = {
       deals.map(async (_deal) => await getDealsDetailById(_deal.id)),
     );
 
-    const dealsAddTime = dealsDetails.map(({ data: deal }) => deal.add_time);
+    const allDeals = dealsDetails.map(({ data: deal }) => deal);
 
-    const hasDealToday = dealsAddTime.some(isToday);
+    const hasDealToday = allDeals.some((deal) => isToday(deal.add_time));
+    // TODO: criar um note dentro do deal quando já existir na data atual
+    const dealMadeToday = allDeals.find((deal) => isToday(deal.add_time));
 
     const dealResponse = await addDeal({
       title,
@@ -126,7 +128,7 @@ const pipedriveService = {
       user_id,
       stage_id,
     });
-    
+
     return { emailResponse, dealResponse };
   },
 };
