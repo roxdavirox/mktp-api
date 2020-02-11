@@ -6,6 +6,7 @@ const Product = require('../models/product');
 
 const ItemService = require('../services/item');
 const PriceTableService = require('../services/priceTable');
+const ProductService = require('../services/product.service');
 
 const router = express.Router();
 
@@ -79,20 +80,12 @@ const formController = {
     try {
       const { itemsId, quantity, size = { x: 1, y: 1 } } = req.body;
 
-      const items = await Promise.all(itemsId.map(async (itemId) => {
-        const item = await ItemService.getItemPriceById(itemId);
-        if (!item.priceTable) return { ...item.toObject(), price: 0 };
-
-        const { priceTable } = item;
-        const price = await PriceTableService
-          .getPriceAreaById(priceTable._id, quantity, size);
-        return { ...item.toObject(), price };
-      }));
+      const items = await ProductService.getProductQuote(itemsId, quantity, size);
 
       return res.send({ items });
     } catch (e) {
     return res.status(400)
-      .send({ error: `Error on get quote: ${e}` });
+      .send({ error: `Error on get product quote: ${e}` });
   }
   },
 };
