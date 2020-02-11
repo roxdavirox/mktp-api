@@ -88,8 +88,8 @@ const formController = {
     }
   },
   async createDeal(req, res) {
-    const { name, owner_id, phone, email } = req.body;
-    await PipedriveService.createDeal();
+    const response = await PipedriveService.createDeal(req.body);
+    return res.send({ response });
   },
 
 };
