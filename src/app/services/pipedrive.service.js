@@ -50,7 +50,14 @@ const addDeal = (deal) => new Promise((resolve, reject) => {
 });
 
 const getDealsByPersonId = (id) => new Promise((resolve, reject) => {
-  const dealsUrl = `deals/find?term=Or%C3%A7amento%20online&person_id=${id}&api_token=`;
+  const dealsUrl = `deals/find?term=Or%C3%A7amento%20online&person_id=${id}&api_token=${pipedriveToken}`;
+  pipedriveApi.get(dealsUrl)
+    .then((res) => resolve(res.data))
+    .catch(reject);
+});
+
+const getDealsDetailBy = (id) => new Promise((resolve, reject) => {
+  const dealsUrl = `deals/${id}?api_token=${pipedriveToken}`;
   pipedriveApi.get(dealsUrl)
     .then((res) => resolve(res.data))
     .catch(reject);
