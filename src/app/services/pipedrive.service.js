@@ -22,9 +22,9 @@ const getPersonByEmail = (email) => new Promise((resolve, reject) => {
   const personEmailUrl = `persons/find?term=${email}&search_by_email=1&api_token=${pipedriveToken}`;
   pipedriveApi.get(personEmailUrl)
     .then(({ data }) => {
-      const { data: person } = data;
-      if (!person) reject();
-      resolve(person);
+      const { data: persons } = data;
+      if (!persons) reject();
+      resolve(persons);
     })
     .catch(reject);
 });
@@ -90,21 +90,22 @@ const addNote = (note) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
-const addNoteWhenExistsDealToday = async (deal, person) => {
+const hasDealCreateToday = async (person) => {
   const personDeals = await getDealsByPersonId(person.id);
 
   const { data: deals } = personDeals;
-  if (!deals) return false;
+  if (!deals) return { hasDealToday: false };
   const dealsDetails = await Promise.all(
     deals.map(async (_deal) => await getDealsDetailById(_deal.id)),
   );
 
   const allDeals = dealsDetails.map(({ data: _deal }) => _deal);
   const hasDealToday = allDeals.some((_deal) => isToday(_deal.add_time));
-
-  if (!hasDealToday) return false;
-
   const dealMadeToday = allDeals.find((_deal) => isToday(_deal.add_time));
+  return { hasDealToday, dealMadeToday };
+};
+
+const addNoteIntoDealMadeToday = async (deal, dealMadeToday, person) => {
   const noteResponse = await addNote({
     user_id: deal.user_id,
     deal_id: dealMadeToday.id,
@@ -126,11 +127,11 @@ const addPersonWhenNotExists = async (deal) => {
 };
 
 const addDealToExistsPerson = async (deal, person) => {
-  const dealResponse = await addDeal({
+  const { data: _deal } = await addDeal({
     ...deal,
     person_id: person.id,
   });
-  return dealResponse;
+  return _deal;
 };
 
 const pipedriveService = {
@@ -143,11 +144,14 @@ const pipedriveService = {
       ...deal,
     };
     const { email } = deal;
-    const person = await getPersonByEmail(email);
+    const [person] = await getPersonByEmail(email);
     if (!person) return addPersonWhenNotExists(data);
 
-    return addDealToExistsPerson(data, person)
-      .then((res) => addNoteWhenExistsDealToday(res, person));
+    return hasDealCreateToday(person)
+      .then(({ hasDealToday, dealMadeToday }) => (hasDealToday
+        ? addNoteIntoDealMadeToday(data, dealMadeToday)
+        : addDealToExistsPerson(data, person)))
+      .catch((e) => console.error(e));
   },
 };
 
