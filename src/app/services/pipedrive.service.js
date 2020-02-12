@@ -20,10 +20,9 @@ const isToday = (d) => {
 const getPersonByEmail = (email) => new Promise((resolve, reject) => {
   const personEmailUrl = `persons/find?term=${email}&search_by_email=1&api_token=${pipedriveToken}`;
   pipedriveApi.get(personEmailUrl)
-    .then(({ data }) => {
-      const { data: persons } = data;
-      if (!persons) reject();
-      resolve(persons);
+    .then((res) => {
+      const { data: persons } = res.data;
+      resolve(persons || [null]);
     })
     .catch(reject);
 });
@@ -104,15 +103,12 @@ const hasDealCreatedToday = async (person) => {
   return { hasDealToday, dealMadeToday };
 };
 
-const addNoteIntoDealMadeToday = async (deal) => async (dealMadeToday) => async (person) => {
-  const noteResponse = await addNote({
-    user_id: deal.user_id,
-    deal_id: dealMadeToday.id,
-    html: deal.html,
-    person_id: person.id,
-  });
-  return noteResponse;
-};
+const addNoteIntoDealMadeToday = async (deal, dealMadeToday, person) => addNote({
+  user_id: deal.user_id,
+  deal_id: dealMadeToday.id,
+  html: deal.html,
+  person_id: person.id,
+});
 
 const addPersonWithDeal = async (deal) => {
   const personResponse = await addPerson(deal);
@@ -140,7 +136,7 @@ const pipedriveService = {
 
     return hasDealCreatedToday(person)
       .then(({ hasDealToday, dealMadeToday }) => (hasDealToday
-        ? addNoteIntoDealMadeToday(data)(dealMadeToday)(person)
+        ? addNoteIntoDealMadeToday(data, dealMadeToday, person)
         : addDeal({ ...deal, person_id: person.id })))
       .catch((e) => console.error(e));
   },
