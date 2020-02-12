@@ -63,14 +63,7 @@ const addDeal = (deal) => new Promise((resolve, reject) => {
 });
 
 const getDealsByPersonId = (id) => new Promise((resolve, reject) => {
-  const dealsUrl = `deals/find?term=Or%C3%A7amento%20online&person_id=${id}&api_token=${pipedriveToken}`;
-  pipedriveApi.get(dealsUrl)
-    .then((res) => resolve(res.data))
-    .catch(reject);
-});
-
-const getDealsDetailById = (id) => new Promise((resolve, reject) => {
-  const dealsUrl = `deals/${id}?api_token=${pipedriveToken}`;
+  const dealsUrl = `persons/${id}/deals?start=0&status=all_not_deleted&api_token=${pipedriveToken}`;
   pipedriveApi.get(dealsUrl)
     .then((res) => resolve(res.data))
     .catch(reject);
@@ -93,13 +86,9 @@ const hasDealCreatedToday = async (person) => {
 
   const { data: deals } = personDeals;
   if (!deals) return { hasDealToday: false };
-  const dealsDetails = await Promise.all(
-    deals.map(async (_deal) => await getDealsDetailById(_deal.id)),
-  );
 
-  const allDeals = dealsDetails.map(({ data: _deal }) => _deal);
-  const hasDealToday = allDeals.some((_deal) => isToday(_deal.add_time));
-  const dealMadeToday = allDeals.find((_deal) => isToday(_deal.add_time));
+  const hasDealToday = personDeals.some((_deal) => isToday(_deal.add_time));
+  const dealMadeToday = personDeals.find((_deal) => isToday(_deal.add_time));
   return { hasDealToday, dealMadeToday };
 };
 
@@ -138,7 +127,7 @@ const pipedriveService = {
       .then(({ hasDealToday, dealMadeToday }) => (hasDealToday
         ? addNoteIntoDealMadeToday(data, dealMadeToday, person)
         : addDeal({ ...deal, person_id: person.id })))
-      .catch((e) => console.error(e));
+      .catch(console.error);
   },
 };
 
