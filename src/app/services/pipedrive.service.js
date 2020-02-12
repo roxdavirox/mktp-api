@@ -64,7 +64,10 @@ const addDeal = (deal) => new Promise((resolve, reject) => {
 const getDealsByPersonId = (id) => new Promise((resolve, reject) => {
   const dealsUrl = `persons/${id}/deals?start=0&status=all_not_deleted&api_token=${pipedriveToken}`;
   pipedriveApi.get(dealsUrl)
-    .then((res) => resolve(res.data))
+    .then(({ data }) => {
+      const { data: personDeals } = data;
+      resolve(personDeals || [null]);
+    })
     .catch(reject);
 });
 
@@ -83,8 +86,7 @@ const addNote = (note) => new Promise((resolve, reject) => {
 const hasDealCreatedToday = async (person) => {
   const personDeals = await getDealsByPersonId(person.id);
 
-  const { data: deals } = personDeals;
-  if (!deals) return { hasDealToday: false };
+  if (!personDeals) return { hasDealToday: false };
 
   const hasDealToday = personDeals.some((_deal) => isToday(_deal.add_time));
   const dealMadeToday = personDeals.find((_deal) => isToday(_deal.add_time));
