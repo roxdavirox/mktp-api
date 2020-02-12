@@ -51,7 +51,6 @@ const addDeal = (deal) => new Promise((resolve, reject) => {
   formData.append('user_id', deal.user_id);
   formData.append('stage_id', deal.stage_id);
   formData.append('person_id', deal.person_id);
-  formData.append('add_time', deal.add_time);
   formData.append('status', 'open');
   pipedriveApi.post(
     dealsUrl,
