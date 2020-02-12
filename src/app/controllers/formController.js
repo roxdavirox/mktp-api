@@ -87,8 +87,11 @@ const formController = {
         .send({ error: `Error on get product quote: ${e}` });
     }
   },
+
   async createDeal(req, res) {
-    const response = await PipedriveService.createDeal(req.body);
+    const response = await PipedriveService.createDeal({
+       ...req.body,
+      });
     return res.send({ response });
   },
 
