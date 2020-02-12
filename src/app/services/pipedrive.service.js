@@ -89,7 +89,7 @@ const addNote = (note) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
-const hasDealCreateToday = async (person) => {
+const hasDealCreatedToday = async (person) => {
   const personDeals = await getDealsByPersonId(person.id);
 
   const { data: deals } = personDeals;
@@ -138,7 +138,7 @@ const pipedriveService = {
     const [person] = await getPersonByEmail(email);
     if (!person) return addPersonWithDeal(data);
 
-    return hasDealCreateToday(person)
+    return hasDealCreatedToday(person)
       .then(({ hasDealToday, dealMadeToday }) => (hasDealToday
         ? addNoteIntoDealMadeToday(data)(dealMadeToday)(person)
         : addDeal({ ...deal, person_id: person.id })))
