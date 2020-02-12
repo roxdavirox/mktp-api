@@ -89,12 +89,16 @@ const formController = {
   },
 
   async createDeal(req, res) {
+    try {
     const response = await PipedriveService.createDeal({
        ...req.body,
       });
     return res.send({ response });
+    } catch (e) {
+      return res.status(400)
+        .send({ error: `Error on get product quote: ${e}` });
+    }
   },
-
 };
 
 router.post('/deal', formController.createDeal);
