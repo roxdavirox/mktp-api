@@ -115,7 +115,7 @@ const addNoteIntoDealMadeToday = async (deal, dealMadeToday, person) => {
   return noteResponse;
 };
 
-const addPersonWhenNotExists = async (deal) => {
+const addPersonWithDeal = async (deal) => {
   const personResponse = await addPerson(deal);
   const { data: person } = personResponse;
 
@@ -145,7 +145,7 @@ const pipedriveService = {
     };
     const { email } = deal;
     const [person] = await getPersonByEmail(email);
-    if (!person) return addPersonWhenNotExists(data);
+    if (!person) return addPersonWithDeal(data);
 
     return hasDealCreateToday(person)
       .then(({ hasDealToday, dealMadeToday }) => (hasDealToday
