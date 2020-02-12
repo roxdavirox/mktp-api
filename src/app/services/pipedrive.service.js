@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
-// criar promise para as rotas da api do pipedrive
 const FormData = require('form-data');
 const { pipedriveApi } = require('../../services/api');
 
@@ -105,7 +104,7 @@ const hasDealCreateToday = async (person) => {
   return { hasDealToday, dealMadeToday };
 };
 
-const addNoteIntoDealMadeToday = async (deal, dealMadeToday, person) => {
+const addNoteIntoDealMadeToday = async (deal) => async (dealMadeToday) => async (person) => {
   const noteResponse = await addNote({
     user_id: deal.user_id,
     deal_id: dealMadeToday.id,
@@ -126,14 +125,6 @@ const addPersonWithDeal = async (deal) => {
   return { personResponse, dealResponse };
 };
 
-const addDealToExistsPerson = async (deal, person) => {
-  const { data: _deal } = await addDeal({
-    ...deal,
-    person_id: person.id,
-  });
-  return _deal;
-};
-
 const pipedriveService = {
   async createDeal(deal) {
     const data = {
@@ -149,8 +140,8 @@ const pipedriveService = {
 
     return hasDealCreateToday(person)
       .then(({ hasDealToday, dealMadeToday }) => (hasDealToday
-        ? addNoteIntoDealMadeToday(data, dealMadeToday)
-        : addDealToExistsPerson(data, person)))
+        ? addNoteIntoDealMadeToday(data)(dealMadeToday)(person)
+        : addDeal({ ...deal, person_id: person.id })))
       .catch((e) => console.error(e));
   },
 };
