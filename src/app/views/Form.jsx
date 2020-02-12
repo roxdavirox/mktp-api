@@ -33,9 +33,9 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
             className="orderby" 
             style={styles.input} />
         </div>
-        {sizes && <label for="size-select" style={styles.label}>Medidas</label>}
-        {sizes && 
-          <div >
+        <div style={styles.container}>
+          {sizes && <label for="size-select" style={styles.label}>Medidas</label>}
+          {sizes && 
             <select id="size-select" className="orderby" style={styles.select}>
               {sizes.map((size, index) => 
                 <option 
@@ -45,7 +45,8 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
                     {size.x} x {size.y}
                 </option>)}
             </select>
-          </div>}
+          }
+        </div>
         {Object.keys(options).map(k => 
           <div key={k} className="orderby" style={styles.container}>
               <label for={options[k]._id} style={styles.label}>{options[k].name}:</label> 
