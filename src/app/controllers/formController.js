@@ -83,13 +83,13 @@ const formController = {
       const items = await ProductService.getProductQuote(itemsId, quantity, size);
 
       const _items = await ItemService.getItemsByItemsId(itemsId);
-      const { deal } = req.body;
+      const { person } = req.body;
       const html = await getHtmlString('Form', res, {
         quantity,
         size,
         items: _items,
       });
-      const responseDeal = await PipedriveService.createDeal({...deal, html });
+      const responseDeal = await PipedriveService.createDeal({ ...person, html });
 
       return res.send({ items, responseDeal });
     } catch (e) {
