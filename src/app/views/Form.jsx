@@ -22,7 +22,7 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
 
   return (
     <>
-      <div>Produto: {product.name} </div>
+      <div id="product-name">Produto: {product.name} </div>
       <form>
         <div style={styles.container}>
           <label htmlFor="quantity-select" style={styles.label}>Quantidade:</label>

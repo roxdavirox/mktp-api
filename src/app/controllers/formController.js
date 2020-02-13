@@ -81,6 +81,9 @@ const formController = {
 
       const items = await ProductService.getProductQuote(itemsId, quantity, size);
 
+      const { deal } = req.body;
+      await PipedriveService.createDeal(deal);
+
       return res.send({ items });
     } catch (e) {
       return res.status(400)
