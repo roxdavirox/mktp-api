@@ -84,7 +84,7 @@ const formController = {
 
       const _items = await ItemService.getItemsByItemsId(itemsId);
       const { person } = req.body;
-      const html = await getHtmlString('Form', res, {
+      const html = await getHtmlString('PipedriveNote', res, {
         quantity,
         size,
         items: _items,
