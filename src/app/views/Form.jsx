@@ -26,7 +26,7 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
   return (
     <>
       <div style={styles.container}>
-        <label htmlFor="product-name" style={styles.label}>Produto: </label>
+        <label htmlFor="product-name" style={{ width: '150px' }}>Produto: </label>
         <span id="product-name" style={styles.span}>{product.name}</span>
       </div>
       <form>
