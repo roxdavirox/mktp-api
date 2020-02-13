@@ -1,9 +1,10 @@
 var React = require("react");
 
 const PipedriveNote = props => {
-  const { items, size, quantity, price, unitPrice } = props;
+  const { productName, items, size, quantity, price, unitPrice } = props;
   return (
     <ul>
+      {productName && <li>Produto: {productName}</li>}
       {price && <li>Preço total: R$ {price}</li>}
       {unitPrice && <li>Preço unitario: R${unitPrice}</li>}
       {quantity && <li>quantidade: {quantity}</li>}

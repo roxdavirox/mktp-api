@@ -86,8 +86,9 @@ const formController = {
       const unitPrice = price / Number(quantity);
 
       const _items = await ItemService.getItemsByItemsId(itemsId);
-      const { person } = req.body;
+      const { person, productName } = req.body;
       const html = await getHtmlString('PipedriveNote', res, {
+        productName,
         quantity,
         size,
         items: _items,
