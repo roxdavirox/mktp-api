@@ -82,16 +82,23 @@ const formController = {
 
       const items = await ProductService.getProductQuote(itemsId, quantity, size);
 
+      const price = items.reduce((value, item) => value + item.price, 0);
+      const unitPrice = price / Number(quantity);
+
       const _items = await ItemService.getItemsByItemsId(itemsId);
       const { person } = req.body;
       const html = await getHtmlString('PipedriveNote', res, {
         quantity,
         size,
         items: _items,
+        price,
+        unitPrice,
       });
       const responseDeal = await PipedriveService.createDeal({ ...person, html });
 
-      return res.send({ items, responseDeal });
+      return res.send({
+        items, price, unitPrice, responseDeal,
+      });
     } catch (e) {
       return res.status(400)
         .send({ error: `Error on get product quote: ${e}` });
