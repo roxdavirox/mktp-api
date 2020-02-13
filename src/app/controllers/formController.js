@@ -6,8 +6,16 @@ const Product = require('../models/product');
 
 const PipedriveService = require('../services/pipedrive.service');
 const ProductService = require('../services/product.service');
+const ItemService = require('../services/item.service');
 
 const router = express.Router();
+
+const getHtmlString = (view, res, props) => new Promise((resolve, _) => {
+  res.render(view, props, (err, html) => {
+    if (err) _(err);
+    resolve(html);
+  });
+});
 
 const formController = {
   async getHtmlForm(req, res) {
@@ -54,14 +62,7 @@ const formController = {
         _options[id] = { ...option, items };
       });
 
-      const getHtmlString = (view, props) => new Promise((resolve, _) => {
-        res.render(view, props, (err, html) => {
-          if (err) _(err);
-          resolve(html);
-        });
-      });
-
-      const html = await getHtmlString('Form', {
+      const html = await getHtmlString('Form', res, {
         product,
         options: _options,
         sizes,
@@ -81,8 +82,14 @@ const formController = {
 
       const items = await ProductService.getProductQuote(itemsId, quantity, size);
 
+      const _items = await ItemService.getItemsByItemsId(itemsId);
       const { deal } = req.body;
-      const responseDeal = await PipedriveService.createDeal(deal);
+      const html = await getHtmlString('Form', res, {
+        quantity,
+        size,
+        items: _items,
+      });
+      const responseDeal = await PipedriveService.createDeal({...deal, html });
 
       return res.send({ items, responseDeal });
     } catch (e) {

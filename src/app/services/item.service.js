@@ -121,6 +121,13 @@ const itemService = {
     return _items;
   },
 
+  async getItemsByItemsId(itemsId) {
+    const items = await Item.find({ _id: { $in: itemsId } }).populate({
+      path: 'option',
+    });
+    return items;
+  },
+
   async updateItem(itemId, priceTableId, newItem) {
     const priceTable = await PriceTable.findById(priceTableId);
     // eslint-disable-next-line eqeqeq
