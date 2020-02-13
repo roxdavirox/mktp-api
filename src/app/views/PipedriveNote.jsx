@@ -5,7 +5,7 @@ const PipedriveNote = props => {
   return (
     <ul>
       {price && <li>Preço total: R$ {price}</li>}
-      {unitPrice && <li>Preço unitario: ${unitPrice}</li>}
+      {unitPrice && <li>Preço unitario: R${unitPrice}</li>}
       {quantity && <li>quantidade: {quantity}</li>}
       {size && <li>medida: {size.x} x {size.y}</li>}
       {items && items.map((item, index) => <li key={index}>{item.option.name}: {item.name}</li>)}
