@@ -47,7 +47,7 @@ const addDeal = (deal) => new Promise((resolve, reject) => {
   const dealsUrl = `deals?api_token=${pipedriveToken}`;
   const formData = new FormData();
   formData.append('title', deal.title);
-  formData.append('value', deal.value);
+  formData.append('value', deal.value || 1);
   formData.append('user_id', deal.user_id);
   formData.append('stage_id', deal.stage_id);
   formData.append('person_id', deal.person_id);
