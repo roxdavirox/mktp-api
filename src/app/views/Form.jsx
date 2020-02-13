@@ -3,7 +3,7 @@ var React = require("react");
 const styles = {
   container: {
     display: 'flex',
-    maxWidth: '300px',
+    maxWidth: '350px',
     justifyContent: 'space-between'
   },
   label: {
@@ -11,10 +11,10 @@ const styles = {
     margin: 'auto'
   },
   select: {
-    width: '150px'
+    width: '200px'
   },
   input: {
-    width: '150px'
+    width: '200px'
   }
 }
 
@@ -25,7 +25,7 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
       <div>Produto: {product.name} </div>
       <form>
         <div style={styles.container}>
-          <label for="quantity-select" style={styles.label}>Quantidade:</label>
+          <label htmlFor="quantity-select" style={styles.label}>Quantidade:</label>
           <input 
             type="number"
             defaultValue="1"
@@ -34,7 +34,7 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
             style={styles.input} />
         </div>
         <div style={styles.container}>
-          {sizes && <label for="size-select" style={styles.label}>Medidas</label>}
+          {sizes && <label htmlFor="size-select" style={styles.label}>Medidas</label>}
           {sizes && 
             <select id="size-select" className="orderby" style={styles.select}>
               {sizes.map((size, index) => 
@@ -65,6 +65,18 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
             </select>
           </div>
         )}
+        <div style={styles.container} className="orcamento-inputs">
+          <label htmlFor="name" style={styles.label}>Nome:</label>
+          <input type="text" id="name" style={styles.input}></input>
+        </div>
+        <div style={styles.container} className="orcamento-inputs">
+          <label htmlFor="phone" style={styles.label}>Telefone:</label>
+          <input type="text" id="phone" style={styles.input}></input>
+        </div>
+        <div style={styles.container} className="orcamento-inputs">
+          <label htmlFor="email" style={styles.label}>E-mail:</label>
+          <input type="text" id="email" style={styles.input}></input>
+        </div>
         <div style={{ float: 'right' }}>
           <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
         </div>
