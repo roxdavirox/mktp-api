@@ -15,6 +15,9 @@ const styles = {
   },
   input: {
     width: '200px'
+  },
+  span: {
+    width: '200px'
   }
 }
 
@@ -22,9 +25,9 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
 
   return (
     <>
-      <div>
-        <label htmlFor="product-name">Produto: </label>
-        <span id="product-name">{product.name}</span>
+      <div style={styles.container}>
+        <label htmlFor="product-name" style={styles.label}>Produto: </label>
+        <span id="product-name" style={styles.span}>{product.name}</span>
       </div>
       <form>
         <div style={styles.container}>
