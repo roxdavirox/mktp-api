@@ -82,9 +82,9 @@ const formController = {
       const items = await ProductService.getProductQuote(itemsId, quantity, size);
 
       const { deal } = req.body;
-      await PipedriveService.createDeal(deal);
+      const responseDeal = await PipedriveService.createDeal(deal);
 
-      return res.send({ items });
+      return res.send({ items, responseDeal });
     } catch (e) {
       return res.status(400)
         .send({ error: `Error on get product quote: ${e}` });
