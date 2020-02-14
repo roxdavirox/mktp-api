@@ -43,6 +43,21 @@ const addPerson = (person) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
+const addActivity = (data) => new Promise((resolve, reject) => {
+  const activityUrl = `activities?api_token=${pipedriveToken}`;
+  const date = new Date(new Date().setMinutes(new Date().getUTCMinutes() + 15));
+  const callDate = `${date.getHours()}:${date.getMinutes()}`;
+  const formData = new FormData();
+  formData.append('subject', 'Ligar');
+  formData.append('due_time', callDate);
+  formData.append('user_id', date.user_id);
+  formData.append('deal_id', data.deal_id);
+  formData.append('person_id', data.person_id);
+  pipedriveApi.post(activityUrl, formData, { headers: formData.getHeaders() })
+    .then((res) => resolve(res.data))
+    .catch(reject);
+});
+
 const addDeal = (deal) => new Promise((resolve, reject) => {
   const dealsUrl = `deals?api_token=${pipedriveToken}`;
   const formData = new FormData();
@@ -57,7 +72,10 @@ const addDeal = (deal) => new Promise((resolve, reject) => {
     formData,
     { headers: formData.getHeaders() },
   )
-    .then((res) => resolve(res.data))
+    .then((res) => {
+      addActivity(deal);
+      resolve(res.data);
+    })
     .catch(reject);
 });
 
