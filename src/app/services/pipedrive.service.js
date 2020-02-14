@@ -73,7 +73,6 @@ const addDeal = (deal) => new Promise((resolve, reject) => {
     { headers: formData.getHeaders() },
   )
     .then((res) => {
-      addActivity(deal);
       resolve(res.data);
     })
     .catch(reject);
@@ -118,15 +117,31 @@ const addNoteIntoDealMadeToday = async (deal, dealMadeToday, person) => addNote(
   person_id: person.id,
 });
 
-const addPersonWithDeal = async (deal) => {
-  const personResponse = await addPerson(deal);
+const addPersonActivityDeal = async (data) => {
+  const personResponse = await addPerson(data);
   const { data: person } = personResponse;
 
   const dealResponse = await addDeal({
-    ...deal,
+    ...data,
     person_id: person.id,
   });
-  return { personResponse, dealResponse };
+
+  const { data: deal } = dealResponse;
+
+  const activityResponse = await addActivity({
+    ...data,
+    deal_id: deal.id,
+    person_id: person.id,
+  });
+
+  return { personResponse, dealResponse, activityResponse };
+};
+
+const addActivityDeal = async (data) => {
+  const dealResponse = await addDeal(data);
+  const { data: deal } = dealResponse;
+  const activityDeal = await addActivity({ ...data, deal_id: deal.id });
+  return { dealResponse, activityDeal };
 };
 
 const pipedriveService = {
@@ -140,13 +155,13 @@ const pipedriveService = {
     };
     const { email } = deal;
     const [person] = await getPersonByEmail(email);
-    if (!person) return addPersonWithDeal(data);
+    if (!person) return addPersonActivityDeal(data);
 
     return hasDealCreatedToday(person)
       .then(({ hasDealToday, dealMadeToday }) => (
         hasDealToday
           ? addNoteIntoDealMadeToday(data, dealMadeToday, person)
-          : addDeal({ ...data, person_id: person.id })))
+          : addActivityDeal({ ...data, person_id: person.id })))
       .catch(console.error);
   },
 };
