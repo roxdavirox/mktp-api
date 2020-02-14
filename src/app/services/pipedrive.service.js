@@ -125,9 +125,10 @@ const pipedriveService = {
     if (!person) return addPersonWithDeal(data);
 
     return hasDealCreatedToday(person)
-      .then(({ hasDealToday, dealMadeToday }) => (hasDealToday
-        ? addNoteIntoDealMadeToday(data, dealMadeToday, person)
-        : addDeal({ ...deal, person_id: person.id })))
+      .then(({ hasDealToday, dealMadeToday }) => (
+        hasDealToday
+          ? addNoteIntoDealMadeToday(data, dealMadeToday, person)
+          : addDeal({ ...data, person_id: person.id })))
       .catch(console.error);
   },
 };
