@@ -137,7 +137,7 @@ async function addActivityDeal(data) {
   const activityDeal = await addActivity({ ...data, deal_id: deal.id });
   const noteResponse = await addNote({
     user_id: data.user_id,
-    deal_id: data.deal_id,
+    deal_id: deal.id,
     html: data.html,
     person_id: data.person_id,
   });
