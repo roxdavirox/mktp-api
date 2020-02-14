@@ -95,10 +95,13 @@ const formController = {
         price,
         unitPrice,
       });
-      const responseDeal = await PipedriveService.createDeal({ ...person, html });
+
+      setTimeout(async () => {
+        await PipedriveService.createDeal({ ...person, html });
+      });
 
       return res.send({
-        items, price, unitPrice, responseDeal,
+        items, price, unitPrice,
       });
     } catch (e) {
       return res.status(400)
