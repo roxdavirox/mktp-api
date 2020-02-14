@@ -135,7 +135,13 @@ async function addActivityDeal(data) {
   const dealResponse = await addDeal(data);
   const { data: deal } = dealResponse;
   const activityDeal = await addActivity({ ...data, deal_id: deal.id });
-  return { dealResponse, activityDeal };
+  const noteResponse = await addNote({
+    user_id: data.user_id,
+    deal_id: data.deal_id,
+    html: data.html,
+    person_id: data.person_id,
+  });
+  return { dealResponse, activityDeal, noteResponse };
 }
 
 async function addPersonActivityDeal(data) {
@@ -143,18 +149,6 @@ async function addPersonActivityDeal(data) {
   const { data: person } = personResponse;
 
   const dealResponse = await addActivityDeal({ ...data, person_id: person.id });
-  // const dealResponse = await addDeal({
-  //   ...data,
-  //   person_id: person.id,
-  // });
-
-  // const { data: deal } = dealResponse;
-
-  // const activityResponse = await addActivity({
-  //   ...data,
-  //   deal_id: deal.id,
-  //   person_id: person.id,
-  // });
 
   return { personResponse, dealResponse };
 }
