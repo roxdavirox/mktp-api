@@ -117,31 +117,32 @@ const addNoteIntoDealMadeToday = async (deal, dealMadeToday, person) => addNote(
   person_id: person.id,
 });
 
-const addPersonActivityDeal = async (data) => {
-  const personResponse = await addPerson(data);
-  const { data: person } = personResponse;
-
-  const dealResponse = await addDeal({
-    ...data,
-    person_id: person.id,
-  });
-
-  const { data: deal } = dealResponse;
-
-  const activityResponse = await addActivity({
-    ...data,
-    deal_id: deal.id,
-    person_id: person.id,
-  });
-
-  return { personResponse, dealResponse, activityResponse };
-};
-
 const addActivityDeal = async (data) => {
   const dealResponse = await addDeal(data);
   const { data: deal } = dealResponse;
   const activityDeal = await addActivity({ ...data, deal_id: deal.id });
   return { dealResponse, activityDeal };
+};
+
+const addPersonActivityDeal = async (data) => {
+  const personResponse = await addPerson(data);
+  const { data: person } = personResponse;
+
+  const dealResponse = await addActivityDeal({ ...data, person_id: person.id });
+  // const dealResponse = await addDeal({
+  //   ...data,
+  //   person_id: person.id,
+  // });
+
+  // const { data: deal } = dealResponse;
+
+  // const activityResponse = await addActivity({
+  //   ...data,
+  //   deal_id: deal.id,
+  //   person_id: person.id,
+  // });
+
+  return { personResponse, dealResponse };
 };
 
 const pipedriveService = {
