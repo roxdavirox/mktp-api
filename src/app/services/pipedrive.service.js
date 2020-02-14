@@ -17,90 +17,102 @@ const isToday = (d) => {
   return date.getTime() === todayDate.getTime();
 };
 
-const getPersonByEmail = (email) => new Promise((resolve, reject) => {
-  const personEmailUrl = `persons/find?term=${email}&search_by_email=1&api_token=${pipedriveToken}`;
-  pipedriveApi.get(personEmailUrl)
-    .then((res) => {
-      const { data: persons } = res.data;
-      resolve(persons || [null]);
-    })
-    .catch(reject);
-});
+async function getPersonByEmail(email) {
+  return new Promise((resolve, reject) => {
+    const personEmailUrl = `persons/find?term=${email}&search_by_email=1&api_token=${pipedriveToken}`;
+    pipedriveApi.get(personEmailUrl)
+      .then((res) => {
+        const { data: persons } = res.data;
+        resolve(persons || [null]);
+      })
+      .catch(reject);
+  });
+}
 
-const addPerson = (person) => new Promise((resolve, reject) => {
-  const personsUrl = `persons?api_token=${pipedriveToken}`;
-  const formData = new FormData();
-  formData.append('name', person.name);
-  formData.append('owner_id', person.owner_id);
-  formData.append('email', person.email);
-  formData.append('phone', person.phone);
-  pipedriveApi.post(
-    personsUrl,
-    formData,
-    { headers: formData.getHeaders() },
-  )
-    .then((res) => resolve(res.data))
-    .catch(reject);
-});
+async function addPerson(person) {
+  return new Promise((resolve, reject) => {
+    const personsUrl = `persons?api_token=${pipedriveToken}`;
+    const formData = new FormData();
+    formData.append('name', person.name);
+    formData.append('owner_id', person.owner_id);
+    formData.append('email', person.email);
+    formData.append('phone', person.phone);
+    pipedriveApi.post(
+      personsUrl,
+      formData,
+      { headers: formData.getHeaders() },
+    )
+      .then((res) => resolve(res.data))
+      .catch(reject);
+  });
+}
 
-const addActivity = (data) => new Promise((resolve, reject) => {
-  const activityUrl = `activities?api_token=${pipedriveToken}`;
-  const date = new Date(new Date().setMinutes(new Date().getUTCMinutes() + 15));
-  const callDate = `${date.getHours()}:${date.getMinutes()}`;
-  const formData = new FormData();
-  formData.append('subject', 'Ligar');
-  formData.append('due_time', callDate);
-  formData.append('user_id', date.user_id);
-  formData.append('deal_id', data.deal_id);
-  formData.append('person_id', data.person_id);
-  pipedriveApi.post(activityUrl, formData, { headers: formData.getHeaders() })
-    .then((res) => resolve(res.data))
-    .catch(reject);
-});
+async function addActivity(data) {
+  return new Promise((resolve, reject) => {
+    const activityUrl = `activities?api_token=${pipedriveToken}`;
+    const date = new Date(new Date().setMinutes(new Date().getUTCMinutes() + 15));
+    const callDate = `${date.getHours()}:${date.getMinutes()}`;
+    const formData = new FormData();
+    formData.append('subject', 'Ligar');
+    formData.append('due_time', callDate);
+    formData.append('user_id', data.user_id);
+    formData.append('deal_id', data.deal_id);
+    formData.append('person_id', data.person_id);
+    pipedriveApi.post(activityUrl, formData, { headers: formData.getHeaders() })
+      .then((res) => resolve(res.data))
+      .catch(reject);
+  });
+}
 
-const addDeal = (deal) => new Promise((resolve, reject) => {
-  const dealsUrl = `deals?api_token=${pipedriveToken}`;
-  const formData = new FormData();
-  formData.append('title', deal.title);
-  formData.append('value', deal.value || 1);
-  formData.append('user_id', deal.user_id);
-  formData.append('stage_id', deal.stage_id);
-  formData.append('person_id', deal.person_id);
-  formData.append('status', 'open');
-  pipedriveApi.post(
-    dealsUrl,
-    formData,
-    { headers: formData.getHeaders() },
-  )
-    .then((res) => {
-      resolve(res.data);
-    })
-    .catch(reject);
-});
+async function addDeal(deal) {
+  return new Promise((resolve, reject) => {
+    const dealsUrl = `deals?api_token=${pipedriveToken}`;
+    const formData = new FormData();
+    formData.append('title', deal.title);
+    formData.append('value', deal.value || 1);
+    formData.append('user_id', deal.user_id);
+    formData.append('stage_id', deal.stage_id);
+    formData.append('person_id', deal.person_id);
+    formData.append('status', 'open');
+    pipedriveApi.post(
+      dealsUrl,
+      formData,
+      { headers: formData.getHeaders() },
+    )
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+}
 
-const getDealsByPersonId = (id) => new Promise((resolve, reject) => {
-  const dealsUrl = `persons/${id}/deals?start=0&status=all_not_deleted&api_token=${pipedriveToken}`;
-  pipedriveApi.get(dealsUrl)
-    .then(({ data }) => {
-      const { data: personDeals } = data;
-      resolve(personDeals || [null]);
-    })
-    .catch(reject);
-});
+async function getDealsByPersonId(id) {
+  return new Promise((resolve, reject) => {
+    const dealsUrl = `persons/${id}/deals?start=0&status=all_not_deleted&api_token=${pipedriveToken}`;
+    pipedriveApi.get(dealsUrl)
+      .then(({ data }) => {
+        const { data: personDeals } = data;
+        resolve(personDeals || null);
+      })
+      .catch(reject);
+  });
+}
 
-const addNote = (note) => new Promise((resolve, reject) => {
-  const notesUrl = `notes?api_token=${pipedriveToken}`;
-  const formData = new FormData();
-  formData.append('user_id', note.user_id);
-  formData.append('person_id', note.person_id);
-  formData.append('deal_id', note.deal_id);
-  formData.append('content', note.html);
-  pipedriveApi.post(notesUrl, formData, { headers: formData.getHeaders() })
-    .then((res) => resolve(res.data))
-    .catch(reject);
-});
+async function addNote(note) {
+  return new Promise((resolve, reject) => {
+    const notesUrl = `notes?api_token=${pipedriveToken}`;
+    const formData = new FormData();
+    formData.append('user_id', note.user_id);
+    formData.append('person_id', note.person_id);
+    formData.append('deal_id', note.deal_id);
+    formData.append('content', note.html);
+    pipedriveApi.post(notesUrl, formData, { headers: formData.getHeaders() })
+      .then((res) => resolve(res.data))
+      .catch(reject);
+  });
+}
 
-const hasDealCreatedToday = async (person) => {
+async function hasDealCreatedToday(person) {
   const personDeals = await getDealsByPersonId(person.id);
 
   if (!personDeals) return { hasDealToday: false };
@@ -108,23 +120,25 @@ const hasDealCreatedToday = async (person) => {
   const hasDealToday = personDeals.some((_deal) => isToday(_deal.add_time));
   const dealMadeToday = personDeals.find((_deal) => isToday(_deal.add_time));
   return { hasDealToday, dealMadeToday };
-};
+}
 
-const addNoteIntoDealMadeToday = async (deal, dealMadeToday, person) => addNote({
-  user_id: deal.user_id,
-  deal_id: dealMadeToday.id,
-  html: deal.html,
-  person_id: person.id,
-});
+async function addNoteIntoDealMadeToday(deal, dealMadeToday, person) {
+  return addNote({
+    user_id: deal.user_id,
+    deal_id: dealMadeToday.id,
+    html: deal.html,
+    person_id: person.id,
+  });
+}
 
-const addActivityDeal = async (data) => {
+async function addActivityDeal(data) {
   const dealResponse = await addDeal(data);
   const { data: deal } = dealResponse;
   const activityDeal = await addActivity({ ...data, deal_id: deal.id });
   return { dealResponse, activityDeal };
-};
+}
 
-const addPersonActivityDeal = async (data) => {
+async function addPersonActivityDeal(data) {
   const personResponse = await addPerson(data);
   const { data: person } = personResponse;
 
@@ -143,7 +157,7 @@ const addPersonActivityDeal = async (data) => {
   // });
 
   return { personResponse, dealResponse };
-};
+}
 
 const pipedriveService = {
   async createDeal(deal) {
