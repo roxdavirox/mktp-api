@@ -14,7 +14,8 @@ const styles = {
     width: '200px'
   },
   input: {
-    width: '200px'
+    width: '200px',
+    maxWidth: '200px'
   },
   span: {
     width: '200px'
