@@ -51,7 +51,7 @@ async function addActivity(data) {
   return new Promise((resolve, reject) => {
     const activityUrl = `activities?api_token=${pipedriveToken}`;
     const date = new Date(new Date().setMinutes(new Date().getUTCMinutes() + 15));
-    const callDate = `${date.getHours()}:${date.getMinutes()}`;
+    const callDate = `${date.getUTCHours()}:${date.getMinutes()}`;
     const formData = new FormData();
     formData.append('subject', 'Ligar');
     formData.append('due_time', callDate);
