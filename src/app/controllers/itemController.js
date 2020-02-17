@@ -120,7 +120,7 @@ const itemController = {
       const newItem = {
         name,
         itemType: 'item',
-        priceTableId:
+        priceTable:
         // eslint-disable-next-line eqeqeq
         priceTable == '0' ? undefined : priceTable,
         option: optionId,
