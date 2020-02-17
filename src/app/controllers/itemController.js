@@ -116,13 +116,13 @@ const itemController = {
     try {
       const { optionId } = req.params;
 
-      const { name, priceTableId } = req.body;
+      const { name, priceTable } = req.body;
       const newItem = {
         name,
         itemType: 'item',
         priceTableId:
         // eslint-disable-next-line eqeqeq
-        priceTableId == '0' ? undefined : priceTableId,
+        priceTable == '0' ? undefined : priceTable,
         option: optionId,
       };
 
