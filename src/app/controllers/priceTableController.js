@@ -86,6 +86,21 @@ const priceTableController = {
         .send({ error: `Error on update price table with new child: ${e}` });
     }
   },
+
+  async updateName(req, res) {
+    try {
+      const { priceTableId } = req.params;
+      const { name } = req.body;
+
+      const priceTable = await PriceTableService
+        .updateName(priceTableId, name);
+
+      return res.send({ priceTable });
+    } catch (e) {
+      return res.status(400)
+        .send({ error: `Error on update price table name: ${e}` });
+    }
+  },
 };
 
 router.post('/', priceTableController.createNewPriceTable);
@@ -94,5 +109,6 @@ router.get('/', priceTableController.getPriceTables);
 router.get('/:priceTableId', priceTableController.getPricesByPriceTableId);
 router.delete('/', priceTableController.deleteManyPriceTablesByIds);
 router.put('/:priceTableId', priceTableController.addNewPrice);
+router.put('/:priceTableId/name', priceTableController.updateName);
 
 module.exports = (app) => app.use('/price-tables', router);

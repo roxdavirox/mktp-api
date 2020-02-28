@@ -54,6 +54,17 @@ const priceTableService = {
   async createPriceTable(priceTable) {
     return PriceTable.create(priceTable);
   },
+
+  async updateName(id, newName) {
+    const priceTable = await PriceTable
+      .findByIdAndUpdate(
+        id,
+        { name: newName },
+        { new: true },
+      ).select('-prices');
+
+    return priceTable;
+  },
 };
 
 module.exports = priceTableService;

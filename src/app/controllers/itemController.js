@@ -55,7 +55,7 @@ const itemController = {
       return res.send({ items });
     } catch (e) {
       return res.status(400)
-        .send({ error: `Error on get items with price table ${e}` });
+        .send({ error: `Error on get items and templates ${e}` });
     }
   },
 
