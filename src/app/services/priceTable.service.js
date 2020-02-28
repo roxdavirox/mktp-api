@@ -50,9 +50,9 @@ const priceTableService = {
   async deleteManyPricesByIds(ids) {
     await PriceTable.deleteMany({ _id: { $in: ids } });
     await Item.update(
-      {},
+      { priceTable: { $in: ids } },
       {
-        $pull: { priceTable: { $in: ids } },
+        $set: { priceTable: undefined },
       },
       { multi: true },
     );
