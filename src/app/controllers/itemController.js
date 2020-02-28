@@ -74,15 +74,17 @@ const itemController = {
     try {
       const { itemId } = req.params;
 
-      const { name, priceTable: priceTableId } = req.body;
+      const { name, priceTable } = req.body;
       const newItem = {
         name,
         priceTable:
         // eslint-disable-next-line eqeqeq
-        priceTableId == '0' ? undefined : priceTableId,
+        priceTable == '0' ? undefined : priceTable,
       };
 
-      const item = await ItemService.updateItem(itemId, priceTableId, newItem);
+      const item = await ItemService
+        .updateItem(itemId, priceTable, newItem);
+
       return res.send({ item });
     } catch (e) {
       return res.status(400)
@@ -98,7 +100,7 @@ const itemController = {
       const newTemplateItem = {
         name,
         itemType: 'template',
-        priceTableId: undefined,
+        priceTable: undefined,
         templates,
         option: optionId,
       };
@@ -136,12 +138,12 @@ const itemController = {
 
   async createItemWithoutOption(req, res) {
     try {
-      const { name, priceTableId } = req.body;
+      const { name, priceTable } = req.body;
       const newItem = {
         name,
-        priceTableId:
+        priceTable:
         // eslint-disable-next-line eqeqeq
-        priceTableId == '0' ? undefined : priceTableId,
+        priceTable == '0' ? undefined : priceTable,
       };
       const item = await Item.create({ ...newItem });
 

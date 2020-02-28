@@ -129,15 +129,17 @@ const itemService = {
   },
 
   async updateItem(itemId, priceTableId, newItem) {
-    const priceTable = await PriceTable.findById(priceTableId);
-    // eslint-disable-next-line eqeqeq
-    if (priceTable.unit === 'quantidade') {
-      await Item.update(
-        { 'templates.item': itemId },
-        {
-          $set: { 'templates.$.size': { x: 1, y: 1 } },
-        },
-      );
+    if (!priceTableId) {
+      const priceTable = await PriceTable.findById(priceTableId);
+      // eslint-disable-next-line eqeqeq
+      if (priceTable.unit === 'quantidade') {
+        await Item.update(
+          { 'templates.item': itemId },
+          {
+            $set: { 'templates.$.size': { x: 1, y: 1 } },
+          },
+        );
+      }
     }
 
     const item = await Item

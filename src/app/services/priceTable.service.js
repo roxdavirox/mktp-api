@@ -1,5 +1,6 @@
 const PriceTable = require('../models/priceTable');
 const Price = require('../models/price');
+const Item = require('../models/item');
 
 const priceTableService = {
   async getPriceAreaById(id, quantity, size = { x: 1, y: 1 }) {
@@ -48,6 +49,13 @@ const priceTableService = {
 
   async deleteManyPricesByIds(ids) {
     await PriceTable.deleteMany({ _id: { $in: ids } });
+    await Item.update(
+      {},
+      {
+        $pull: { priceTable: { $in: ids } },
+      },
+      { multi: true },
+    );
     return ids.length;
   },
 
