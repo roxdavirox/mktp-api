@@ -9,7 +9,7 @@ const upload = multer({ storage });
 const { productImageUpload } = require('../../services/azureStorage');
 
 const router = express.Router();
-
+// TODO: encapsular services
 const createProduct = async (req, res) => {
   try {
     const { name, categoryId, productOptions: _productOptions } = req.body;
