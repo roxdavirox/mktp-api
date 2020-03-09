@@ -36,8 +36,12 @@ async function calculateItemPrice(templateItem) {
       .sort({ _id: -1 })
       .limit(1);
 
+    if (!prices) return 0;
     const [lastPrice] = prices;
+
+    if (lastPrice) return 0;
     total *= lastPrice.value;
+
     return total * quantity;
   }
 
