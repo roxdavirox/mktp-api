@@ -28,6 +28,27 @@ const priceTableService = {
     return total;
   },
 
+  async getPriceIntervalById(id, quantity, size = { x: 1, y: 1 }) {
+    let area = quantity;
+
+    const priceTable = await PriceTable.findById(id)
+      .populate('prices');
+
+    if (priceTable.unit !== 'quantidade') {
+      area *= size.x * size.y;
+    }
+
+    const { prices } = priceTable;
+    const preco = prices.find((price) => (price.start <= area && area <= price.end));
+
+    if (!preco) {
+      const lastPrice = prices[prices.length - 1];
+      return lastPrice.value;
+    }
+
+    return preco;
+  },
+
   async getPriceTableWithPricesById(id) {
     return PriceTable
       .findById(id)

@@ -18,7 +18,7 @@ const priceTableController = {
     }
   },
 
-  async calculatePriceByArea(req, res) {
+  async calculateTotalByAreaAndId(req, res) {
     try {
       const { priceTableId } = req.params;
       const { quantity } = req.body;
@@ -28,6 +28,22 @@ const priceTableController = {
         .getPriceAreaById(priceTableId, quantity, size);
 
       return res.send({ total });
+    } catch (e) {
+      return res.status(400)
+        .send({ error: `Error on get price tables: ${e}` });
+    }
+  },
+
+  async calculatePriceByAreaAndId(req, res) {
+    try {
+      const { priceTableId } = req.params;
+      const { quantity } = req.body;
+      const { size = { x: 1, y: 1 } } = req.body;
+
+      const price = await PriceTableService
+        .getPriceIntervalById(priceTableId, quantity, size);
+
+      return res.send({ price });
     } catch (e) {
       return res.status(400)
         .send({ error: `Error on get price tables: ${e}` });
@@ -104,7 +120,8 @@ const priceTableController = {
 };
 
 router.post('/', priceTableController.createNewPriceTable);
-router.post('/total/:priceTableId', priceTableController.calculatePriceByArea);
+router.post('/total/:priceTableId', priceTableController.calculateTotalByAreaAndId);
+router.post('/price/:priceTableId', priceTableController.calculatePriceByAreaAndId);
 router.get('/', priceTableController.getPriceTables);
 router.get('/:priceTableId', priceTableController.getPricesByPriceTableId);
 router.delete('/', priceTableController.deleteManyPriceTablesByIds);
