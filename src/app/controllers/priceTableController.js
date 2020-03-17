@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
 
 const PriceTable = require('../models/priceTable');
@@ -46,6 +47,35 @@ const priceTableController = {
     } catch (e) {
       return res.status(400)
         .send({ error: `Error on get price tables: ${e}` });
+    }
+  },
+
+  async calculateManyAreasByIds(req, res) {
+    try {
+      const { priceTables } = req.body;
+      if (!priceTables) return res.send({ error: 'priceTables not found' });
+
+      const mapPriceTableAreas = await priceTables.map(async (pt) => {
+        const price = await PriceTableService
+          .getPriceIntervalByAreaAndId(pt.id, pt.area);
+
+        return {
+          unitPrice: price.value,
+          id: pt.id,
+          area: pt.area,
+        };
+      });
+
+      const priceTablesWithAreas = await Promise.all(mapPriceTableAreas);
+      const _priceTables = priceTablesWithAreas.reduce((obj, pt) => ({
+        ...obj,
+        [pt.id]: pt,
+      }), {});
+
+      return res.send({ priceTables: _priceTables });
+    } catch (e) {
+      return res.status(400)
+        .send({ error: `Error calculate tables areas: ${e}` });
     }
   },
 
@@ -121,6 +151,7 @@ const priceTableController = {
 router.post('/', priceTableController.createNewPriceTable);
 router.post('/total/:priceTableId', priceTableController.calculateTotalByAreaAndId);
 router.post('/price/:priceTableId', priceTableController.calculatePriceByAreaAndId);
+router.post('/prices', priceTableController.calculateManyAreasByIds);
 router.get('/', priceTableController.getPriceTables);
 router.get('/:priceTableId', priceTableController.getPricesByPriceTableId);
 router.delete('/', priceTableController.deleteManyPriceTablesByIds);
