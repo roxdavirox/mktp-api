@@ -37,11 +37,10 @@ const priceTableController = {
   async calculatePriceByAreaAndId(req, res) {
     try {
       const { priceTableId } = req.params;
-      const { quantity } = req.body;
-      const { size = { x: 1, y: 1 } } = req.body;
+      const { area } = req.body;
 
       const price = await PriceTableService
-        .getPriceIntervalById(priceTableId, quantity, size);
+        .getPriceIntervalByAreaAndId(priceTableId, area);
 
       return res.send({ price });
     } catch (e) {
