@@ -39,7 +39,7 @@ const priceTableService = {
 
     if (!preco) {
       const lastPrice = prices[prices.length - 1];
-      return lastPrice.value;
+      return lastPrice;
     }
 
     return preco;

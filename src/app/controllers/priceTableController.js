@@ -60,7 +60,7 @@ const priceTableController = {
           .getPriceIntervalByAreaAndId(pt.id, pt.area);
 
         return {
-          unitPrice: price.value,
+          unitPrice: price.value || 0,
           id: pt.id,
           area: pt.area,
         };
