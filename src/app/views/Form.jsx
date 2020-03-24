@@ -85,7 +85,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
           <input type="text" id="email" style={styles.input}></input>
         </div>
         <div style={styles.container} className="orcamento-inputs">
-          <p htmlFor="email" style={styles.erro}>E-mail inválido</p>
+          <p id="erro" style={styles.erro}>E-mail inválido</p>
         </div>
         <div style={{ float: 'right' }}>
           <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
