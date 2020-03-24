@@ -2,7 +2,7 @@ var React = require("react");
 
 const styles = {
   container: {
-    display: 'flex',
+    display: 'table-caption',
     maxWidth: '350px',
     justifyContent: 'space-between'
   },
