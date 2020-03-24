@@ -31,7 +31,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
   return (
     <>
       <form>
-        <div style={styles.container}>
+        <div >
           <label htmlFor="quantity-select" >Quantidade:</label>
           <input 
             type="number"
@@ -40,7 +40,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
             className="orderby" 
              />
         </div>
-        <div style={styles.container}>
+        <div >
           {sizes && <label htmlFor="size-select">Medidas</label>}
           {sizes && 
             <select id="size-select" className="orderby" >
@@ -72,19 +72,19 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
             </select>
           </div>
         )}
-        <div style={styles.container} className="orcamento-inputs">
+        <div  className="orcamento-inputs">
           <label htmlFor="name" style={styles.label}>Nome:</label>
           <input type="text" id="name" ></input>
         </div>
-        <div style={styles.container} className="orcamento-inputs">
+        <div className="orcamento-inputs">
           <label htmlFor="phone" style={styles.label} maxLength="15" placeholder="(__) _____-____">Telefone:</label>
           <input type="text" id="phone" ></input>
         </div>
-        <div style={styles.container} className="orcamento-inputs">
+        <div  className="orcamento-inputs">
           <label htmlFor="email" style={styles.label}>E-mail:</label>
           <input type="text" id="email" ></input>
         </div>
-        <div style={styles.container} className="orcamento-inputs">
+        <div  className="orcamento-inputs">
           <p id="erro">E-mail inválido</p>
         </div>
         <div style={{ float: 'right' }}>
