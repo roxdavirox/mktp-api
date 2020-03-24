@@ -22,14 +22,10 @@ const styles = {
   }
 }
 
-const Form = ({ product, options, sizes, selectedItemsId }) => {
+const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
 
   return (
     <>
-      <div style={styles.container}>
-        <label htmlFor="product-name" style={{ width: '150px' }}>Produto: </label>
-        <span id="product-name" style={styles.span}>{product.name}</span>
-      </div>
       <form>
         <div style={styles.container}>
           <label htmlFor="quantity-select" style={styles.label}>Quantidade:</label>
@@ -48,8 +44,8 @@ const Form = ({ product, options, sizes, selectedItemsId }) => {
                 <option 
                   key={index} 
                   _size={JSON.stringify(size)} 
-                  selected={index == 1}>
-                    {size.x} x {size.y}
+                  selected={index == sizeSelectedIndex}>
+                    {size.x}x{size.y}
                 </option>)}
             </select>
           }

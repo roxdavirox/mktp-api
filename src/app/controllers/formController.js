@@ -23,6 +23,7 @@ const formController = {
       const {
           sizes,
           selectedItemsId,
+          sizeSelectedIndex,
           // quantity,
         } = req.body;
 
@@ -63,7 +64,7 @@ const formController = {
       });
 
       const html = await getHtmlString('Form', res, {
-        product,
+        sizeSelectedIndex,
         options: _options,
         sizes,
         selectedItemsId,
