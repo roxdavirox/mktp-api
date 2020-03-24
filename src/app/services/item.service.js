@@ -49,6 +49,12 @@ async function calculateItemPrice(templateItem) {
   return total * quantity;
 }
 
+async function groupPriceTableTemplateItems(item) {
+  if (item.itemType === 'template' && item.templates) {
+    groupPriceTableTemplateItems(item);
+  }
+}
+
 const itemService = {
   async getItemPriceById(id) {
     // TODO: Calcular o preço do item para o formulario no wp
@@ -63,8 +69,9 @@ const itemService = {
 
     if (item.itemType === 'template') {
       const templates = await Promise.all(item.templates.map(async (_item) => {
-        const templatePrice = await calculateItemPrice(_item);
-        return { ..._item.toObject(), templatePrice };
+        // const templatePrice = await calculateItemPrice(_item);
+        const priceTables = groupPriceTableTemplateItems(_item);
+        return { ..._item.toObject(), priceTables };
       }));
 
       return { ...item.toObject(), templates };
