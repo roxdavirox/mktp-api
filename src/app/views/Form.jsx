@@ -37,13 +37,12 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
             type="number"
             defaultValue="1"
             id="quantity-select"
-            className="orderby" 
              />
         </div>
         <div >
           {sizes && <label htmlFor="size-select">Medidas</label>}
           {sizes && 
-            <select id="size-select" className="orderby" >
+            <select id="size-select" >
               {sizes.map((size, index) => 
                 <option 
                   key={index} 
@@ -55,7 +54,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
           }
         </div>
         {Object.keys(options).map(k => 
-          <div key={k} className="orderby">
+          <div key={k}>
               <label for={options[k]._id} >{options[k].name}:</label> 
             <select 
               className="item-select"
