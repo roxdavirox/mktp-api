@@ -77,7 +77,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
           <input type="text" id="name" style={styles.input}></input>
         </div>
         <div style={styles.container} className="orcamento-inputs">
-          <label htmlFor="phone" style={styles.label}>Telefone:</label>
+          <label htmlFor="phone" style={styles.label} maxLength="15" placeholder="(__) _____-____">Telefone:</label>
           <input type="text" id="phone" style={styles.input}></input>
         </div>
         <div style={styles.container} className="orcamento-inputs">
