@@ -21,7 +21,8 @@ const styles = {
     width: '200px'
   },
   erro: {
-    color: 'red'
+    color: 'red',
+    display: 'none'
   }
 }
 
