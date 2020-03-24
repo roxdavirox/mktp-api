@@ -32,18 +32,18 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
     <>
       <form>
         <div style={styles.container}>
-          <label htmlFor="quantity-select" style={styles.label}>Quantidade:</label>
+          <label htmlFor="quantity-select" >Quantidade:</label>
           <input 
             type="number"
             defaultValue="1"
             id="quantity-select"
             className="orderby" 
-            style={styles.input} />
+             />
         </div>
         <div style={styles.container}>
-          {sizes && <label htmlFor="size-select" style={styles.label}>Medidas</label>}
+          {sizes && <label htmlFor="size-select">Medidas</label>}
           {sizes && 
-            <select id="size-select" className="orderby" style={styles.select}>
+            <select id="size-select" className="orderby" >
               {sizes.map((size, index) => 
                 <option 
                   key={index} 
@@ -55,7 +55,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
           }
         </div>
         {Object.keys(options).map(k => 
-          <div key={k} className="orderby" style={styles.container}>
+          <div key={k} className="orderby">
               <label for={options[k]._id} style={styles.label}>{options[k].name}:</label> 
             <select 
               className="item-select"
@@ -74,18 +74,18 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
         )}
         <div style={styles.container} className="orcamento-inputs">
           <label htmlFor="name" style={styles.label}>Nome:</label>
-          <input type="text" id="name" style={styles.input}></input>
+          <input type="text" id="name" ></input>
         </div>
         <div style={styles.container} className="orcamento-inputs">
           <label htmlFor="phone" style={styles.label} maxLength="15" placeholder="(__) _____-____">Telefone:</label>
-          <input type="text" id="phone" style={styles.input}></input>
+          <input type="text" id="phone" ></input>
         </div>
         <div style={styles.container} className="orcamento-inputs">
           <label htmlFor="email" style={styles.label}>E-mail:</label>
-          <input type="text" id="email" style={styles.input}></input>
+          <input type="text" id="email" ></input>
         </div>
         <div style={styles.container} className="orcamento-inputs">
-          <p id="erro" style={styles.erro}>E-mail inválido</p>
+          <p id="erro">E-mail inválido</p>
         </div>
         <div style={{ float: 'right' }}>
           <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
