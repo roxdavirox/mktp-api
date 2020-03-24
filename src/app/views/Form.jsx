@@ -56,32 +56,31 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
         </div>
         {Object.keys(options).map(k => 
           <div key={k} className="orderby">
-              <label for={options[k]._id} style={styles.label}>{options[k].name}:</label> 
+              <label for={options[k]._id} >{options[k].name}:</label> 
             <select 
               className="item-select"
               id={options[k]._id}
-              key={k}
-              style={styles.select}>
-                {options[k].items.map(item => 
-                  <option 
-                    key={item._id}
-                    id={item._id}
-                    selected={selectedItemsId.indexOf(item._id.toString()) !== -1}>
-                      {item.name}
-                  </option>)}
+              key={k}>
+              {options[k].items.map(item => 
+                <option 
+                  key={item._id}
+                  id={item._id}
+                  selected={selectedItemsId.indexOf(item._id.toString()) !== -1}>
+                    {item.name}
+                </option>)}
             </select>
           </div>
         )}
         <div  className="orcamento-inputs">
-          <label htmlFor="name" style={styles.label}>Nome:</label>
+          <label htmlFor="name" >Nome:</label>
           <input type="text" id="name" ></input>
         </div>
         <div className="orcamento-inputs">
-          <label htmlFor="phone" style={styles.label} maxLength="15" placeholder="(__) _____-____">Telefone:</label>
+          <label htmlFor="phone"  maxLength="15" placeholder="(__) _____-____">Telefone:</label>
           <input type="text" id="phone" ></input>
         </div>
         <div  className="orcamento-inputs">
-          <label htmlFor="email" style={styles.label}>E-mail:</label>
+          <label htmlFor="email" >E-mail:</label>
           <input type="text" id="email" ></input>
         </div>
         <div className="orcamento-inputs">
