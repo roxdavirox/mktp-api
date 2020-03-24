@@ -75,15 +75,21 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
           <input type="text" id="name" ></input>
         </div>
         <div className="orcamento-inputs">
+          <p id="name-error" style={styles.erro}>Preencha o seu nome</p>
+        </div>
+        <div className="orcamento-inputs">
           <label htmlFor="phone" placeholder="(__) _____-____">Telefone:</label>
           <input type="text" id="phone" maxLength="15"></input>
+        </div>
+        <div className="orcamento-inputs">
+          <p id="phone-error" style={styles.erro}>Preencha seu telefone</p>
         </div>
         <div  className="orcamento-inputs">
           <label htmlFor="email" >E-mail:</label>
           <input type="text" id="email" ></input>
         </div>
         <div className="orcamento-inputs">
-          <p id="erro" style={styles.erro}>E-mail inválido</p>
+          <p id="email-error" style={styles.erro}>E-mail inválido</p>
         </div>
         <div>
           <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
