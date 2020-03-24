@@ -19,6 +19,9 @@ const styles = {
   },
   span: {
     width: '200px'
+  },
+  erro: {
+    color: 'red'
   }
 }
 
@@ -79,6 +82,9 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
         <div style={styles.container} className="orcamento-inputs">
           <label htmlFor="email" style={styles.label}>E-mail:</label>
           <input type="text" id="email" style={styles.input}></input>
+        </div>
+        <div style={styles.container} className="orcamento-inputs">
+          <p htmlFor="email" style={styles.erro}>E-mail inválido</p>
         </div>
         <div style={{ float: 'right' }}>
           <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
