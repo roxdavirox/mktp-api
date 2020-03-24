@@ -93,8 +93,8 @@ const formController = {
         quantity,
         size,
         items: _items,
-        price,
-        unitPrice,
+        price: price.toFixed(2),
+        unitPrice: unitPrice.toFixed(2),
       });
 
       setTimeout(async () => {
