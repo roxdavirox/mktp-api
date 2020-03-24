@@ -76,7 +76,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId }) => {
         </div>
         <div className="orcamento-inputs">
           <label htmlFor="phone" placeholder="(__) _____-____">Telefone:</label>
-          <input type="text" id="phone" ></input>
+          <input type="text" id="phone" maxLength="15"></input>
         </div>
         <div  className="orcamento-inputs">
           <label htmlFor="email" >E-mail:</label>
