@@ -3,7 +3,7 @@ var React = require("react");
 const styles = {
   container: {
     display: 'table-caption',
-    maxWidth: '350px',
+    maxWidth: '450px',
     justifyContent: 'space-between'
   },
   label: {
@@ -11,11 +11,11 @@ const styles = {
     margin: 'auto'
   },
   select: {
-    width: '200px'
+    width: '450px'
   },
   input: {
-    width: '200px',
-    maxWidth: '200px'
+    width: '450px',
+    maxWidth: '4500px'
   },
   span: {
     width: '200px'
