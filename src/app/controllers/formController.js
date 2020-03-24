@@ -102,7 +102,7 @@ const formController = {
       });
 
       return res.send({
-        items, price, unitPrice,
+        items, price: price.toFixed(2), unitPrice: unitPrice.toFixed(2),
       });
     } catch (e) {
       return res.status(400)
