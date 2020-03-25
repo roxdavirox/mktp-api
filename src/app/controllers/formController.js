@@ -98,7 +98,11 @@ const formController = {
       });
 
       setTimeout(async () => {
-        await PipedriveService.createDeal({ ...person, html });
+        try {
+          await PipedriveService.createDeal({ ...person, html, title: `Negócio ${person.name}` });
+        } catch (e) {
+          console.log('error when creating deal:', e);
+        }
       });
 
       return res.send({
@@ -118,7 +122,7 @@ const formController = {
     return res.send({ response });
     } catch (e) {
       return res.status(400)
-        .send({ error: `Error on get product quote: ${e}` });
+        .send({ error: `Error on create deal: ${e}` });
     }
   },
 };
