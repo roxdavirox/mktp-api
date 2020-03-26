@@ -24,7 +24,7 @@ const formController = {
           sizes,
           selectedItemsId,
           sizeSelectedIndex,
-          // quantity,
+          unit,
         } = req.body;
 
       const product = await Product
@@ -68,6 +68,7 @@ const formController = {
         options: _options,
         sizes,
         selectedItemsId,
+        unit,
       });
 
       return res.send({ html });
