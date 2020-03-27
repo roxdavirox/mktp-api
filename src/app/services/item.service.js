@@ -51,8 +51,34 @@ async function calculateItemPrice(templateItem) {
 
 async function groupPriceTableTemplateItems(item) {
   if (item.itemType === 'template' && item.templates) {
-    groupPriceTableTemplateItems(item);
+    const priceTables = item.templates.reduce((_priceTables, template) => {
+      const priceTable = groupPriceTableTemplateItems(template);
+      return {
+        ..._priceTables,
+        [priceTable._id]: {
+          id: priceTable._id,
+          unit: priceTable.unit,
+          area: 0,
+          unitPrice: 0,
+        },
+      };
+    }, {});
+    return priceTables;
   }
+
+  if (item.itemType === 'item' && item.priceTable) {
+    const { priceTable } = item;
+    const { unit } = priceTable;
+    return {
+      id: priceTable._id,
+      unit,
+      area: unit !== 'quantidade'
+        ? item.size.x * item.size.y : 0,
+      unitPrice: 0,
+    };
+  }
+
+  return {};
 }
 
 const itemService = {
@@ -69,9 +95,8 @@ const itemService = {
 
     if (item.itemType === 'template') {
       const templates = await Promise.all(item.templates.map(async (_item) => {
-        // const templatePrice = await calculateItemPrice(_item);
-        const priceTables = groupPriceTableTemplateItems(_item);
-        return { ..._item.toObject(), priceTables };
+        const templatePrice = await calculateItemPrice(_item);
+        return { ..._item.toObject(), templatePrice };
       }));
 
       return { ...item.toObject(), templates };
@@ -122,9 +147,11 @@ const itemService = {
     // eslint-disable-next-line no-underscore-dangle
     const _items = await Promise.all(items.map(async (item) => {
       if (item.itemType === 'template' && item.templates) {
-        const templatePrice = await item.templates
-          .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0);
-        return { ...item.toObject(), templatePrice };
+        // const templatePrice = await item.templates
+        //   .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0);
+        const priceTables = groupPriceTableTemplateItems(item);
+
+        return { ...item.toObject(), priceTables };
       }
       return item;
     }));
