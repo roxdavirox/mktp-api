@@ -61,6 +61,7 @@ const priceTableController = {
 
         return {
           unitPrice: price.value || 0,
+          unit: pt.unit,
           id: pt.id,
           area: pt.area,
         };
