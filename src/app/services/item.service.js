@@ -51,14 +51,18 @@ async function calculateItemPrice(templateItem) {
 
 async function groupPriceTableTemplateItems(item) {
   if (item.itemType === 'template' && item.templates) {
-    const priceTables = item.templates.reduce((_priceTables, template) => {
-      const priceTable = groupPriceTableTemplateItems(template);
+    const priceTables = item.templates.reduce(async (_priceTables, templateItem) => {
+      const priceTable = await groupPriceTableTemplateItems(templateItem.item);
+      const { unit } = priceTable;
       return {
         ..._priceTables,
         [priceTable._id]: {
           id: priceTable._id,
-          unit: priceTable.unit,
-          area: 0,
+          unit,
+          area:
+            unit !== 'quantidade'
+              ? templateItem.size.x * templateItem.size.y * templateItem.quantity
+              : templateItem.quantity,
           unitPrice: 0,
         },
       };
@@ -67,15 +71,11 @@ async function groupPriceTableTemplateItems(item) {
   }
 
   if (item.itemType === 'item' && item.priceTable) {
-    const { priceTable } = item;
-    const { unit } = priceTable;
-    return {
-      id: priceTable._id,
-      unit,
-      area: unit !== 'quantidade'
-        ? item.size.x * item.size.y : 0,
-      unitPrice: 0,
-    };
+    const _item = await Item.findById(item._id)
+      .populate({ path: 'priceTable' });
+
+    const { priceTable } = _item;
+    return priceTable;
   }
 
   return {};
@@ -149,7 +149,7 @@ const itemService = {
       if (item.itemType === 'template' && item.templates) {
         // const templatePrice = await item.templates
         //   .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0);
-        const priceTables = groupPriceTableTemplateItems(item);
+        const priceTables = await groupPriceTableTemplateItems(item);
 
         return { ...item.toObject(), priceTables };
       }
