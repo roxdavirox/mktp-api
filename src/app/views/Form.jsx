@@ -48,7 +48,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit }) 
                   key={index} 
                   _size={JSON.stringify(size)} 
                   selected={index == sizeSelectedIndex}>
-                    {size.x}x{size.y} ({unit})
+                    {size.x}x{size.y}{unit}
                 </option>)}
             </select>
           }
