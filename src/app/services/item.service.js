@@ -56,6 +56,7 @@ async function groupPriceTableTemplateItems(item) {
 
   if (_item.itemType === 'item' && _item.priceTable) {
     const { priceTable } = _item;
+    console.log('passando aqui duas vezes', priceTable);
     return priceTable;
   }
 
@@ -63,16 +64,16 @@ async function groupPriceTableTemplateItems(item) {
     const priceTables = await Promise.resolve(
       _item.templates.reduce(async (_priceTables, templateItem) => {
         const priceTable = await groupPriceTableTemplateItems(templateItem.item);
+
         if (priceTable.id === undefined && Object.values(priceTable).length) {
           const priceTablesGrouped = priceTable;
           return {
-            ..._priceTables, ...priceTablesGrouped,
+            ...await _priceTables, ...priceTablesGrouped,
           };
         }
-        console.log('price table', priceTable);
         const { unit } = priceTable;
         return {
-          ..._priceTables,
+          ...await _priceTables,
           [priceTable.id]: {
             id: priceTable.id.toString(),
             unit,
@@ -85,6 +86,7 @@ async function groupPriceTableTemplateItems(item) {
         };
       }, {}),
     );
+
     return priceTables;
   }
 
