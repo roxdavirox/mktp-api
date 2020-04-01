@@ -63,8 +63,11 @@ async function groupPriceTableTemplateItems(item) {
     const priceTables = await Promise.resolve(
       _item.templates.reduce(async (_priceTables, templateItem) => {
         const priceTable = await groupPriceTableTemplateItems(templateItem.item);
-        if (priceTable.id === undefined) {
-          console.log('_item undefined price table id', _item);
+        if (priceTable.id === undefined && Object.values(priceTable).length) {
+          const priceTablesGrouped = priceTable;
+          return {
+            ..._priceTables, ...priceTablesGrouped,
+          };
         }
         console.log('price table', priceTable);
         const { unit } = priceTable;
