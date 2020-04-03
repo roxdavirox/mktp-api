@@ -56,19 +56,34 @@ async function groupPriceTableTemplateItems(item) {
 
   if (_item.itemType === 'item' && _item.priceTable) {
     const { priceTable } = _item;
-    console.log('passando aqui duas vezes', priceTable);
     return priceTable;
   }
 
   if (_item.itemType === 'template' && _item.templates) {
     const priceTables = await Promise.resolve(
       _item.templates.reduce(async (_priceTables, templateItem) => {
+        console.log('_priceTables', _priceTables);
         const priceTable = await groupPriceTableTemplateItems(templateItem.item);
 
         if (priceTable.id === undefined && Object.values(priceTable).length) {
           const priceTablesGrouped = priceTable;
           return {
-            ...await _priceTables, ...priceTablesGrouped,
+            ...await _priceTables,
+            ...Object.values(await _priceTables)
+              .reduce((prevTables, table) => {
+                if (!prevTables[table.id]) return { ...prevTables, [table.id]: table };
+
+                const newArea = table.unit !== 'quantidade'
+                  ? templateItem.size.x * templateItem.size.y * templateItem.quantity + table.area
+                  : templateItem.quantity + table.area;
+                return {
+                  ...prevTables,
+                  [table.id]: {
+                    ...table,
+                    area: newArea,
+                  },
+                };
+              }, priceTablesGrouped),
           };
         }
         const { unit } = priceTable;
