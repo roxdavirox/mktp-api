@@ -62,7 +62,6 @@ async function groupPriceTableTemplateItems(item) {
   if (_item.itemType === 'template' && _item.templates) {
     const priceTables = await Promise.resolve(
       _item.templates.reduce(async (_priceTables, templateItem) => {
-        console.log('_priceTables', _priceTables);
         const priceTable = await groupPriceTableTemplateItems(templateItem.item);
 
         if (priceTable.id === undefined && Object.values(priceTable).length) {
@@ -105,7 +104,6 @@ async function groupPriceTableTemplateItems(item) {
     return priceTables;
   }
 
-  console.log('_item', _item);
   return {};
 }
 
@@ -176,7 +174,6 @@ const itemService = {
     const _items = await Promise.all(items.map(async (item) => {
       if (item.itemType === 'template' && item.templates) {
         const priceTables = await groupPriceTableTemplateItems(item);
-        console.log('priceTables', priceTables);
         return { ...item.toObject(), priceTables };
       }
       return item;
