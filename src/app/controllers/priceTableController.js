@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 
+const Price = require('../models/price');
 const PriceTable = require('../models/priceTable');
 const PriceTableService = require('../services/priceTable.service');
 
@@ -147,12 +148,55 @@ const priceTableController = {
         .send({ error: `Error on update price table name: ${e}` });
     }
   },
+
+  async duplicatePriceTable(req, res) {
+    try {
+      const { priceTableId } = req.params;
+
+      const oldPriceTable = await PriceTable
+        .findById(priceTableId).populate('prices');
+
+      console.log('oldPriceTable: ', oldPriceTable);
+
+      const newPriceTable = {
+        name: `${oldPriceTable.name} - Cópia teste`,
+        unit: oldPriceTable.unit
+        };
+
+      console.log('newPriceTable: ', newPriceTable);
+
+      const duplicatedPriceTable = await PriceTableService.duplicatePriceTable(newPriceTable);
+      
+      await Promise.all(oldPriceTable.prices.map(async (p) => {
+        const price = new Price({
+          start: p.start,
+          end: p.end,
+          value: p.value,
+          priceTable: duplicatedPriceTable._id,
+        });
+  
+        price.save();
+        
+        duplicatedPriceTable.prices.push(price);
+      }))
+      
+      duplicatedPriceTable.save();
+      
+      console.log('duplicatedPriceTable: ', duplicatedPriceTable);
+
+      return res.send({ duplicatedPriceTable });
+    } catch (e) {
+      return res.status(400)
+        .send({ error: `Erro on duplicate price table: ${e}` });
+    }
+  }
 };
 
 router.post('/', priceTableController.createNewPriceTable);
 router.post('/total/:priceTableId', priceTableController.calculateTotalByAreaAndId);
 router.post('/price/:priceTableId', priceTableController.calculatePriceByAreaAndId);
 router.post('/prices', priceTableController.calculateManyAreasByIds);
+router.post('/duplicatePriceTable/:priceTableId', priceTableController.duplicatePriceTable);
 router.get('/', priceTableController.getPriceTables);
 router.get('/:priceTableId', priceTableController.getPricesByPriceTableId);
 router.delete('/', priceTableController.deleteManyPriceTablesByIds);
