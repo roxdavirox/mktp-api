@@ -90,6 +90,13 @@ const priceTableService = {
 
     return priceTable;
   },
+
+  async duplicatePriceTable(newPriceTable) {
+    const priceTable = await PriceTable
+      .create(newPriceTable);
+
+    return priceTable;
+  }
 };
 
 module.exports = priceTableService;
