@@ -96,7 +96,7 @@ const priceTableService = {
       .create(newPriceTable);
 
     return priceTable;
-  }
+  },
 };
 
 module.exports = priceTableService;
