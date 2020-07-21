@@ -156,17 +156,13 @@ const priceTableController = {
       const oldPriceTable = await PriceTable
         .findById(priceTableId).populate('prices');
 
-      console.log('oldPriceTable: ', oldPriceTable);
-
       const newPriceTable = {
         name: `${oldPriceTable.name} - Cópia teste`,
-        unit: oldPriceTable.unit
-        };
-
-      console.log('newPriceTable: ', newPriceTable);
+        unit: oldPriceTable.unit,
+      };
 
       const duplicatedPriceTable = await PriceTableService.duplicatePriceTable(newPriceTable);
-      
+
       await Promise.all(oldPriceTable.prices.map(async (p) => {
         const price = new Price({
           start: p.start,
@@ -174,22 +170,20 @@ const priceTableController = {
           value: p.value,
           priceTable: duplicatedPriceTable._id,
         });
-  
+
         price.save();
-        
+
         duplicatedPriceTable.prices.push(price);
-      }))
-      
+      }));
+
       duplicatedPriceTable.save();
-      
-      console.log('duplicatedPriceTable: ', duplicatedPriceTable);
 
       return res.send({ duplicatedPriceTable });
     } catch (e) {
       return res.status(400)
         .send({ error: `Erro on duplicate price table: ${e}` });
     }
-  }
+  },
 };
 
 router.post('/', priceTableController.createNewPriceTable);
