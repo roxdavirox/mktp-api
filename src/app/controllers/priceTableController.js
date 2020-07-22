@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 
@@ -151,34 +153,38 @@ const priceTableController = {
 
   async duplicatePriceTable(req, res) {
     try {
-      const { priceTableId } = req.params;
+      const { priceTableIds } = req.body;
+      const priceTable = [];
 
-      const oldPriceTable = await PriceTable
-        .findById(priceTableId).populate('prices');
+      for (const priceTableId of priceTableIds) {
+        const oldPriceTable = await PriceTable
+          .findById(priceTableId).populate('prices');
 
-      const newPriceTable = {
-        name: `${oldPriceTable.name} - Cópia teste`,
-        unit: oldPriceTable.unit,
-      };
+        const newPriceTable = {
+          name: `${oldPriceTable.name} - Cópia teste`,
+          unit: oldPriceTable.unit,
+        };
 
-      const duplicatedPriceTable = await PriceTableService.duplicatePriceTable(newPriceTable);
+        const duplicatedPriceTable = await PriceTableService.duplicatePriceTable(newPriceTable);
 
-      await Promise.all(oldPriceTable.prices.map(async (p) => {
-        const price = new Price({
-          start: p.start,
-          end: p.end,
-          value: p.value,
-          priceTable: duplicatedPriceTable._id,
-        });
+        await Promise.all(oldPriceTable.prices.map(async (p) => {
+          const price = new Price({
+            start: p.start,
+            end: p.end,
+            value: p.value,
+            priceTable: duplicatedPriceTable._id,
+          });
 
-        price.save();
+          price.save();
 
-        duplicatedPriceTable.prices.push(price);
-      }));
+          duplicatedPriceTable.prices.push(price);
+        }));
 
-      duplicatedPriceTable.save();
+        duplicatedPriceTable.save();
+        priceTable.push(duplicatedPriceTable);
+      }
 
-      return res.send({ duplicatedPriceTable });
+      return res.send({ duplicatedPriceTable: priceTable });
     } catch (e) {
       return res.status(400)
         .send({ error: `Erro on duplicate price table: ${e}` });
@@ -190,7 +196,7 @@ router.post('/', priceTableController.createNewPriceTable);
 router.post('/total/:priceTableId', priceTableController.calculateTotalByAreaAndId);
 router.post('/price/:priceTableId', priceTableController.calculatePriceByAreaAndId);
 router.post('/prices', priceTableController.calculateManyAreasByIds);
-router.post('/duplicatePriceTable/:priceTableId', priceTableController.duplicatePriceTable);
+router.post('/duplicatePriceTable/', priceTableController.duplicatePriceTable);
 router.get('/', priceTableController.getPriceTables);
 router.get('/:priceTableId', priceTableController.getPricesByPriceTableId);
 router.delete('/', priceTableController.deleteManyPriceTablesByIds);
