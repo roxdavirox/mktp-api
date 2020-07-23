@@ -1,3 +1,7 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+const { compareSync } = require('bcryptjs');
 const PriceTable = require('../models/priceTable');
 const Price = require('../models/price');
 const Item = require('../models/item');
@@ -91,11 +95,42 @@ const priceTableService = {
     return priceTable;
   },
 
-  async duplicatePriceTable(newPriceTable) {
-    const priceTable = await PriceTable
+  async duplicatePriceTable(ids) {
+    const oldPriceTable = await PriceTable
+      .find({ _id: { $in: [...ids] } }).populate('prices');
+
+    console.log('oldPriceTable: ', oldPriceTable);
+
+    const newPriceTable = {
+      name: `${oldPriceTable.name} - Cópia teste`,
+      unit: oldPriceTable.unit,
+    };
+
+    console.log('new: ', newPriceTable);
+
+    const duplicatedPriceTable = await PriceTable
       .create(newPriceTable);
 
-    return priceTable;
+    for (const priceTableId of ids) {
+      await Promise.all(oldPriceTable.prices.map(async (p) => {
+        const price = new Price({
+          start: p.start,
+          end: p.end,
+          value: p.value,
+          priceTable: duplicatedPriceTable._id,
+        });
+
+        console.log('price: ', price);
+
+        duplicatedPriceTable.prices.push(price);
+      }));
+
+      duplicatedPriceTable.save();
+    }
+
+    console.log('duplicatedPriceTable: ', duplicatedPriceTable);
+
+    return duplicatedPriceTable;
   },
 };
 
