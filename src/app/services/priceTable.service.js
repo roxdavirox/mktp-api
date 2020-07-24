@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-const { compareSync } = require('bcryptjs');
 const PriceTable = require('../models/priceTable');
 const Price = require('../models/price');
 const Item = require('../models/item');
@@ -96,41 +95,37 @@ const priceTableService = {
   },
 
   async duplicatePriceTable(ids) {
-    const oldPriceTable = await PriceTable
+    const oldPriceTables = await PriceTable
       .find({ _id: { $in: [...ids] } }).populate('prices');
 
-    console.log('oldPriceTable: ', oldPriceTable);
-
-    const newPriceTable = {
+    const newPriceTables = oldPriceTables.map((oldPriceTable) => ({
+      ...oldPriceTable,
       name: `${oldPriceTable.name} - Cópia teste`,
-      unit: oldPriceTable.unit,
-    };
+    }));
 
-    console.log('new: ', newPriceTable);
+    const duplicatedPriceTables = await PriceTable
+      .create(newPriceTables);
 
-    const duplicatedPriceTable = await PriceTable
-      .create(newPriceTable);
-
-    for (const priceTableId of ids) {
-      await Promise.all(oldPriceTable.prices.map(async (p) => {
-        const price = new Price({
+    await duplicatedPriceTables.map(async (d) => {
+      oldPriceTables.map(async (oldPriceTable) => {
+        const newPrices = oldPriceTable.prices.map((p) => ({
           start: p.start,
           end: p.end,
           value: p.value,
-          priceTable: duplicatedPriceTable._id,
-        });
+          priceTable: d._id,
+        }));
 
-        console.log('price: ', price);
+        const price = new Price(newPrices);
 
-        duplicatedPriceTable.prices.push(price);
-      }));
+        console.log('priceee: ', price);
 
-      duplicatedPriceTable.save();
-    }
+        duplicatedPriceTables.prices.push(price);
+      });
+    });
 
-    console.log('duplicatedPriceTable: ', duplicatedPriceTable);
+    await duplicatedPriceTables.save();
 
-    return duplicatedPriceTable;
+    return duplicatedPriceTables;
   },
 };
 

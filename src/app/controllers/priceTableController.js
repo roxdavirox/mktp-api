@@ -3,7 +3,6 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 
-const Price = require('../models/price');
 const PriceTable = require('../models/priceTable');
 const PriceTableService = require('../services/priceTable.service');
 
@@ -156,8 +155,6 @@ const priceTableController = {
       const { priceTableIds } = req.body;
 
       const duplicatedPriceTable = await PriceTableService.duplicatePriceTable(priceTableIds);
-
-      console.log('duplicatedPriceTable controller: ', duplicatedPriceTable);
 
       return res.send({ duplicatedPriceTable });
     } catch (e) {
