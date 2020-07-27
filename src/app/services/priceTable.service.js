@@ -95,36 +95,33 @@ const priceTableService = {
   },
 
   async duplicatePriceTable(ids) {
-    const oldPriceTables = await PriceTable
-      .find({ _id: { $in: [...ids] } }).populate('prices');
+    const duplicatedPriceTables = await Promise.all(ids.map(async (id) => {
+      const oldpriceTable = await PriceTable
+        .findById(id).populate('prices');
 
-    const newPriceTables = oldPriceTables.map((oldPriceTable) => ({
-      ...oldPriceTable,
-      name: `${oldPriceTable.name} - Cópia teste`,
-    }));
+      const newPriceTable = await {
+        name: `${oldpriceTable.name} - Cópia teste`,
+        unit: oldpriceTable.unit,
+      };
 
-    const duplicatedPriceTables = await PriceTable
-      .create(newPriceTables);
+      const duplicatedPriceTable = await PriceTable
+        .create(newPriceTable);
 
-    await duplicatedPriceTables.map(async (d) => {
-      oldPriceTables.map(async (oldPriceTable) => {
-        const newPrices = oldPriceTable.prices.map((p) => ({
+      await Promise.all(oldpriceTable.prices.map(async (p) => {
+        const price = await new Price({
           start: p.start,
           end: p.end,
           value: p.value,
-          priceTable: d._id,
-        }));
+          priceTable: duplicatedPriceTable._id,
+        });
 
-        const price = new Price(newPrices);
+        await price.save();
 
-        console.log('priceee: ', price);
-
-        duplicatedPriceTables.prices.push(price);
-      });
-    });
-
-    await duplicatedPriceTables.save();
-
+        await duplicatedPriceTable.prices.push(price);
+      }));
+      await duplicatedPriceTable.save();
+      return duplicatedPriceTable;
+    }));
     return duplicatedPriceTables;
   },
 };
