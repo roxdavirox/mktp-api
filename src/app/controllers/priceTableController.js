@@ -155,7 +155,7 @@ const priceTableController = {
       const { priceTableIds } = req.body;
 
       const duplicatedPriceTable = await PriceTableService.duplicatePriceTable(priceTableIds);
-      console.log('controller: ', duplicatedPriceTable);
+
       return res.send({ duplicatedPriceTable });
     } catch (e) {
       return res.status(400)

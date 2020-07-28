@@ -108,7 +108,7 @@ const priceTableService = {
         .create(newPriceTable);
 
       await Promise.all(oldpriceTable.prices.map(async (p) => {
-        const price = await new Price({
+        const price = new Price({
           start: p.start,
           end: p.end,
           value: p.value,
