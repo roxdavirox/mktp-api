@@ -99,15 +99,17 @@ const priceTableService = {
       const oldpriceTable = await PriceTable
         .findById(id).populate('prices');
 
-      const newPriceTable = await {
+      const { _id, prices, ...rest } = oldpriceTable.toObject();
+
+      const newPriceTable = {
+        ...rest,
         name: `${oldpriceTable.name} - Cópia`,
-        unit: oldpriceTable.unit,
       };
 
       const duplicatedPriceTable = await PriceTable
         .create(newPriceTable);
 
-      await Promise.all(oldpriceTable.prices.map(async (p) => {
+      await Promise.all(prices.map(async (p) => {
         const price = new Price({
           start: p.start,
           end: p.end,
