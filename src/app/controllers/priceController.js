@@ -142,7 +142,7 @@ const getPricesByPriceTableId = async (req, res) => {
 
     const priceTable = await PriceTable
       .findById(priceTableId)
-      .populate('prices');
+      .populate('prices').sort({ start: 1 });
 
     return res.send({ priceTable });
   } catch (e) {
