@@ -119,7 +119,7 @@ const priceTableService = {
 
         await price.save();
 
-        await duplicatedPriceTable.prices.push(price);
+        duplicatedPriceTable.prices.push(price);
       }));
       await duplicatedPriceTable.save();
       return duplicatedPriceTable;
