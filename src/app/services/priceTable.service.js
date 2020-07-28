@@ -100,7 +100,7 @@ const priceTableService = {
         .findById(id).populate('prices');
 
       const newPriceTable = await {
-        name: `${oldpriceTable.name} - Cópia teste`,
+        name: `${oldpriceTable.name} - Cópia`,
         unit: oldpriceTable.unit,
       };
 
