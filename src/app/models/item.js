@@ -22,6 +22,11 @@ const ItemSchema = new Schema({
     select: true,
     required: true,
   },
+  showUnitField: {
+    type: Schema.Types.Boolean,
+    select: true,
+    required: true,
+  },
   templates: [{
     option: {
       type: Schema.Types.ObjectId,
