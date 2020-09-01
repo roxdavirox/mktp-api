@@ -26,7 +26,7 @@ const styles = {
   }
 }
 
-const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit }) => {
+const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, defaultItems }) => {
 
   return (
     <>
@@ -53,21 +53,59 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit }) 
             </select>
           }
         </div>
-        {Object.keys(options).map(k => 
-          <div key={k}>
-              <label for={options[k]._id} >{options[k].name}:</label> 
-            <select 
-              className="item-select"
-              id={options[k]._id}
-              key={k}>
-              {options[k].items.map(item => 
-                <option 
-                  key={item._id}
-                  id={item._id}
-                  selected={selectedItemsId.indexOf(item._id.toString()) !== -1}>
-                    {item.name}
-                </option>)}
-            </select>
+        {Object.keys(options).map(k =>
+          <div _optionId={options[k]._id}>
+            <label for={options[k]._id} >{options[k].name}:</label>
+            <div key={k} className="elementor-row">
+              <div 
+                className={`${options[k].items.find(item => selectedItemsId.indexOf(item._id.toString() !== -1)).showUnitField 
+                  ? 'elementor-column elementor-col-100 elementor-inner-column elementor-element' 
+                  : 'elementor-column elementor-col-100 elementor-inner-column elementor-element'}`}
+              >
+                <select
+                  className="item-select"
+                  id={options[k]._id}
+                  key={k}>
+                  {options[k].items.map(item => 
+                    <option 
+                      key={item._id}
+                      id={item._id}
+                      _optionId={options[k]._id}
+                      _showUnitfield={`${item.showUnitField}`}
+                      _unit={item.priceTable.unit}
+                      selected={selectedItemsId.indexOf(item._id.toString()) !== -1}>
+                        {item.name}
+                    </option>)}
+                </select>
+              </div>
+              {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField 
+                && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit === 'quantidade'
+                && <div _optionId={options[k]._id} className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
+                    <input type="text" id="input-quantidade" placeholder="Quantidade" type="number"
+                      value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()] 
+                        ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].quantity
+                        : '1'}></input>
+                  </div>
+              }
+              {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField 
+                && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit !== 'quantidade'
+                && 
+                  <div _optionId={options[k]._id} className="elementor-row">
+                    <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
+                      <input type="text" id="input-x" placeholder="Comp." type="number"
+                        value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()]
+                          ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].x
+                          : '1'}></input>
+                    </div>
+                    <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
+                      <input type="text" id="input-y" placeholder="Larg." type="number"
+                        value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()]
+                          ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].y
+                          : '1'}></input>
+                    </div>
+                  </div>
+              }
+            </div>
           </div>
         )}
         <div  className="orcamento-inputs">
