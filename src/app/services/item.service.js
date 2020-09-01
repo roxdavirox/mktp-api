@@ -189,6 +189,18 @@ const itemService = {
     return items;
   },
 
+  async getItemsByItemsIdAndPriceTable(itemsId) {
+    const items = await Item.find({ _id: { $in: itemsId } })
+      .populate({
+        path: 'option',
+      })
+      .populate({
+        path: 'priceTable',
+        select: 'unit',
+      });
+    return items;
+  },
+
   async updateItem(itemId, priceTableId, newItem) {
     if (!priceTableId) {
       const priceTable = await PriceTable.findById(priceTableId);
