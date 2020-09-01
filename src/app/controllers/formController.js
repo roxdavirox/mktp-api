@@ -112,9 +112,20 @@ const formController = {
 
   async getQuote(req, res) {
     try {
-      const { itemsId, quantity, size = { x: 1, y: 1 } } = req.body;
+      const {
+        itemsId, quantity, size = { x: 1, y: 1 }, defaultItems,
+      } = req.body;
 
-      const items = await ProductService.getProductQuote(itemsId, quantity, size);
+      const selectedItems = itemsId.map((id) => ({
+        _id: id,
+        quantity: defaultItems[id] ? defaultItems[id].quantity : 1,
+        size: {
+          x: defaultItems[id] ? defaultItems[id].x : 1,
+          y: defaultItems[id] ? defaultItems[id].y : 1,
+        },
+      }));
+
+      const items = await ProductService.getProductQuote(selectedItems, quantity, size);
 
       const price = items.reduce((value, item) => value + item.price, 0);
       const unitPrice = price / Number(quantity);
