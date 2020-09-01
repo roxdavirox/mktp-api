@@ -86,7 +86,9 @@ const formController = {
 
   async getSelectComponent(req, res) {
     try {
-      const { itemsId, optionId, selectedItemId } = req.body;
+      const {
+       itemsId, optionId, selectedItemId, defaultItems,
+      } = req.body;
       const items = await ItemService.getItemsByItemsIdAndPriceTable(itemsId);
       const option = await Option.findById(optionId);
 
@@ -95,6 +97,7 @@ const formController = {
         optionId,
         selectedItemId,
         option,
+        defaultItems,
       });
       const labelLength = html.indexOf('<label');
       const endLength = html.length - ('</div>'.length + labelLength);
