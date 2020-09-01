@@ -81,11 +81,19 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
               {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit === 'quantidade'
-                && <div _optionId={options[k]._id} className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
-                    <input type="text" id="input-quantidade" placeholder="Quantidade" type="number"
+                && 
+                  <div _optionId={options[k]._id} className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
+                    <input
+                      type="text"
+                      id="input-unit-quantity"
+                      _itemId={options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()}
+                      placeholder="Quantidade"
+                      type="number"
                       value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()] 
                         ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].quantity
-                        : '1'}></input>
+                        : '1'}
+                    >
+                    </input>
                   </div>
               }
               {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField
@@ -94,16 +102,28 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
                 && 
                   <div _optionId={options[k]._id} className="elementor-row">
                     <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
-                      <input type="text" id="input-x" placeholder="Comp." type="number"
+                      <input 
+                        type="text"
+                        id="input-unit-x"
+                        _itemId={options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()}
+                        placeholder="Comp."
+                        type="number"
                         value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()]
                           ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].x
                           : '1'}></input>
                     </div>
                     <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
-                      <input type="text" id="input-y" placeholder="Larg." type="number"
+                      <input
+                        type="text"
+                        id="input-unit-y"
+                        _itemId={options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()}
+                        placeholder="Larg."
+                        type="number"
                         value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()]
                           ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].y
-                          : '1'}></input>
+                          : '1'}
+                      >
+                      </input>
                     </div>
                   </div>
               }
