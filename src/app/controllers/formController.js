@@ -3,6 +3,7 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 const Product = require('../models/product');
+const Option = require('../models/option');
 
 const PipedriveService = require('../services/pipedrive.service');
 const ProductService = require('../services/product.service');
@@ -25,6 +26,7 @@ const formController = {
           selectedItemsId,
           sizeSelectedIndex,
           unit,
+          defaultItems,
         } = req.body;
 
       const product = await Product
@@ -41,6 +43,9 @@ const formController = {
           },
           {
             path: 'productOptions.item',
+            populate: {
+              path: 'priceTable',
+            },
           },
         ]);
 
@@ -69,12 +74,36 @@ const formController = {
         sizes,
         selectedItemsId,
         unit,
+        defaultItems,
       });
 
       return res.send({ html });
     } catch (e) {
       return res.status(400)
         .send({ error: `Error on get product form: ${e}` });
+    }
+  },
+
+  async getSelectComponent(req, res) {
+    try {
+      const { itemsId, optionId, selectedItemId } = req.body;
+      const items = await ItemService.getItemsByItemsIdAndPriceTable(itemsId);
+      const option = await Option.findById(optionId);
+
+      const html = await getHtmlString('Select', res, {
+        items,
+        optionId,
+        selectedItemId,
+        option,
+      });
+      const labelLength = html.indexOf('<label');
+      const endLength = html.length - ('</div>'.length + labelLength);
+
+      const formattedHtml = html.substr(labelLength, endLength);
+      return res.send({ html: formattedHtml });
+    } catch (e) {
+      return res.status(400)
+        .send({ error: `Error on get select component: ${e}` });
     }
   },
 
@@ -130,6 +159,7 @@ const formController = {
 
 router.post('/deal', formController.createDeal);
 router.post('/quote', formController.getQuote);
+router.post('/select', formController.getSelectComponent);
 router.post('/:productId', formController.getHtmlForm);
 
 module.exports = (app) => app.use('/form', router);
