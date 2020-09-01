@@ -74,12 +74,13 @@ const itemController = {
     try {
       const { itemId } = req.params;
 
-      const { name, priceTable } = req.body;
+      const { name, priceTable, showUnitField } = req.body;
       const newItem = {
         name,
         priceTable:
         // eslint-disable-next-line eqeqeq
         priceTable == '0' ? undefined : priceTable,
+        showUnitField,
       };
 
       const item = await ItemService
@@ -118,10 +119,11 @@ const itemController = {
     try {
       const { optionId } = req.params;
 
-      const { name, priceTable } = req.body;
+      const { name, priceTable, showUnitField } = req.body;
       const newItem = {
         name,
         itemType: 'item',
+        showUnitField,
         priceTable:
         // eslint-disable-next-line eqeqeq
         priceTable == '0' ? undefined : priceTable,
