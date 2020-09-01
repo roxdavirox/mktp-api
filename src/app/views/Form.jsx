@@ -58,7 +58,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
             <label for={options[k]._id} >{options[k].name}:</label>
             <div key={k} className="elementor-row">
               <div 
-                className={`${options[k].items.find(item => selectedItemsId.indexOf(item._id.toString() !== -1)).showUnitField 
+                className={`${options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField 
                   ? 'elementor-column elementor-col-100 elementor-inner-column elementor-element' 
                   : 'elementor-column elementor-col-100 elementor-inner-column elementor-element'}`}
               >
@@ -72,13 +72,14 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
                       id={item._id}
                       _optionId={options[k]._id}
                       _showUnitfield={`${item.showUnitField}`}
-                      _unit={item.priceTable.unit}
+                      _unit={item.priceTable ? item.priceTable : ''}
                       selected={selectedItemsId.indexOf(item._id.toString()) !== -1}>
                         {item.name}
                     </option>)}
                 </select>
               </div>
-              {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField 
+              {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField
+                && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit === 'quantidade'
                 && <div _optionId={options[k]._id} className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
                     <input type="text" id="input-quantidade" placeholder="Quantidade" type="number"
@@ -87,7 +88,8 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
                         : '1'}></input>
                   </div>
               }
-              {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField 
+              {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField
+                && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit !== 'quantidade'
                 && 
                   <div _optionId={options[k]._id} className="elementor-row">
