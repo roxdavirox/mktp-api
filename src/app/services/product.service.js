@@ -12,11 +12,16 @@ const productService = {
 
       const { priceTable } = item;
 
-      const _quantity = quantity + (_item.quantity || 1);
-      const _size = {
-        x: size.x + (_item.size.x || 1),
-        y: size.y + (_item.size.y || 1),
-      };
+      let _size = size;
+      let _quantity = quantity;
+
+      if (item.showUnitField) {
+        _quantity = Number(quantity) + Number((_item.quantity || 0));
+        _size = {
+          x: _item.size.x ? _item.size.x : 1,
+          y: _item.size.y ? _item.size.y : 1,
+        };
+      }
 
       const price = await PriceTableService
         .getPriceAreaById(priceTable._id, _quantity, _size);
