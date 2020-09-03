@@ -74,7 +74,8 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
                     </option>)}
                 </select>
               </div>
-              {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField
+              {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)
+                && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit === 'quantidade'
                 && 
@@ -92,7 +93,8 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
                     </input>
                   </div>
               }
-              {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField
+              {options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)
+                && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit !== 'quantidade'
                 && 
