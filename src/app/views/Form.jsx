@@ -57,11 +57,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
           <div _optionId={options[k]._id}>
             <label for={options[k]._id} >{options[k].name}:</label>
             <div key={k} className="elementor-row">
-              <div 
-                className={`${options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).showUnitField 
-                  ? 'elementor-column elementor-col-100 elementor-inner-column elementor-element' 
-                  : 'elementor-column elementor-col-100 elementor-inner-column elementor-element'}`}
-              >
+              <div className="elementor-column elementor-col-100 elementor-inner-column elementor-element">
                 <select
                   className="item-select"
                   id={options[k]._id}
