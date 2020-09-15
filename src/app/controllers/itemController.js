@@ -104,6 +104,7 @@ const itemController = {
         priceTable: undefined,
         templates,
         option: optionId,
+        showUnitField: false,
       };
 
       const templateItem = await ItemService.createTemplateItem(optionId, newTemplateItem);
