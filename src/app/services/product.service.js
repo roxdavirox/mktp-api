@@ -1,21 +1,20 @@
 /* eslint-disable no-underscore-dangle */
 
 const ItemService = require('../services/item.service');
-const PriceTableService = require('../services/priceTable.service');
 
 const productService = {
   async getProductQuote(selectedItems, quantity, size) {
     const items = await Promise.all(selectedItems.map(async (_item) => {
-      const item = await ItemService.getItemPriceById(_item._id);
+      const item = await ItemService.getItemAndPriceTableById(_item._id);
 
-      if (!item.priceTable) return { ...item.toObject(), price: 0 };
-
-      const { priceTable } = item;
+      if (!item.priceTable && item.itemType !== 'template') {
+        return { ...item.toObject(), price: 0 };
+      }
 
       let _size = size;
       let _quantity = quantity;
 
-      if (item.showUnitField) {
+      if (item.showUnitField || item.itemType === 'template') {
         _quantity = Number(quantity) + Number((_item.quantity || 0));
         _size = {
           x: _item.size.x ? _item.size.x : 1,
@@ -23,8 +22,11 @@ const productService = {
         };
       }
 
-      const price = await PriceTableService
-        .getPriceAreaById(priceTable._id, _quantity, _size);
+      const price = await ItemService.calculateItemPrice({
+        quantity: _quantity,
+        size: _size,
+        item,
+      });
 
       return { ...item.toObject(), price };
     }));
