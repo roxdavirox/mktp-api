@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 const Item = require('../models/item');
-const Price = require('../models/price');
 const PriceTable = require('../models/priceTable');
 const Option = require('../models/option');
+const PriceTableService = require('../services/priceTable.service');
 
 // common functions - shared
 async function calculateItemPrice(templateItem) {
@@ -22,28 +22,9 @@ async function calculateItemPrice(templateItem) {
     return total;
   }
 
-  const _price = await Price.findOne({
-    priceTable,
-
-    start: { $lte: total },
-    end: { $gte: total },
-
-  });
-
-  if (!_price) {
-    const prices = await Price
-      .find({ priceTable })
-      .sort({ _id: -1 })
-      .limit(1);
-
-    if (!prices) return 0;
-    const [lastPrice] = prices;
-
-    if (lastPrice) return 0;
-    total *= lastPrice.value;
-
-    return total * quantity;
-  }
+  const priceTableId = priceTable.toString();
+  const area = total;
+  const _price = await PriceTableService.getPriceIntervalByAreaAndId(priceTableId, area);
 
   total = Number(_price.value) * Number(total);
   return total * quantity;
@@ -108,6 +89,7 @@ async function groupPriceTableTemplateItems(item) {
 }
 
 const itemService = {
+  calculateItemPrice,
   async getItemPriceById(id) {
     // TODO: Calcular o preço do item para o formulario no wp
     const item = await Item
@@ -187,6 +169,14 @@ const itemService = {
       path: 'option',
     });
     return items;
+  },
+
+  async getItemAndPriceTableById(itemId) {
+    const item = await Item
+      .findById(itemId)
+      .populate('priceTable');
+
+    return item;
   },
 
   async getItemsByItemsIdAndPriceTable(itemsId) {
