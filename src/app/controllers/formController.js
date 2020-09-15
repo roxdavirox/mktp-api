@@ -118,7 +118,7 @@ const formController = {
 
       const selectedItems = itemsId.map((id) => ({
         _id: id,
-        quantity: defaultItems[id] ? defaultItems[id].quantity : 1,
+        quantity: defaultItems[id] ? defaultItems[id].quantity : 0,
         size: {
           x: defaultItems[id] ? defaultItems[id].x : 1,
           y: defaultItems[id] ? defaultItems[id].y : 1,
@@ -150,7 +150,7 @@ const formController = {
       });
 
       return res.send({
-        items, price: price.toFixed(2), unitPrice: unitPrice.toFixed(2),
+        items, price: price.toFixed(4), unitPrice: unitPrice.toFixed(4),
       });
     } catch (e) {
       return res.status(400)
