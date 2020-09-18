@@ -53,6 +53,10 @@ const ItemSchema = new Schema({
       },
     },
   }],
+  templateQuantity: {
+    type: Schema.Types.Number,
+    required: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

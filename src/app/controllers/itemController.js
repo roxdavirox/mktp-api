@@ -97,7 +97,7 @@ const itemController = {
     try {
       const { optionId } = req.params;
 
-      const { name, templates } = req.body;
+      const { name, templates, templateQuantity = 1 } = req.body;
       const newTemplateItem = {
         name,
         itemType: 'template',
@@ -105,6 +105,7 @@ const itemController = {
         templates,
         option: optionId,
         showUnitField: false,
+        templateQuantity,
       };
 
       const templateItem = await ItemService.createTemplateItem(optionId, newTemplateItem);
