@@ -50,7 +50,7 @@ const itemController = {
 
   async getTemplateItems(req, res) {
     try {
-      const items = await ItemService.getAllItemsWithTemplates();
+      const items = await ItemService.getAllItemsWithPriceTables();
 
       return res.send({ items });
     } catch (e) {

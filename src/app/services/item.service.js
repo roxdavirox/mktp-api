@@ -144,7 +144,7 @@ const itemService = {
     return Item.find();
   },
 
-  async getAllItemsWithTemplates() {
+  async getAllItemsWithPriceTables() {
     const items = await Item.find().populate({
       path: 'option',
     }).populate({
