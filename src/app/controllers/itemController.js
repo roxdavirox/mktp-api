@@ -93,6 +93,25 @@ const itemController = {
     }
   },
 
+  async updateTemplateItem(req, res) {
+    try {
+      const { templateId } = req.params;
+      const { name, templates, templateQuantity } = req.body;
+
+      const item = await ItemService
+        .updateTemplateItem(templateId, {
+          name,
+          templates,
+          templateQuantity,
+        });
+
+      return res.send({ item });
+    } catch (e) {
+      return res.status(400)
+        .send({ error: `Error on update template item ${e}` });
+    }
+  },
+
   async createTemplateItem(req, res) {
     try {
       const { optionId } = req.params;
@@ -176,6 +195,7 @@ const itemController = {
 router.post('/', itemController.createItemWithoutOption);
 router.post('/:optionId', itemController.createItemIntoOptions);
 router.post('/templates/:optionId', itemController.createTemplateItem);
+router.put('/templates/:templateId', itemController.updateTemplateItem);
 router.post('/:itemId/price', itemController.getItemByIdWithPrice);
 router.put('/:itemId', itemController.updateItemById);
 router.get('/', itemController.getAllItems);

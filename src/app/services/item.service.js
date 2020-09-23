@@ -31,7 +31,7 @@ async function calculateItemPrice(templateItem) {
 }
 
 async function groupPriceTableTemplateItems(item) {
-  const _item = await Item.findById(item.id)
+  const _item = await Item.findById(item._id)
     .populate({ path: 'priceTable' })
     .populate({ path: 'templates.item' });
 
@@ -145,12 +145,13 @@ const itemService = {
   },
 
   async getAllItemsWithPriceTables() {
-    const items = await Item.find().populate({
-      path: 'option',
-    }).populate({
-      path: 'priceTable',
-      select: 'unit',
-    }).populate({ path: 'templates.item' });
+    const items = await Item.find()
+      .populate({
+        path: 'option',
+      }).populate({
+        path: 'priceTable',
+        select: 'unit',
+      }).populate({ path: 'templates.item' });
 
     // eslint-disable-next-line no-underscore-dangle
     const _items = await Promise.all(items.map(async (item) => {
@@ -192,7 +193,14 @@ const itemService = {
   },
 
   async updateItem(itemId, priceTableId, newItem) {
-    if (!priceTableId) {
+    const item = await Item
+      .findByIdAndUpdate(
+        itemId,
+        { ...newItem },
+        { new: true },
+      );
+
+    if (!priceTableId && item.itemType !== 'template') {
       const priceTable = await PriceTable.findById(priceTableId);
       // eslint-disable-next-line eqeqeq
       if (priceTable.unit === 'quantidade') {
@@ -205,14 +213,19 @@ const itemService = {
       }
     }
 
-    const item = await Item
+    return item;
+  },
+
+  async updateTemplateItem(itemId, newProps) {
+    const { templates, ...rest } = newProps;
+
+    const templateItem = await Item
       .findByIdAndUpdate(
         itemId,
-        { ...newItem },
+        { ...rest, templates },
         { new: true },
       );
-
-    return item;
+    return templateItem;
   },
 
   async createTemplateItem(optionId, templateItem) {
