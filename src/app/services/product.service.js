@@ -14,8 +14,11 @@ const productService = {
       let _size = size;
       let _quantity = quantity;
 
-      if (item.showUnitField || item.itemType === 'template' || item.priceTable.unit === 'quantidade') {
-        _quantity = Number(quantity) + Number((_item.quantity || 0));
+      if (item.itemType === 'template' || item.showUnitField) {
+        _quantity = item.priceTable.unit === 'quantidade'
+          ? Number((_item.quantity || 1))
+          : Number(quantity) + Number((_item.quantity || 0));
+
         _size = {
           x: _item.size.x ? _item.size.x : 1,
           y: _item.size.y ? _item.size.y : 1,
