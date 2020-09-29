@@ -22,7 +22,7 @@ const formController = {
   async getHtmlForm(req, res) {
     try {
       const {
-          sizes,
+          sizes = false,
           selectedItemsId,
           sizeSelectedIndex,
           unit,
