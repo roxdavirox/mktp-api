@@ -55,9 +55,9 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
         </div>
         {Object.keys(options).map(k =>
           <div _optionId={options[k]._id}>
-            <label for={options[k]._id} >{options[k].name}:</label>
             <div key={k} className="elementor-row">
-              <div className="elementor-column elementor-col-100 elementor-inner-column elementor-element">
+              <div className="elementor-column elementor-col-100 elementor-inner-column elementor-element" style={{ display: 'block' }}>
+                <label for={options[k]._id} >{options[k].name}:</label>
                 <select
                   className="item-select"
                   id={options[k]._id}
@@ -79,10 +79,11 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit === 'quantidade'
                 && 
-                  <div _optionId={options[k]._id} className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
+                  <div _optionId={options[k]._id} className="elementor-column elementor-col-50 elementor-inner-column elementor-element" style={{ display: 'block' }}>
+                    <label for={`input-unit-quantity-${options[k]._id}`} >{defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'quantidade'}:</label>
                     <input
                       type="text"
-                      id="input-unit-quantity"
+                      id={`input-unit-quantity-${options[k]._id}`}
                       _itemId={options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()}
                       placeholder="Quantidade"
                       type="number"
@@ -98,30 +99,33 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit !== 'quantidade'
                 && 
-                  <div _optionId={options[k]._id} className="elementor-row">
-                    <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
-                      <input 
-                        type="text"
-                        id="input-unit-x"
-                        _itemId={options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()}
-                        placeholder="Comp."
-                        type="number"
-                        value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()]
-                          ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].x
-                          : '1'}></input>
-                    </div>
-                    <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
-                      <input
-                        type="text"
-                        id="input-unit-y"
-                        _itemId={options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()}
-                        placeholder="Larg."
-                        type="number"
-                        value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()]
-                          ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].y
-                          : '1'}
-                      >
-                      </input>
+                  <div _optionId={options[k]._id} className="elementor-row" style={{ maxHeight: '100%', display: 'block' }}>
+                    <label >{defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'medida'}:</label>
+                    <div style={{ display: 'inline-flex' }}>
+                      <div className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
+                        <input 
+                          type="text"
+                          id="input-unit-x"
+                          _itemId={options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()}
+                          placeholder="Comp."
+                          type="number"
+                          value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()]
+                            ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].x
+                            : '1'}></input>
+                      </div>
+                      <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
+                        <input
+                          type="text"
+                          id="input-unit-y"
+                          _itemId={options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()}
+                          placeholder="Larg."
+                          type="number"
+                          value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()]
+                            ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].y
+                            : '1'}
+                        >
+                        </input>
+                      </div>
                     </div>
                   </div>
               }
