@@ -68,9 +68,18 @@ const formController = {
         _options[id] = { ...option, items };
       });
 
+      const sortedOptionsId = selectedItemsId.map((itemId) => {
+        const firstOption = Object
+          .keys(_options)
+          .map((optionId) => (_options[optionId]))
+          .find((option) => option.items.some((item) => item._id.toString() === itemId));
+        return firstOption._id.toString();
+      });
+
       const html = await getHtmlString('Form', res, {
         sizeSelectedIndex,
         options: _options,
+        sortedOptionsId,
         sizes,
         selectedItemsId,
         unit,

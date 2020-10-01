@@ -26,7 +26,7 @@ const styles = {
   }
 }
 
-const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, defaultItems }) => {
+const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selectedItemsId, unit, defaultItems }) => {
 
   return (
     <>
@@ -53,7 +53,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sizes, selectedItemsId, unit, de
             </select>
           }
         </div>
-        {Object.keys(options).map(k =>
+        {sortedOptionsId.map(k =>
           <div _optionId={options[k]._id}>
             <div key={k} className="elementor-row">
               <div className="elementor-column elementor-col-100 elementor-inner-column elementor-element" style={{ display: 'block' }}>
