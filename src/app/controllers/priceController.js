@@ -101,7 +101,7 @@ const updatePriceById = async (req, res) => {
 
     if (Number(price.end) !== Number(end)) {
       for (let i = 0; i < prices.length - 1; i++) {
-      // eslint-disable-next-line max-len
+        // eslint-disable-next-line max-len
         if (prices[i]._id.toString() === priceId && Number(end) < Number(prices[i + 1].start)) {
           prices[i].end = Number(end);
           prices[i].save();
@@ -114,7 +114,7 @@ const updatePriceById = async (req, res) => {
     }
     if (Number(price.start) !== Number(start)) {
       for (let i = 1; i <= prices.length - 1; i++) {
-      // eslint-disable-next-line max-len
+        // eslint-disable-next-line max-len
         if (prices[i]._id.toString() === priceId && Number(prices[i - 1].end) < Number(start)) {
           prices[i].start = Number(start);
           prices[i].save();
@@ -223,9 +223,42 @@ const deleteManyPrices = async (req, res) => {
   }
 };
 
+const updatePricesPorcentage = async (req, res) => {
+  try {
+    const { priceTableId } = req.params;
+    const { porcentage } = req.body;
+
+    const priceTable = await PriceTable
+      .findById(priceTableId)
+      .populate('prices');
+
+    const { prices } = priceTable;
+
+    console.log('porcentage: ', porcentage > 0);
+
+    prices.forEach((price) => {
+      if (porcentage > 0) {
+        price.value += (price.value * (porcentage / 100));
+      } else if (porcentage < 0) {
+        price.value += (price.value * (porcentage / 100));
+      }
+
+      price.save();
+    });
+
+    await priceTable.save();
+
+    return res.send({ prices });
+  } catch (e) {
+    return res.status(400)
+      .send({ error: `Error on update prices: ${e}` });
+  }
+};
+
 router.post('/:priceTableId', createPriceByPriceTableId);
 router.post('/:priceTableId/range', generatePriceRange);
 router.put('/:priceId', updatePriceById);
+router.put('/:priceTableId/updatePricesPorcentage', updatePricesPorcentage);
 router.get('/:priceTableId', getPricesByPriceTableId);
 router.post('/:priceTableId/last', createLastPrice);
 router.delete('/', deleteManyPrices);
