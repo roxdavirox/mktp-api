@@ -127,10 +127,10 @@ const formController = {
 
       const selectedItems = itemsId.map((id) => ({
         _id: id,
-        quantity: defaultItems[id].quantity || 0,
+        quantity: defaultItems[id] ? defaultItems[id].quantity : 0,
         size: {
-          x: defaultItems[id].x || 1,
-          y: defaultItems[id].y || 1,
+          x: defaultItems[id] ? defaultItems[id].x : 1,
+          y: defaultItems[id] ? defaultItems[id].y : 1,
         },
       }));
 
