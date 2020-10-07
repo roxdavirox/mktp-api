@@ -15,9 +15,9 @@ const productService = {
       let _quantity = quantity;
 
       if (item.itemType === 'template' || item.showUnitField) {
-        _quantity = item.priceTable.unit === 'quantidade'
-          ? Number((_item.quantity || 1))
-          : Number(quantity) + Number((_item.quantity || 0));
+        if (item.priceTable.unit === 'quantidade') {
+          _quantity = Number(quantity) * Number((_item.quantity || 0));
+        }
 
         _size = {
           x: _item.size.x ? _item.size.x : 1,
