@@ -12,22 +12,21 @@ async function calculateItemPrice(templateItem) {
     .populate({ path: 'templates.item' });
 
   const { priceTable, itemType } = item;
-  let total = Number(size.x * size.y);
+  let total = 1;
 
   if (itemType === 'template' && item.templates) {
     total *= Number(await Promise.resolve(
       item.templates
-        .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0),
+        .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 1),
     ));
     return total;
   }
 
   const priceTableId = priceTable.toString();
-  const area = total;
-  const _price = await PriceTableService.getPriceIntervalByAreaAndId(priceTableId, area);
+  const _price = await PriceTableService
+    .getPriceIntervalByAreaAndId(priceTableId, quantity * size.x * size.y);
 
-  total = Number(_price.value) * Number(total);
-  return total * quantity;
+  return _price.value * quantity * size.x * size.y;
 }
 
 async function groupPriceTableTemplateItems(item) {
