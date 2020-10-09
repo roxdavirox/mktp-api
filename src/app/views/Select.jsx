@@ -18,10 +18,11 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
             key={optionId}>
             {items.map(item => 
               <option 
-                key={item._id}
-                id={item._id}
+                key={optionId}
+                id={optionId}
+                _itemid={item._id.toString()}
                 _optionId={optionId}
-                _showUnitfield={`${item.showUnitField}`}
+                _showUnitfield={`${item.showUnitField || false}`}
                 _unit={item.priceTable ? item.priceTable.unit : ''}
                 selected={selectedItemId === item._id.toString()}>
                   {item.name}

@@ -64,8 +64,9 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                   key={k}>
                   {options[k].items.map(item => 
                     <option 
-                      key={item._id}
-                      id={item._id}
+                      key={options[k]._id}
+                      id={options[k]._id}
+                      _itemid={item._id.toString()}
                       _optionId={options[k]._id}
                       _showUnitfield={`${item.showUnitField || false}`}
                       _unit={item.priceTable ? item.priceTable : ''}
