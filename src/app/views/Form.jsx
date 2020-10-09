@@ -54,7 +54,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
           }
         </div>
         {sortedOptionsId.map(k =>
-          <div _optionId={options[k]._id}>
+          <div _optionId={options[k]._id} id="item-container">
             <div key={k} className="elementor-row">
               <div className="elementor-column elementor-col-100 elementor-inner-column elementor-element" style={{ display: 'block' }}>
                 <label for={options[k]._id} >{options[k].name}:</label>

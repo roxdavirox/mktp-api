@@ -108,10 +108,10 @@ const formController = {
         option,
         defaultItems,
       });
-      const labelLength = html.indexOf('<label');
-      const endLength = html.length - ('</div>'.length + labelLength);
+      // const labelLength = html.indexOf();
+      // const endLength = html.length - ('</div>'.length + labelLength);
 
-      const formattedHtml = html.substr(labelLength, endLength);
+      const formattedHtml = html.substr('<!DOCTYPE html>'.length, html.length);
       return res.send({ html: formattedHtml });
     } catch (e) {
       return res.status(400)
