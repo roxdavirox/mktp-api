@@ -122,7 +122,7 @@ const formController = {
   async getQuote(req, res) {
     try {
       const {
-        itemsId, quantity, size = { x: 1, y: 1 }, defaultItems,
+        itemsId, quantity, size = { x: 1, y: 1 }, defaultItems = {},
       } = req.body;
 
       const selectedItems = itemsId.map((id) => ({
