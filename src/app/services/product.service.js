@@ -29,6 +29,13 @@ const productService = {
         };
       }
 
+      if (item.itemType === 'item' && item.priceTable.unit === 'quantidade' && !item.showUnitField) {
+        _size = {
+          x: _item.size.x ? _item.size.x : 1,
+          y: _item.size.y ? _item.size.y : 1,
+        };
+      }
+
       if (item.itemType === 'item' && item.priceTable.unit !== 'quantidade' && item.showUnitField) {
         _size = {
           x: _item.size.x ? _item.size.x : 1,
