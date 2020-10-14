@@ -14,11 +14,22 @@ const productService = {
       let _size = size;
       let _quantity = quantity;
 
-      if (item.itemType === 'template' || item.showUnitField) {
-        if (item.priceTable.unit === 'quantidade') {
-          _quantity = Number(quantity) * Number((_item.quantity || 0));
-        }
+      if (item.itemType === 'template') {
+        _size = {
+          x: _item.size.x ? _item.size.x : 1,
+          y: _item.size.y ? _item.size.y : 1,
+        };
+      }
 
+      if (item.itemType === 'item' && item.priceTable.unit === 'quantidade' && item.showUnitField) {
+        _quantity = Number(quantity) * Number((_item.quantity || 0));
+        _size = {
+          x: _item.size.x ? _item.size.x : 1,
+          y: _item.size.y ? _item.size.y : 1,
+        };
+      }
+
+      if (item.itemType === 'item' && item.priceTable.unit !== 'quantidade' && item.showUnitField) {
         _size = {
           x: _item.size.x ? _item.size.x : 1,
           y: _item.size.y ? _item.size.y : 1,
