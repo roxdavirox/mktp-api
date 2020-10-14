@@ -4,24 +4,26 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
 
   const selectedItem = items.find(item => item._id.toString() === selectedItemId);
   return (
-    <div _optionId={optionId}>
-      <label for={optionId}>{option.name}:</label>
+    <>
       <div key={optionId} className="elementor-row">
         <div 
           className={`${items.find(item => item._id.toString() === selectedItemId).showUnitField 
             ? 'elementor-column elementor-col-100 elementor-inner-column elementor-element' 
             : 'elementor-column elementor-col-100 elementor-inner-column elementor-element'}`}
+          style={{ display: 'block' }}
         >
+          <label for={optionId}>{option.name}:</label>
           <select
             className="item-select"
             id={optionId}
             key={optionId}>
             {items.map(item => 
               <option 
-                key={item._id}
-                id={item._id}
-                _optionId={optionId}
-                _showUnitfield={`${item.showUnitField}`}
+                key={optionId}
+                id={optionId}
+                _itemid={item._id.toString()}
+                _optionid={optionId}
+                _showunitfield={`${item.showUnitField || false}`}
                 _unit={item.priceTable ? item.priceTable.unit : ''}
                 selected={selectedItemId === item._id.toString()}>
                   {item.name}
@@ -30,7 +32,8 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
         </div>
         {selectedItem.showUnitField 
           && selectedItem.priceTable.unit === 'quantidade'
-          && <div _optionId={optionId} className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
+          && <div _optionid={optionId} className="elementor-column elementor-col-50 elementor-inner-column elementor-element" style={{ display: 'block' }}>
+              <label for={`input-unit-quantity`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : 'quantidade'}:</label>
               <input
                 type="text"
                 id="input-unit-quantity"
@@ -45,12 +48,13 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
         {selectedItem.showUnitField 
           && selectedItem.priceTable.unit !== 'quantidade'
           &&
-            <div _optionId={optionId} className="elementor-row">
+            <div _optionid={optionId} className="elementor-row">
+              <label for={`input-unit-quantity`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : 'medida'}:</label>
               <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
                 <input
                   type="text"
                   id="input-unit-x"
-                  _itemId={selectedItemId}
+                  _itemid={selectedItemId}
                   placeholder="Comp."
                   type="number"
                   value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].x : '1'}
@@ -61,7 +65,7 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
                 <input
                   type="text"
                   id="input-unit-y"
-                  _itemId={selectedItemId}
+                  _itemid={selectedItemId}
                   placeholder="Larg."
                   type="number"
                   value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].y : '1'}
@@ -71,7 +75,7 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
             </div>
         }
       </div>
-    </div>
+    </>
   )
 }
 

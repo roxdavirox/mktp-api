@@ -12,26 +12,25 @@ async function calculateItemPrice(templateItem) {
     .populate({ path: 'templates.item' });
 
   const { priceTable, itemType } = item;
-  let total = Number(size.x * size.y);
+  let total = 1;
 
   if (itemType === 'template' && item.templates) {
     total *= Number(await Promise.resolve(
       item.templates
-        .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0),
+        .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 1),
     ));
     return total;
   }
 
   const priceTableId = priceTable.toString();
-  const area = total;
-  const _price = await PriceTableService.getPriceIntervalByAreaAndId(priceTableId, area);
+  const _price = await PriceTableService
+    .getPriceIntervalByAreaAndId(priceTableId, quantity * size.x * size.y);
 
-  total = Number(_price.value) * Number(total);
-  return total * quantity;
+  return _price.value * quantity * size.x * size.y;
 }
 
 async function groupPriceTableTemplateItems(item) {
-  const _item = await Item.findById(item.id)
+  const _item = await Item.findById(item._id)
     .populate({ path: 'priceTable' })
     .populate({ path: 'templates.item' });
 
@@ -144,13 +143,14 @@ const itemService = {
     return Item.find();
   },
 
-  async getAllItemsWithTemplates() {
-    const items = await Item.find().populate({
-      path: 'option',
-    }).populate({
-      path: 'priceTable',
-      select: 'unit',
-    }).populate({ path: 'templates.item' });
+  async getAllItemsWithPriceTables() {
+    const items = await Item.find()
+      .populate({
+        path: 'option',
+      }).populate({
+        path: 'priceTable',
+        select: 'unit',
+      }).populate({ path: 'templates.item' });
 
     // eslint-disable-next-line no-underscore-dangle
     const _items = await Promise.all(items.map(async (item) => {
@@ -192,7 +192,14 @@ const itemService = {
   },
 
   async updateItem(itemId, priceTableId, newItem) {
-    if (!priceTableId) {
+    const item = await Item
+      .findByIdAndUpdate(
+        itemId,
+        { ...newItem },
+        { new: true },
+      );
+
+    if (!priceTableId && item.itemType !== 'template') {
       const priceTable = await PriceTable.findById(priceTableId);
       // eslint-disable-next-line eqeqeq
       if (priceTable.unit === 'quantidade') {
@@ -205,14 +212,19 @@ const itemService = {
       }
     }
 
-    const item = await Item
+    return item;
+  },
+
+  async updateTemplateItem(itemId, newProps) {
+    const { templates, ...rest } = newProps;
+
+    const templateItem = await Item
       .findByIdAndUpdate(
         itemId,
-        { ...newItem },
+        { ...rest, templates },
         { new: true },
       );
-
-    return item;
+    return templateItem;
   },
 
   async createTemplateItem(optionId, templateItem) {

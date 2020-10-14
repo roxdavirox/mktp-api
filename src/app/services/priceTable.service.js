@@ -7,7 +7,6 @@ const Item = require('../models/item');
 
 const priceTableService = {
   async getPriceAreaById(id, quantity, size = { x: 1, y: 1 }) {
-    // const { _size = { x: 1, y: 1 } } = size;
     let total = quantity;
 
     const priceTable = await PriceTable.findById(id)

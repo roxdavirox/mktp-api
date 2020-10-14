@@ -22,7 +22,7 @@ const formController = {
   async getHtmlForm(req, res) {
     try {
       const {
-          sizes,
+          sizes = false,
           selectedItemsId,
           sizeSelectedIndex,
           unit,
@@ -68,9 +68,18 @@ const formController = {
         _options[id] = { ...option, items };
       });
 
+      const sortedOptionsId = selectedItemsId.map((itemId) => {
+        const firstOption = Object
+          .keys(_options)
+          .map((optionId) => (_options[optionId]))
+          .find((option) => option.items.some((item) => item._id.toString() === itemId));
+        return firstOption._id.toString();
+      });
+
       const html = await getHtmlString('Form', res, {
         sizeSelectedIndex,
         options: _options,
+        sortedOptionsId,
         sizes,
         selectedItemsId,
         unit,
@@ -99,10 +108,10 @@ const formController = {
         option,
         defaultItems,
       });
-      const labelLength = html.indexOf('<label');
-      const endLength = html.length - ('</div>'.length + labelLength);
+      // const labelLength = html.indexOf();
+      // const endLength = html.length - ('</div>'.length + labelLength);
 
-      const formattedHtml = html.substr(labelLength, endLength);
+      const formattedHtml = html.substr('<!DOCTYPE html>'.length, html.length);
       return res.send({ html: formattedHtml });
     } catch (e) {
       return res.status(400)
@@ -113,21 +122,23 @@ const formController = {
   async getQuote(req, res) {
     try {
       const {
-        itemsId, quantity, size = { x: 1, y: 1 }, defaultItems,
+        itemsId, quantity, size = { x: 1, y: 1 }, defaultItems = {},
       } = req.body;
 
       const selectedItems = itemsId.map((id) => ({
         _id: id,
-        quantity: defaultItems[id] ? defaultItems[id].quantity : 0,
+        quantity: defaultItems[id] ? defaultItems[id].quantity || 1 : 1,
         size: {
-          x: defaultItems[id] ? defaultItems[id].x : 1,
-          y: defaultItems[id] ? defaultItems[id].y : 1,
+          x: defaultItems[id] ? defaultItems[id].x || 1 : 1,
+          y: defaultItems[id] ? defaultItems[id].y || 1 : 1,
         },
       }));
 
       const items = await ProductService.getProductQuote(selectedItems, quantity, size);
 
-      const price = items.reduce((value, item) => value + item.price, 0);
+      const price = items
+        .reduce((value, item) => value + item.price, 0);
+
       const unitPrice = price / Number(quantity);
 
       const _items = await ItemService.getItemsByItemsId(itemsId);
@@ -141,13 +152,13 @@ const formController = {
         unitPrice: unitPrice.toFixed(2),
       });
 
-      setTimeout(async () => {
-        try {
-          await PipedriveService.createDeal({ ...person, html, title: `Negócio ${person.name}` });
-        } catch (e) {
-          console.log('error when creating deal:', e);
-        }
-      });
+      // setTimeout(async () => {
+      //   try {
+      //     await PipedriveService.createDeal({ ...person, html, title: `Negócio ${person.name}` });
+      //   } catch (e) {
+      //     console.log('error when creating deal:', e);
+      //   }
+      // });
 
       return res.send({
         items, price: price.toFixed(4), unitPrice: unitPrice.toFixed(4),
