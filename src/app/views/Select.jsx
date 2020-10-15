@@ -48,7 +48,7 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
         {selectedItem.showUnitField 
           && selectedItem.priceTable.unit !== 'quantidade'
           &&
-            <div _optionid={optionId} className="elementor-row">
+            <div _optionid={optionId} className="elementor-row" style={{ display: 'block' }}>
               <label for={`input-unit-x`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : 'medida'}:</label>
               <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
                 <input
