@@ -140,7 +140,7 @@ const formController = {
         .reduce((value, item) => value + item.price, 0);
 
       const unitPrice = price / Number(quantity);
-      const totalPrice = unitPrice * quantity;
+      const totalPrice = unitPrice.toFixed(2) * quantity;
 
       const _items = await ItemService.getItemsByItemsId(itemsId);
       const { person, productName } = req.body;
