@@ -49,7 +49,7 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
           && selectedItem.priceTable.unit !== 'quantidade'
           &&
             <div _optionid={optionId} className="elementor-row">
-              <label for={`input-unit-quantity`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : 'medida'}:</label>
+              <label for={`input-unit-x`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : 'medida'}:</label>
               <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
                 <input
                   type="text"
