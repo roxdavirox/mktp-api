@@ -17,7 +17,7 @@ async function calculateItemPrice(templateItem) {
   if (itemType === 'template' && item.templates) {
     total *= Number(await Promise.resolve(
       item.templates
-        .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 1),
+        .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0),
     ));
     return total;
   }
