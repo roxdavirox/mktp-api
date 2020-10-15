@@ -140,7 +140,8 @@ const formController = {
         .reduce((value, item) => value + item.price, 0);
 
       const unitPrice = price / Number(quantity);
-      const totalPrice = unitPrice * quantity;
+      const roundedUnitPrice = Math.round(unitPrice / 0.5) * 0.5;
+      const totalPrice = roundedUnitPrice * quantity;
 
       const _items = await ItemService.getItemsByItemsId(itemsId);
       const { person, productName } = req.body;
@@ -149,8 +150,8 @@ const formController = {
         quantity,
         size,
         items: _items,
-        price: Math.round(totalPrice.toFixed(2)),
-        unitPrice: Math.round(unitPrice.toFixed(2)),
+        price: totalPrice.toFixed(2),
+        unitPrice: unitPrice.toFixed(2),
       });
 
       // setTimeout(async () => {
@@ -163,8 +164,8 @@ const formController = {
 
       return res.send({
         items,
-        price: Math.floor(totalPrice).toFixed(4),
-        unitPrice: Math.floor(unitPrice).toFixed(4),
+        price: totalPrice.toFixed(2),
+        unitPrice: roundedUnitPrice.toFixed(2),
       });
     } catch (e) {
       return res.status(400)
