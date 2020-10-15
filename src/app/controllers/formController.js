@@ -163,7 +163,7 @@ const formController = {
 
       return res.send({
         items,
-        price: totalPrice.toFixed(2),
+        price: Math.round(totalPrice.toFixed(2) / 0.5) * 0.5,
         unitPrice: unitPrice.toFixed(2),
       });
     } catch (e) {
