@@ -33,7 +33,7 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
         {selectedItem.showUnitField 
           && selectedItem.priceTable.unit === 'quantidade'
           && <div _optionid={optionId} className="elementor-column elementor-col-50 elementor-inner-column elementor-element" style={{ display: 'block' }}>
-              <label for={`input-unit-quantity`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : 'quantidade'}:</label>
+              <label for={`input-unit-quantity`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : 'Quantidade'}:</label>
               <input
                 type="text"
                 id="input-unit-quantity"
@@ -49,7 +49,7 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
           && selectedItem.priceTable.unit !== 'quantidade'
           &&
             <div _optionid={optionId} className="elementor-row" style={{ maxHeight: '100%', display: 'block' }}>
-              <label for={`input-unit-x`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : 'medida'}:</label>
+              <label for={`input-unit-x`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : 'Medida'}:</label>
               <div style={{ display: 'inline-flex' }}>
                 <div className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
                   <input
