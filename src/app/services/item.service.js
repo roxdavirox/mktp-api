@@ -19,7 +19,7 @@ async function calculateItemPrice(templateItem) {
       item.templates
         .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0),
     ));
-    return total;
+    return total * quantity;
   }
 
   const priceTableId = priceTable.toString();
