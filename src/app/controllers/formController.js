@@ -149,8 +149,8 @@ const formController = {
         quantity,
         size,
         items: _items,
-        price: totalPrice.toFixed(2),
-        unitPrice: unitPrice.toFixed(2),
+        price: Math.round(totalPrice.toFixed(2)),
+        unitPrice: Math.round(unitPrice.toFixed(2)),
       });
 
       // setTimeout(async () => {
@@ -162,7 +162,7 @@ const formController = {
       // });
 
       return res.send({
-        items, price: price.toFixed(4), unitPrice: unitPrice.toFixed(4),
+        items, price: totalPrice.toFixed(4), unitPrice: unitPrice.toFixed(4),
       });
     } catch (e) {
       return res.status(400)
