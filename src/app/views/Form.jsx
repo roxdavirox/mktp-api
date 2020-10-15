@@ -154,8 +154,8 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
         <div className="orcamento-inputs">
           <p id="email-error" style={styles.erro}>E-mail inválido</p>
         </div>
-        <div>
-          <button id="ver-preco-button" className="single_add_to_cart_button button alt" style={{ textAlign: 'right' }}>Ver preço</button>
+        <div style={{ textAlign: 'right' }}>
+          <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
         </div>
       </form>
     </>
