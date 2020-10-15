@@ -48,29 +48,31 @@ const Select = ({ items, optionId, selectedItemId, option, defaultItems }) => {
         {selectedItem.showUnitField 
           && selectedItem.priceTable.unit !== 'quantidade'
           &&
-            <div _optionid={optionId} className="elementor-row" style={{ display: 'block' }}>
+            <div _optionid={optionId} className="elementor-row" style={{ maxHeight: '100%', display: 'block' }}>
               <label for={`input-unit-x`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : 'medida'}:</label>
-              <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
-                <input
-                  type="text"
-                  id="input-unit-x"
-                  _itemid={selectedItemId}
-                  placeholder="Comp."
-                  type="number"
-                  value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].x : '1'}
-                >
-                </input>
-              </div>
-              <div  className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
-                <input
-                  type="text"
-                  id="input-unit-y"
-                  _itemid={selectedItemId}
-                  placeholder="Larg."
-                  type="number"
-                  value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].y : '1'}
-                >
-                </input>
+              <div style={{ display: 'inline-flex' }}>
+                <div className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
+                  <input
+                    type="text"
+                    id="input-unit-x"
+                    _itemid={selectedItemId}
+                    placeholder="Comp."
+                    type="number"
+                    value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].x : '1'}
+                    >
+                  </input>
+                </div>
+                <div className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
+                  <input
+                    type="text"
+                    id="input-unit-y"
+                    _itemid={selectedItemId}
+                    placeholder="Larg."
+                    type="number"
+                    value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].y : '1'}
+                    >
+                  </input>
+                </div>
               </div>
             </div>
         }
