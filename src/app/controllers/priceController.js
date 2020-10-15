@@ -234,14 +234,8 @@ const updatePricesPorcentage = async (req, res) => {
 
     const { prices } = priceTable;
 
-    console.log('porcentage: ', porcentage > 0);
-
     prices.forEach((price) => {
-      if (porcentage > 0) {
-        price.value += (price.value * (porcentage / 100));
-      } else if (porcentage < 0) {
-        price.value += (price.value * (porcentage / 100));
-      }
+      price.value += (price.value * (porcentage / 100));
 
       price.save();
     });
