@@ -162,7 +162,9 @@ const formController = {
       // });
 
       return res.send({
-        items, price: totalPrice.toFixed(4), unitPrice: unitPrice.toFixed(4),
+        items,
+        price: Math.floor(totalPrice).toFixed(4),
+        unitPrice: Math.floor(unitPrice).toFixed(4),
       });
     } catch (e) {
       return res.status(400)
