@@ -81,7 +81,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit === 'quantidade'
                 && 
                   <div _optionId={options[k]._id} className="elementor-column elementor-col-50 elementor-inner-column elementor-element" style={{ display: 'block' }}>
-                    <label for={`input-unit-quantity`} >{defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'quantidade'}:</label>
+                    <label for={`input-unit-quantity`} >{defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'Quantidade:'}:</label>
                     <input
                       type="text"
                       id={`input-unit-quantity`}
@@ -101,7 +101,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                 && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit !== 'quantidade'
                 && 
                   <div _optionId={options[k]._id} className="elementor-row" style={{ maxHeight: '100%', display: 'block' }}>
-                    <label >{defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'medida'}:</label>
+                    <label >{defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'Medida:'}:</label>
                     <div style={{ display: 'inline-flex' }}>
                       <div className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
                         <input 
