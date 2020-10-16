@@ -96,8 +96,13 @@ const formController = {
   async getSelectComponent(req, res) {
     try {
       const {
-       itemsId, optionId, selectedItemId, defaultItems,
+       itemsId,
+       optionId,
+       selectedItemId,
+       prevItem,
+       defaultItems,
       } = req.body;
+      const prevItemEntity = await ItemService.getItemAndPriceTableById(prevItem.itemId);
       const items = await ItemService.getItemsByItemsIdAndPriceTable(itemsId);
       const option = await Option.findById(optionId);
 
@@ -105,6 +110,7 @@ const formController = {
         items,
         optionId,
         selectedItemId,
+        prevItem: { prevItemEntity, prevItemObj: prevItem },
         option,
         defaultItems,
       });
