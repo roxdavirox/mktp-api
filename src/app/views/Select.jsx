@@ -1,6 +1,6 @@
 var React = require("react");
 
-const Select = ({ items, optionId, selectedItemId, prevItem, option, defaultItems }) => {
+const Select = ({ items, optionId, selectedItemId, prevItem, option, defaultItems = {} }) => {
   const { prevItemEntity, prevItemObj } = prevItem;
   const selectedItem = items.find(item => item._id.toString() === selectedItemId);
   const isSameItemType = selectedItem.itemType == prevItemEntity.itemType;

@@ -26,7 +26,7 @@ const formController = {
           selectedItemsId,
           sizeSelectedIndex,
           unit,
-          defaultItems,
+          defaultItems = {},
         } = req.body;
 
       const product = await Product
@@ -100,7 +100,7 @@ const formController = {
        optionId,
        selectedItemId,
        prevItem,
-       defaultItems,
+       defaultItems = {},
       } = req.body;
       const prevItemEntity = await ItemService.getItemAndPriceTableById(prevItem.itemId);
       const items = await ItemService.getItemsByItemsIdAndPriceTable(itemsId);
