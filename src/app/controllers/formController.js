@@ -159,13 +159,13 @@ const formController = {
         unitPrice: unitPrice.toFixed(2),
       });
 
-      // setTimeout(async () => {
-      //   try {
-      //     await PipedriveService.createDeal({ ...person, html, title: `Negócio ${person.name}` });
-      //   } catch (e) {
-      //     console.log('error when creating deal:', e);
-      //   }
-      // });
+      setTimeout(async () => {
+        try {
+          await PipedriveService.createDeal({ ...person, html, title: `Negócio ${person.name}` });
+        } catch (e) {
+          console.log('error when creating deal:', e);
+        }
+      });
 
       return res.send({
         items,
