@@ -44,7 +44,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
         <div className="elementor-form-fields-wrapper">
           <div className="elementor-column elementor-col-100 elementor-field-group">
             <div
-              style={{ marginBottom:  '0px', border: '1px solid black' }}
+              style={{ marginBottom:  '0px' }}
               className="elementor-column elementor-col-100 elementor-field-group"
             >
               Quantidade:
@@ -52,6 +52,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
             <div className="elementor-column elementor-col-100 elementor-field-group">
               <input 
                 type="number"
+                style={styles.boxItem}
                 defaultValue="1"
                 id="quantity-select"
                 className="elementor-field elementor-size-sm  elementor-field-textual"
