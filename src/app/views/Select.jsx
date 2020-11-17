@@ -28,8 +28,9 @@ const styles = {
 const Select = ({ items, optionId, selectedItemId, prevItem, option, defaultItems = {} }) => {
   const { prevItemEntity, prevItemObj } = prevItem;
   const selectedItem = items.find(item => item._id.toString() === selectedItemId);
+  const isNotTemplateItem = selectedItem.itemType !== 'template' && prevItemEntity.itemType !== 'template';
   const isSameItemType = selectedItem.itemType == prevItemEntity.itemType;
-  const isSameUnitType = selectedItem.priceTable.unit == prevItemEntity.priceTable.unit;
+  const isSameUnitType = isNotTemplateItem && selectedItem.priceTable.unit == prevItemEntity.priceTable.unit;
   const usePrevValue = isSameItemType && isSameUnitType;
   return (
     <>
