@@ -61,7 +61,7 @@ const Select = ({ items, optionId, selectedItemId, prevItem, option, defaultItem
       {selectedItem.showUnitField 
         && selectedItem.priceTable.unit === 'quantidade'
         && <div _optionid={optionId} style={styles.box}>
-            <div style={{ marginBottom:  '0px;' }}>
+            <div style={{ marginBottom:  '0px', paddingLeft: '3px' }}>
               {defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : usePrevValue ? prevItemObj.label : 'Quantidade:'}
             </div>
             <div style={{ paddingLeft: '3px'}}>
@@ -83,7 +83,7 @@ const Select = ({ items, optionId, selectedItemId, prevItem, option, defaultItem
         && selectedItem.priceTable.unit !== 'quantidade'
         &&
           <div _optionid={optionId} style={styles.box}>
-            <div style={{ marginBottom: '0px;' }}>
+            <div style={{ marginBottom: '0px', paddingLeft: '3px' }}>
               {defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : usePrevValue ? prevItemObj.label : 'Medida:'}
             </div>
             <div style={styles.boxInput}>

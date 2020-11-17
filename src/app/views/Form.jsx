@@ -121,7 +121,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                   && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit === 'quantidade'
                   && 
                     <div _optionId={options[k]._id} style={styles.box}>
-                      <div style={{ marginBottom:  '0px;' }}>
+                      <div style={{ marginBottom:  '0px', paddingLeft: '3px' }}>
                         {defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'Quantidade'}:
                       </div>
                       <div style={{ paddingLeft: '3px'}}>
@@ -147,7 +147,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                   && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit !== 'quantidade'
                   && 
                     <div _optionId={options[k]._id} style={styles.box}>
-                      <div style={{ marginBottom: '0px;' }}>
+                      <div style={{ marginBottom: '0px', paddingLeft: '3px' }}>
                         {defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'Medida'}:
                       </div>
                       <div style={styles.boxInput}>
