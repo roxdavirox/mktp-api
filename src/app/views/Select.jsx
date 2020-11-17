@@ -1,5 +1,30 @@
 var React = require("react");
 
+const styles = {
+  container: {
+    display: 'flex',
+    flexWrap: 'nowrap',
+    width: '-webkit-fill-available'
+  },
+  box: {
+    flexGrow: 1,
+    padding: '1px',
+    width: '200px',
+  },
+  boxItem: {
+    width: '100%',
+    border: 'solid 1px black',
+    padding: '11.25px',
+    minHeight: '46.5px'
+  },
+  boxInput: {
+    flexGrow: 1,
+    display: 'flex',
+    alignContent: 'center',
+    alignItems: 'center',
+  }
+}
+
 const Select = ({ items, optionId, selectedItemId, prevItem, option, defaultItems = {} }) => {
   const { prevItemEntity, prevItemObj } = prevItem;
   const selectedItem = items.find(item => item._id.toString() === selectedItemId);
@@ -8,16 +33,12 @@ const Select = ({ items, optionId, selectedItemId, prevItem, option, defaultItem
   const usePrevValue = isSameItemType && isSameUnitType;
   return (
     <>
-      <div key={optionId} className="elementor-row">
-        <div 
-          className={`${items.find(item => item._id.toString() === selectedItemId).showUnitField 
-            ? 'elementor-column elementor-col-100 elementor-inner-column elementor-element' 
-            : 'elementor-column elementor-col-100 elementor-inner-column elementor-element'}`}
-          style={{ display: 'block' }}
-        >
-          <label for={optionId}>{option.name}:</label>
+      <div style={styles.box}>
+        <div style={{ marginBottom:  '0px;' }}>{option.name}:</div>
+        <div>
           <select
             className="item-select"
+            style={styles.boxItem}
             id={optionId}
             key={optionId}>
             {items.map(item => 
@@ -33,53 +54,63 @@ const Select = ({ items, optionId, selectedItemId, prevItem, option, defaultItem
               </option>)}
           </select>
         </div>
-        {selectedItem.showUnitField 
-          && selectedItem.priceTable.unit === 'quantidade'
-          && <div _optionid={optionId} className="elementor-column elementor-col-50 elementor-inner-column elementor-element" style={{ display: 'block' }}>
-              <label for={`input-unit-quantity`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : usePrevValue ? prevItemObj.label : 'Quantidade:'}</label>
+      </div>
+      
+      {/* quantidade */}
+      {selectedItem.showUnitField 
+        && selectedItem.priceTable.unit === 'quantidade'
+        && <div _optionid={optionId} style={styles.box}>
+            <div style={{ marginBottom:  '0px;' }}>
+              {defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : usePrevValue ? prevItemObj.label : 'Quantidade:'}
+            </div>
+            <div style={{ paddingLeft: '3px'}}>
               <input
+                style={styles.boxItem}
                 type="text"
                 id="input-unit-quantity"
                 _itemId={selectedItemId}
                 placeholder="Quantidade"
                 type="number"
                 value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].quantity : usePrevValue ? prevItemObj.quantity : '1'}
-              >
-              </input>
+              />
             </div>
-        }
-        {selectedItem.showUnitField 
-          && selectedItem.priceTable.unit !== 'quantidade'
-          &&
-            <div _optionid={optionId} className="elementor-row" style={{ maxHeight: '100%', display: 'block' }}>
-              <label for={`input-unit-x`} >{defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : usePrevValue ? prevItemObj.label : 'Medida:'}</label>
-              <div style={{ display: 'inline-flex' }}>
-                <div className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
-                  <input
-                    type="text"
-                    id="input-unit-x"
-                    _itemid={selectedItemId}
-                    placeholder="Comp."
-                    type="number"
-                    value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].x : usePrevValue ? prevItemObj.size.x : '1'}
-                    >
-                  </input>
-                </div>
-                <div className="elementor-column elementor-col-50 elementor-inner-column elementor-element">
-                  <input
-                    type="text"
-                    id="input-unit-y"
-                    _itemid={selectedItemId}
-                    placeholder="Larg."
-                    type="number"
-                    value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].y : usePrevValue ? prevItemObj.size.y : '1'}
-                    >
-                  </input>
-                </div>
+          </div>
+      }
+
+      {/* medida */}
+      {selectedItem.showUnitField 
+        && selectedItem.priceTable.unit !== 'quantidade'
+        &&
+          <div _optionid={optionId} style={styles.box}>
+            <div style={{ marginBottom: '0px;' }}>
+              {defaultItems[selectedItemId] ? defaultItems[selectedItemId].label : usePrevValue ? prevItemObj.label : 'Medida:'}
+            </div>
+            <div style={styles.boxInput}>
+              <div style={{ paddingLeft: '3px', paddingRight: '5px' }}>
+                <input
+                  style={styles.boxItem}
+                  type="text"
+                  id="input-unit-x"
+                  _itemid={selectedItemId}
+                  placeholder="Comp."
+                  type="number"
+                  value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].x : usePrevValue ? prevItemObj.size.x : '1'}
+                 />
+              </div>
+              <div>
+                <input
+                  style={styles.boxItem}
+                  type="text"
+                  id="input-unit-y"
+                  _itemid={selectedItemId}
+                  placeholder="Larg."
+                  type="number"
+                  value={defaultItems[selectedItemId] ? defaultItems[selectedItemId].y : usePrevValue ? prevItemObj.size.y : '1'}
+                 />
               </div>
             </div>
-        }
-      </div>
+          </div>
+      }
     </>
   )
 }

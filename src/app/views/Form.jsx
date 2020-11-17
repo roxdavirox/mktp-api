@@ -92,10 +92,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
               style={styles.container}
             >
                 <div style={styles.box}>
-                  <div
-                    style={{ marginBottom:  '0px;' }}
-                    // class="elementor-field-group"
-                  >{options[k].name}:</div>
+                  <div style={{ marginBottom:  '0px;' }}>{options[k].name}:</div>
                   <div>
                     <select
                       className="item-select"
@@ -124,10 +121,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                   && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit === 'quantidade'
                   && 
                     <div _optionId={options[k]._id} style={styles.box}>
-                      <div
-                        style={{ marginBottom:  '0px;' }}
-                        // className="elementor-column elementor-col-100 elementor-field-group"
-                      >
+                      <div style={{ marginBottom:  '0px;' }}>
                         {defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'Quantidade'}:
                       </div>
                       <div style={{ paddingLeft: '3px'}}>
@@ -141,7 +135,6 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                           value={defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()] 
                             ? defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].quantity
                             : '1'}
-                          // className="elementor-field-textual"
                         />
                       </div>
                     </div>
@@ -154,9 +147,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                   && options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1).priceTable.unit !== 'quantidade'
                   && 
                     <div _optionId={options[k]._id} style={styles.box}>
-                      <div
-                        style={{ marginBottom:  '0px;' }}
-                      >
+                      <div style={{ marginBottom: '0px;' }}>
                         {defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'Medida'}:
                       </div>
                       <div style={styles.boxInput}>
