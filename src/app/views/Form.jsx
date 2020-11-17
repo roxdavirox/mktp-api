@@ -156,7 +156,6 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                     <div _optionId={options[k]._id} style={styles.box}>
                       <div
                         style={{ marginBottom:  '0px;' }}
-                        // className="elementor-column elementor-col-100 elementor-field-group"
                       >
                         {defaultItems[options[k].items.find(item => selectedItemsId.indexOf(item._id.toString()) !== -1)._id.toString()].label || 'Medida'}:
                       </div>
@@ -192,28 +191,52 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                 }
             </div>
           )}
-          <div  className="orcamento-inputs">
-            <label htmlFor="name" >Nome:</label>
-            <input type="text" id="name" ></input>
+          <div className="orcamento-inputs elementor-column elementor-col-100 elementor-field-group">
+            <div
+              style={{ marginBottom:  '0px' }}
+              className="elementor-column elementor-col-100 elementor-field-group"
+            >
+              Nome:
+            </div>
+            <div className="elementor-column elementor-col-100 elementor-field-group">
+              <input type="text" id="name" style={styles.boxItem} />
+            </div>
           </div>
           <div className="orcamento-inputs">
             <p id="name-error" style={styles.erro}>Preencha o seu nome</p>
           </div>
-          <div className="orcamento-inputs">
-            <label htmlFor="phone" placeholder="(__) _____-____">Telefone:</label>
-            <input type="text" id="phone" maxLength="15"></input>
+          <div className="orcamento-inputs elementor-column elementor-col-100 elementor-field-group">
+            <label
+              htmlFor="phone"
+              placeholder="(__) _____-____"
+              style={{ marginBottom:  '0px' }}
+              className="elementor-column elementor-col-100 elementor-field-group"            
+            >
+              Telefone:
+            </label>
+            <div className="elementor-column elementor-col-100 elementor-field-group">
+              <input type="text" id="phone" maxLength="15" style={styles.boxItem}></input>
+            </div>
           </div>
           <div className="orcamento-inputs">
             <p id="phone-error" style={styles.erro}>Preencha seu telefone</p>
           </div>
-          <div  className="orcamento-inputs">
-            <label htmlFor="email" >E-mail:</label>
-            <input type="text" id="email" ></input>
+          <div className="orcamento-inputs elementor-column elementor-col-100 elementor-field-group">
+            <label 
+              htmlFor="email"   
+              style={{ marginBottom:  '0px' }}
+              className="elementor-column elementor-col-100 elementor-field-group"    
+            >
+              E-mail:
+            </label>
+            <div className="elementor-column elementor-col-100 elementor-field-group">
+              <input type="text" id="email" style={styles.boxItem} />
+            </div>
           </div>
           <div className="orcamento-inputs">
             <p id="email-error" style={styles.erro}>E-mail inválido</p>
           </div>
-          <div style={{ textAlign: 'right' }}>
+          <div style={{ textAlign: 'right', width: '100%' }}>
             <button id="ver-preco-button" className="single_add_to_cart_button button alt">Ver preço</button>
           </div>
         </div>
