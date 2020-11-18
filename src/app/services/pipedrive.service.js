@@ -159,7 +159,6 @@ const pipedriveService = {
       user_id: 2966454,
       owner_id: 2966454,
       stage_id: 17,
-      // title: `Negocio ${deal.person.name}`,
       ...deal,
     };
     const { email } = deal;

@@ -163,7 +163,7 @@ const formController = {
         try {
           await PipedriveService.createDeal({ ...person, html, title: `Negócio ${person.name}` });
         } catch (e) {
-          console.log('error when creating deal:', e);
+          console.log('error when creating deal:', e.message);
         }
       });
 
