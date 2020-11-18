@@ -176,7 +176,7 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
             </div>
           )}
           <div style={styles.container}>
-            <div style={styles.box}>
+            <div style={styles.box} className="orcamento-inputs">
               <div style={{ marginBottom:  '0px' }}>Nome:</div>
               <div>
                 <input type="text" id="name" style={styles.boxItem} />
