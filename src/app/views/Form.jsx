@@ -41,46 +41,40 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
   return (
     <>
       <div className="elementor-widget-container">
-        <div className="elementor-form-fields-wrapper">
-          <div className="elementor-column elementor-col-100 elementor-field-group">
-            <div
-              style={{ marginBottom:  '0px' }}
-              className="elementor-column elementor-col-100 elementor-field-group"
-            >
-              Quantidade:
-            </div>
-            <div className="elementor-column elementor-col-100 elementor-field-group">
-              <input 
-                type="number"
-                style={styles.boxItem}
-                defaultValue="1"
-                id="quantity-select"
-                className="elementor-field elementor-size-sm  elementor-field-textual"
-              />
+        <div>
+          <div style={styles.container}>
+            <div style={styles.box}>
+              <div style={{ marginBottom: '0px;' }}>Quantidade:</div>
+              <div>
+                <input 
+                  type="number"
+                  style={styles.boxItem}
+                  defaultValue="1"
+                  id="quantity-select"
+                />
+              </div>
             </div>
           </div>
-          <div className="elementor-column elementor-col-100 elementor-field-group">
-            {sizes &&
-              <div
-                style={{ marginBottom:  '0px;' }}
-                className="elementor-column elementor-col-100 elementor-field-group"
-              >
-                Medidas:
-              </div>
-            }
-            <div className="elementor-column elementor-col-100 elementor-field-group">
-              {sizes && 
-                <select id="size-select" className="elementor-field elementor-size-sm  elementor-field-textual">
-                  {sizes.map((size, index) => 
-                    <option 
-                      key={index} 
-                      _size={JSON.stringify(size)} 
-                      selected={index == sizeSelectedIndex}>
-                        {size.x}x{size.y}{unit}
-                    </option>)}
-                </select>
-              }
+
+          <div style={styles.container}>
+            {sizes && 
+              <div style={styles.box}>
+                <div style={{ marginBottom:  '0px;' }}>Medidas:</div>
+                <div>
+                  {sizes && 
+                    <select id="size-select" style={styles.boxItem}>
+                      {sizes.map((size, index) => 
+                        <option 
+                          key={index} 
+                          _size={JSON.stringify(size)} 
+                          selected={index == sizeSelectedIndex}>
+                            {size.x}x{size.y}{unit}
+                        </option>)}
+                    </select>
+                  }
+                </div>
             </div>
+            }
           </div>
 
           {sortedOptionsId.map(k =>
@@ -88,11 +82,10 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
               key={k}
               _optionId={options[k]._id}
               id="item-container"
-              // className="elementor-field-group"
               style={styles.container}
             >
                 <div style={styles.box}>
-                  <div style={{ marginBottom:  '0px;' }}>{options[k].name}:</div>
+                  <div style={{ marginBottom: '0px;' }}>{options[k].name}:</div>
                   <div>
                     <select
                       className="item-select"
@@ -182,46 +175,44 @@ const Form = ({ sizeSelectedIndex = 0, options, sortedOptionsId, sizes, selected
                 }
             </div>
           )}
-          <div className="orcamento-inputs elementor-column elementor-col-100 elementor-field-group">
-            <div
-              style={{ marginBottom:  '0px' }}
-              className="elementor-column elementor-col-100 elementor-field-group"
-            >
-              Nome:
-            </div>
-            <div className="elementor-column elementor-col-100 elementor-field-group">
-              <input type="text" id="name" style={styles.boxItem} />
+          <div style={styles.container}>
+            <div style={styles.box}>
+              <div style={{ marginBottom:  '0px' }}>Nome:</div>
+              <div>
+                <input type="text" id="name" style={styles.boxItem} />
+              </div>
             </div>
           </div>
           <div className="orcamento-inputs">
             <p id="name-error" style={styles.erro}>Preencha o seu nome</p>
           </div>
-          <div className="orcamento-inputs elementor-column elementor-col-100 elementor-field-group">
-            <label
-              htmlFor="phone"
-              placeholder="(__) _____-____"
-              style={{ marginBottom:  '0px' }}
-              className="elementor-column elementor-col-100 elementor-field-group"            
-            >
-              Telefone:
-            </label>
-            <div className="elementor-column elementor-col-100 elementor-field-group">
-              <input type="text" id="phone" maxLength="15" style={styles.boxItem}></input>
+          
+          <div style={styles.container}>
+            <div className="orcamento-inputs" style={styles.box}>
+              <label
+                htmlFor="phone"
+                placeholder="(__) _____-____"
+                style={{ marginBottom:  '0px' }}       
+              >
+                Telefone:
+              </label>
+              <div>
+                <input type="text" id="phone" maxLength="15" style={styles.boxItem} />
+              </div>
             </div>
           </div>
           <div className="orcamento-inputs">
             <p id="phone-error" style={styles.erro}>Preencha seu telefone</p>
           </div>
-          <div className="orcamento-inputs elementor-column elementor-col-100 elementor-field-group">
-            <label 
-              htmlFor="email"   
-              style={{ marginBottom:  '0px' }}
-              className="elementor-column elementor-col-100 elementor-field-group"    
-            >
-              E-mail:
-            </label>
-            <div className="elementor-column elementor-col-100 elementor-field-group">
-              <input type="text" id="email" style={styles.boxItem} />
+
+          <div style={styles.container}>
+            <div className="orcamento-inputs" style={styles.box}>
+              <label htmlFor="email" style={{ marginBottom:  '0px' }}>
+                E-mail:
+              </label>
+              <div>
+                <input type="text" id="email" style={styles.boxItem} />
+              </div>
             </div>
           </div>
           <div className="orcamento-inputs">
