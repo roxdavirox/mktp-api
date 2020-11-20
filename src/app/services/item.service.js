@@ -6,7 +6,7 @@ const PriceTableService = require('../services/priceTable.service');
 
 // common functions - shared
 async function calculateItemPrice(templateItem) {
-  const { quantity, size = { x: 1, y: 1 } } = templateItem;
+  const { quantity, size = { x: 1, y: 1 }, templateQuantity = 1 } = templateItem;
   if (!templateItem.item) return 0;
   const item = await Item.findById(templateItem.item._id)
     .populate({ path: 'templates.item' });
@@ -17,14 +17,16 @@ async function calculateItemPrice(templateItem) {
   if (itemType === 'template' && item.templates) {
     total *= Number(await Promise.resolve(
       item.templates
-        .reduce(async (_total, _item) => await _total + await calculateItemPrice(_item), 0),
+        .reduce(async (_total, _item) => await _total + await calculateItemPrice({
+          ..._item.toObject(), templateQuantity: quantity,
+        }), 0),
     ));
     return total * quantity;
   }
 
   const priceTableId = priceTable.toString();
   const _price = await PriceTableService
-    .getPriceIntervalByAreaAndId(priceTableId, quantity * size.x * size.y);
+    .getPriceIntervalByAreaAndId(priceTableId, quantity * size.x * size.y * templateQuantity);
 
   return _price.value * quantity * size.x * size.y;
 }
