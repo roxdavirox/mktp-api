@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable consistent-return */
 /* eslint-disable indent */
 /* eslint-disable no-underscore-dangle */
@@ -128,7 +129,7 @@ const formController = {
   async getQuote(req, res) {
     try {
       const {
-        itemsId, quantity, size = { x: 1, y: 1 }, defaultItems = {},
+        itemsId, quantity, size = { x: 1, y: 1 }, defaultItems = {}, url = '',
       } = req.body;
 
       const selectedItems = itemsId.map((id) => ({
@@ -161,7 +162,12 @@ const formController = {
 
       setTimeout(async () => {
         try {
-          await PipedriveService.createDeal({ ...person, html, title: `Negócio ${person.name}` });
+          await PipedriveService.createDeal({
+            ...person,
+            html,
+            title: `Negócio ${person.name}`,
+            url,
+          });
         } catch (e) {
           console.log('error when creating deal:', e.message);
         }
