@@ -158,6 +158,7 @@ const formController = {
         items: _items,
         price: totalPrice.toFixed(2),
         unitPrice: unitPrice.toFixed(2),
+        url,
       });
 
       setTimeout(async () => {
@@ -166,7 +167,6 @@ const formController = {
             ...person,
             html,
             title: `Negócio ${person.name}`,
-            url,
           });
         } catch (e) {
           console.log('error when creating deal:', e.message);
