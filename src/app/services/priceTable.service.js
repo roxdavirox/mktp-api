@@ -40,7 +40,7 @@ const priceTableService = {
     const preco = prices.find((price) => (price.start <= area && area <= price.end));
 
     if (!preco) {
-      const lastPrice = prices[prices.length - 1];
+      const lastPrice = prices.sort((a, b) => b.value - a.value)[prices.length - 1];
       return lastPrice;
     }
 
