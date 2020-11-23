@@ -121,6 +121,8 @@ const priceTableService = {
 
         duplicatedPriceTable.prices.push(price);
       }));
+      duplicatedPriceTable.prices.sort((a, b) => b.value - a.value);
+
       await duplicatedPriceTable.save();
       return duplicatedPriceTable;
     }));
