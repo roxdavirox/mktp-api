@@ -62,9 +62,29 @@ const deleteManyOptionsAndChildItemsByIds = async (req, res) => {
   }
 };
 
+const updateName = async (req, res) => {
+  try {
+    const { optionId } = req.params;
+    const { name } = req.body;
+
+    const option = await Option
+      .findByIdAndUpdate(
+        optionId,
+        { name },
+        { new: true },
+      );
+
+    return res.send({ option });
+  } catch (e) {
+    return res.status(400)
+      .send({ error: `Error on update option name: ${e}` });
+  }
+};
+
 router.post('/', createOption);
 router.get('/', getAllOptions);
 router.put('/', updateItemIntoOptions);
 router.delete('/', deleteManyOptionsAndChildItemsByIds);
+router.put('/:optionId/name', updateName);
 
 module.exports = (app) => app.use('/options', router);
